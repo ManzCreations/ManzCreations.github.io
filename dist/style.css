@@ -1,0 +1,374 @@
+/* Custom Properties/Variables */
+:root {
+  /* Primary Colors */
+  --color-primary: #7c3aed;    
+  --color-secondary: #f59e0b;  
+  
+  /* Background Colors */
+  --color-bg-light: #f3f4f6;   
+  --color-bg-white: #ffffff;   
+  --color-bg-dark: #1f2937;    
+  
+  /* Text Colors */
+  --color-text-primary: #1f2937;   
+  --color-text-secondary: #6b7280; 
+  --color-text-light: #f3f4f6;     
+  
+  /* Accent Colors */
+  --color-accent-1: #fb7185;    
+  --color-accent-2: #34d399;    
+}
+
+/* CSS Reset & Base Styles */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html {
+  font-size: 100%;
+}
+
+body {
+  font-family: "Public Sans", sans-serif;
+  font-size: 1rem;
+  line-height: 1.5;
+  color: var(--color-text-primary);
+  overflow-x: hidden;
+}
+
+a {
+  text-decoration: none;
+  color: inherit;
+}
+
+img {
+  max-width: 100%;
+  display: block;
+}
+
+/* Utility Classes */
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 1.5rem;
+}
+
+.container--pall {
+  padding: 4rem 1.5rem;
+}
+
+.flex {
+  display: flex;
+}
+
+.flex-jc-sb {
+  justify-content: space-between;
+}
+
+.flex-ai-c {
+  align-items: center;
+}
+
+.bg-white { background-color: var(--color-bg-white); }
+.bg-light { background-color: var(--color-bg-light); }
+.bg-dark { background-color: var(--color-bg-dark); }
+
+.gradient-text {
+  background: linear-gradient(to right, var(--color-primary), var(--color-accent-1));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.gradient-bg {
+  background: linear-gradient(to right, var(--color-primary), var(--color-accent-1));
+}
+
+/* Header Styles */
+.header {
+  position: relative;
+  z-index: 1;
+  padding: 1rem 0;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.header__logo {
+  gap: 1.5rem;
+}
+
+.header__logo .logo__image {
+  width: 80px;
+  height: 80px;
+  object-fit: contain;
+}
+
+.header__logo h1 {
+  font-size: 1.8rem;
+  font-weight: 600;
+}
+
+.header__links a {
+  color: var(--color-text-secondary);
+  margin-left: 2rem;
+  transition: color 0.3s ease;
+}
+
+.header__links a:hover {
+  color: var(--color-primary);
+}
+
+/* Mobile Menu */
+.header__toggle > span {
+  display: block;
+  width: 26px;
+  height: 2px;
+  background-color: var(--color-text-primary);
+  transition: all 300ms ease-in-out;
+  transform-origin: 3px 1px;
+}
+
+.header__toggle > span:not(:last-child) {
+  margin-bottom: 5px;
+}
+
+.header__menu {
+  position: absolute;
+  width: calc(100% - 3rem);
+  left: 50%;
+  transform: translateX(-50%);
+  background: white;
+  margin-top: 1.5rem;
+  padding: 1.625rem;
+  border-radius: 5px;
+  display: none;
+}
+
+.header__menu.fade-in {
+  display: block;
+}
+
+/* Promotions Section */
+.promotions {
+  color: var(--color-text-light);
+}
+
+.promotions__grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 2rem;
+}
+
+@media (min-width: 768px) {
+  .promotions__grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+.promo-card {
+  position: relative;
+  border-radius: 1rem;
+  overflow: hidden;
+  box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+  transition: transform 0.3s ease;
+}
+
+.promo-card:hover {
+  transform: translateY(-5px);
+}
+
+.promo-card img {
+  width: 100%;
+  height: 300px;
+  object-fit: cover;
+}
+
+.promo-content {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  padding: 2rem;
+  background: linear-gradient(to top, rgba(0,0,0,0.8), transparent);
+}
+
+/* New Releases Section */
+.section-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 3rem;
+}
+
+.products-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 2rem;
+}
+
+.product-card {
+  background: var(--color-bg-white);
+  border-radius: 1rem;
+  overflow: hidden;
+  box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+  transition: transform 0.3s ease;
+}
+
+.product-card:hover {
+  transform: translateY(-5px);
+}
+
+.product-image img {
+  width: 100%;
+  height: 250px;
+  object-fit: cover;
+}
+
+.product-info {
+  padding: 1.5rem;
+}
+
+.price {
+  color: var(--color-primary);
+  font-weight: 600;
+  margin-top: 0.5rem;
+}
+
+/* Collections Section */
+.collections__grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 2rem;
+}
+
+.collection-card {
+  position: relative;
+  border-radius: 1rem;
+  overflow: hidden;
+  aspect-ratio: 16/9;
+}
+
+.collection-overlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(to top, rgba(0,0,0,0.7), transparent);
+  color: var(--color-text-light);
+  padding: 2rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+}
+
+/* FAQ Section */
+.faq__item {
+  background: var(--color-bg-white);
+  border-radius: 0.5rem;
+  margin-bottom: 1rem;
+  padding: 1rem;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+}
+
+.faq__question {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  cursor: pointer;
+}
+
+.faq__toggle {
+  background: var(--color-primary);
+  color: white;
+  border: none;
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  cursor: pointer;
+  transition: transform 0.3s ease;
+}
+
+.faq__answer {
+  display: none;
+  padding: 1rem 0;
+}
+
+.faq__answer.active {
+  display: block;
+}
+
+.faq__divider {
+  border: none;
+  border-top: 1px solid var(--color-bg-light);
+  margin: 1rem 0;
+}
+
+/* Button Styles */
+.button {
+  display: inline-block;
+  padding: 0.8rem 2rem;
+  background: linear-gradient(to right, var(--color-primary), var(--color-accent-1));
+  color: white;
+  border-radius: 2rem;
+  font-weight: 600;
+  transition: transform 0.3s ease;
+}
+
+.button:hover {
+  transform: translateY(-2px);
+}
+
+/* Responsive Utilities */
+@media (max-width: 63.9375em) {
+  .hide-for-mobile {
+    display: none;
+  }
+}
+
+@media (min-width: 64em) {
+  .hide-for-desktop {
+    display: none;
+  }
+}
+
+/* Animation Classes */
+.has-fade {
+  visibility: hidden;
+}
+
+@keyframes fade-in {
+  from {
+    visibility: hidden;
+    opacity: 0;
+  }
+  1% {
+    visibility: visible;
+    opacity: 0;
+  }
+  to {
+    visibility: visible;
+    opacity: 1;
+  }
+}
+
+.fade-in {
+  animation: fade-in 200ms ease-in-out forwards;
+}
+
+@keyframes fade-out {
+  from {
+    visibility: visible;
+    opacity: 1;
+  }
+  99% {
+    visibility: visible;
+    opacity: 0;
+  }
+  to {
+    visibility: hidden;
+    opacity: 0;
+  }
+}
+
+.fade-out {
+  animation: fade-out 200ms ease-in-out forwards;
+}

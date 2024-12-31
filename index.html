@@ -1,0 +1,383 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link href="https://fonts.googleapis.com/css2?family=Public+Sans:wght@300;400;600&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="/dist/style.css" />
+    <title>Custom Crafts & Designs</title>
+  </head>
+  <body>
+    <!-- Header Section -->
+    <header class="header bg-white">
+      <div class="overlay has-fade"></div>
+      <nav class="container flex flex-jc-sb flex-ai-c">
+        <a href="/" class="header__logo flex flex-ai-c">
+          <img src="/images/logo-noletters.png" alt="Crafted 4 You Logo" class="logo__image" />
+          <h1 class="gradient-text">Crafted 4 You</h1>
+        </a>
+
+        <a id="btnHamburger" href="#" class="header__toggle hide-for-desktop">
+          <span></span>
+          <span></span>
+          <span></span>
+        </a>
+
+        <div class="header__links hide-for-mobile">
+          <a href="#new-releases">New</a>
+          <a href="#collections">Collections</a>
+          <a href="#freshies">Freshies</a>
+          <a href="#cups">Cups</a>
+          <a href="#slates">Slates</a>
+          <a href="#order">Order</a>
+        </div>
+      </nav>
+
+      <div class="header__menu has-fade">
+        <a href="#new-releases">New</a>
+        <a href="#collections">Collections</a>
+        <a href="#freshies">Freshies</a>
+        <a href="#cups">Cups</a>
+        <a href="#slates">Slates</a>
+        <a href="#order">Order</a>
+      </div>
+    </header>
+
+    <!-- Promotions Section -->
+    <section class="promotions gradient-bg">
+      <div class="container container--pall">
+        <div class="promotions__grid">
+          <a href="/promos/summer" class="promotions__item">
+            <div class="promo-card">
+              <img src="https://images.unsplash.com/photo-1526170375885-4d8ecf77b99f" alt="Summer Collection" />
+              <div class="promo-content">
+                <h2>Summer Splash Sale</h2>
+                <p>20% off all summer freshies and cups</p>
+              </div>
+            </div>
+          </a>
+          <a href="/promos/holiday" class="promotions__item">
+            <div class="promo-card">
+              <img src="https://images.unsplash.com/photo-1612817288484-6f916006741a" alt="Holiday Collection" />
+              <div class="promo-content">
+                <h2>Holiday Collection</h2>
+                <p>Pre-order now for early bird pricing</p>
+              </div>
+            </div>
+          </a>
+        </div>
+      </div>
+    </section>
+
+    <!-- New Releases Section -->
+    <section id="new-releases" class="new-releases bg-light">
+      <div class="container container--pall">
+        <div class="section-header">
+          <h2 class="gradient-text">New Releases</h2>
+          <a href="/new-releases" class="button">View All</a>
+        </div>
+        <div class="products-grid">
+          <div class="product-card">
+            <div class="product-image">
+              <img src="https://images.unsplash.com/photo-1490312278390-ab64016e0aa9" alt="Summer Breeze Freshie" />
+            </div>
+            <div class="product-info">
+              <h3>Summer Breeze Freshie</h3>
+              <p class="price">$15.99</p>
+            </div>
+          </div>
+          <div class="product-card">
+            <div class="product-image">
+              <img src="https://images.unsplash.com/photo-1514228742587-6b1558fcca3d" alt="Ocean Wave Tumbler" />
+            </div>
+            <div class="product-info">
+              <h3>Ocean Wave Tumbler</h3>
+              <p class="price">$24.99</p>
+            </div>
+          </div>
+          <div class="product-card">
+            <div class="product-image">
+              <img src="https://images.unsplash.com/photo-1597484662317-9bd7bdda2907" alt="Welcome Slate" />
+            </div>
+            <div class="product-info">
+              <h3>Rustic Welcome Slate</h3>
+              <p class="price">$29.99</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Collections Section -->
+    <section id="collections" class="collections bg-white">
+      <div class="container container--pall">
+        <div class="section-header">
+          <h2 class="gradient-text">Featured Collections</h2>
+          <a href="/collections" class="button">View All</a>
+        </div>
+        <div class="collections__grid">
+          <div class="collection-card">
+            <img src="https://images.unsplash.com/photo-1496062031456-07b8f162a322" alt="Summer Collection" />
+            <div class="collection-overlay">
+              <h3>Summer Vibes</h3>
+              <p>Bright colors and fresh scents</p>
+            </div>
+          </div>
+          <div class="collection-card">
+            <img src="https://images.unsplash.com/photo-1509057095372-215f8cc53d1a" alt="Autumn Collection" />
+            <div class="collection-overlay">
+              <h3>Autumn Comfort</h3>
+              <p>Warm and cozy designs</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Freshies Section -->
+    <section id="freshies" class="category-section bg-light">
+      <div class="container container--pall">
+        <div class="section-header">
+          <h2 class="gradient-text">Popular Freshies</h2>
+          <a href="/freshies" class="button">Shop Freshies</a>
+        </div>
+        <div class="products-grid">
+          <div class="product-card">
+            <div class="product-image">
+              <img src="https://images.unsplash.com/photo-1523293182086-7651a899d37f" alt="Lavender Dream" />
+            </div>
+            <div class="product-info">
+              <h3>Lavender Dream</h3>
+              <p class="price">$12.99</p>
+            </div>
+          </div>
+          <div class="product-card">
+            <div class="product-image">
+              <img src="https://images.unsplash.com/photo-1507120878965-54b2d3939100" alt="Ocean Breeze" />
+            </div>
+            <div class="product-info">
+              <h3>Ocean Breeze</h3>
+              <p class="price">$12.99</p>
+            </div>
+          </div>
+          <div class="product-card">
+            <div class="product-image">
+              <img src="https://images.unsplash.com/photo-1574087988579-da02f0b90e37" alt="Vanilla Bean" />
+            </div>
+            <div class="product-info">
+              <h3>Vanilla Bean</h3>
+              <p class="price">$12.99</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Cups Section -->
+    <section id="cups" class="category-section bg-white">
+      <div class="container container--pall">
+        <div class="section-header">
+          <h2 class="gradient-text">Custom Cups</h2>
+          <a href="/cups" class="button">Shop Cups</a>
+        </div>
+        <div class="products-grid">
+          <div class="product-card">
+            <div class="product-image">
+              <img src="https://images.unsplash.com/photo-1514228742587-6b1558fcca3d" alt="Glitter Galaxy" />
+            </div>
+            <div class="product-info">
+              <h3>Glitter Galaxy 30oz</h3>
+              <p class="price">$34.99</p>
+            </div>
+          </div>
+          <div class="product-card">
+            <div class="product-image">
+              <img src="https://images.unsplash.com/photo-1570784332176-fdd73dc42f14" alt="Rainbow Swirl" />
+            </div>
+            <div class="product-info">
+              <h3>Rainbow Swirl 20oz</h3>
+              <p class="price">$29.99</p>
+            </div>
+          </div>
+          <div class="product-card">
+            <div class="product-image">
+              <img src="https://images.unsplash.com/photo-1578076465157-eef151ec3d12" alt="Mermaid Magic" />
+            </div>
+            <div class="product-info">
+              <h3>Mermaid Magic 40oz</h3>
+              <p class="price">$39.99</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Slates Section -->
+    <section id="slates" class="category-section bg-light">
+      <div class="container container--pall">
+        <div class="section-header">
+          <h2 class="gradient-text">Decorative Slates</h2>
+          <a href="/slates" class="button">Shop Slates</a>
+        </div>
+        <div class="products-grid">
+          <div class="product-card">
+            <div class="product-image">
+              <img src="https://images.unsplash.com/photo-1597484662317-9bd7bdda2907" alt="Welcome Home" />
+            </div>
+            <div class="product-info">
+              <h3>Welcome Home Slate</h3>
+              <p class="price">$29.99</p>
+            </div>
+          </div>
+          <div class="product-card">
+            <div class="product-image">
+              <img src="https://images.unsplash.com/photo-1595435934249-5df7ed86e1c0" alt="Family Name" />
+            </div>
+            <div class="product-info">
+              <h3>Family Name Slate</h3>
+              <p class="price">$34.99</p>
+            </div>
+          </div>
+          <div class="product-card">
+            <div class="product-image">
+              <img src="https://images.unsplash.com/photo-1581783342308-f792dbdd27c5" alt="Seasonal" />
+            </div>
+            <div class="product-info">
+              <h3>Seasonal Decorative Slate</h3>
+              <p class="price">$32.99</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- FAQ Section -->
+    <section id="faq" class="faq bg-white">
+      <div class="container container--pall">
+        <h2 class="gradient-text text-center">Frequently Asked Questions</h2>
+        <div class="faq__list">
+          <div class="faq__item">
+            <div class="faq__question">
+              <h3>How long does shipping take?</h3>
+              <button class="faq__toggle">+</button>
+            </div>
+            <div class="faq__answer">
+              <p>Orders typically ship within 2-3 business days. Delivery time is usually 3-5 business days within the continental US.</p>
+            </div>
+            <hr class="faq__divider">
+          </div>
+          <div class="faq__item">
+            <div class="faq__question">
+              <h3>Do you offer custom designs?</h3>
+              <button class="faq__toggle">+</button>
+            </div>
+            <div class="faq__answer">
+              <p>Yes! We love creating custom pieces. Please use our order form and include your design ideas in the description.</p>
+            </div>
+            <hr class="faq__divider">
+          </div>
+          <div class="faq__item">
+            <div class="faq__question">
+              <h3>What are your freshies made of?</h3>
+              <button class="faq__toggle">+</button>
+            </div>
+            <div class="faq__answer">
+              <p>Our freshies are made with high-quality aroma beads and premium fragrance oils, designed to last 4-6 weeks.</p>
+            </div>
+            <hr class="faq__divider">
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Order Form Section -->
+    <section id="order" class="order bg-light">
+      <div class="container container--pall">
+        <h2 class="gradient-text text-center">Place Your Order</h2>
+        <p class="text-center">Fill out the form below to request your custom piece</p>
+        
+        <form class="order__form">
+          <div class="form__group">
+            <label for="name">Name</label>
+            <input type="text" id="name" name="name" required>
+          </div>
+          
+          <div class="form__group">
+            <label for="email">Email</label>
+            <input type="email" id="email" name="email" required>
+          </div>
+          
+          <div class="form__group">
+            <label for="product">Product Type</label>
+            <select id="product" name="product" required>
+              <option value="">Select a product...</option>
+              <option value="freshie">Freshie</option>
+              <option value="cup">Custom Cup</option>
+              <option value="slate">Decorative Slate</option>
+            </select>
+          </div>
+          
+          <div class="form__group">
+            <label for="message">Order Details</label>
+            <textarea id="message" name="message" placeholder="Please include any specific design requests, colors, or themes you'd like" rows="5" required></textarea>
+          </div>
+          
+          <button type="submit" class="button">Submit Order Request</button>
+        </form>
+      </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer bg-dark">
+      <div class="container">
+        <div class="footer__grid">
+          <div class="footer__branding">
+            <h2 class="gradient-text">Crafted Joy</h2>
+            <p class="text-light">Handmade with love and care</p>
+          </div>
+          
+          <div class="footer__links">
+            <h3 class="text-light">Quick Links</h3>
+            <a href="#new-releases">New Releases</a>
+            <a href="#collections">Collections</a>
+            <a href="#freshies">Freshies</a>
+            <a href="#cups">Cups</a>
+            <a href="#slates">Slates</a>
+            <a href="#order">Order Now</a>
+          </div>
+
+          <div class="footer__info">
+            <h3 class="text-light">Information</h3>
+            <a href="#faq">FAQ</a>
+            <a href="#shipping">Shipping Policy</a>
+            <a href="#returns">Returns Policy</a>
+            <a href="#privacy">Privacy Policy</a>
+          </div>
+
+          <div class="footer__contact">
+            <h3 class="text-light">Contact Us</h3>
+            <p class="text-light">Email: hello@craftedjoy.com</p>
+            <p class="text-light">Follow us on social media:</p>
+            <div class="footer__social">
+              <a href="#" class="social-icon">
+                <img src="/api/placeholder/24/24" alt="Instagram" />
+              </a>
+              <a href="#" class="social-icon">
+                <img src="/api/placeholder/24/24" alt="Facebook" />
+              </a>
+              <a href="#" class="social-icon">
+                <img src="/api/placeholder/24/24" alt="Pinterest" />
+              </a>
+            </div>
+          </div>
+        </div>
+        
+        <div class="footer__bottom">
+          <p class="text-light">&copy; 2024 Crafted Joy. All Rights Reserved.</p>
+        </div>
+      </div>
+    </footer>
+
+    <script src="/app/js/script.js"></script>
+  </body>
+</html>
