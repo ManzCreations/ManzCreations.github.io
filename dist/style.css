@@ -1,8 +1,8 @@
 /* Custom Properties/Variables */
 :root {
   /* Primary Colors */
-  --color-primary: #7c3aed;    
-  --color-secondary: #f59e0b;  
+  --color-primary: #54d576;    
+  --color-secondary: #f4c2c2;  
   
   /* Background Colors */
   --color-bg-light: #f3f4f6;   
@@ -15,7 +15,7 @@
   --color-text-light: #f3f4f6;     
   
   /* Accent Colors */
-  --color-accent-1: #fb7185;    
+  --color-accent-1: #d6a4c1;    
   --color-accent-2: #34d399;    
 }
 
