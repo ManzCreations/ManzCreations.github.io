@@ -5,12 +5,12 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <link href="https://fonts.googleapis.com/css2?family=Public+Sans:wght@300;400;600&display=swap" rel="stylesheet" />
     <link rel="stylesheet" href="/dist/style.css" />
-    <title>Custom Crafts & Designs</title>
+    <title>Crafted 4 You</title>
   </head>
   <body>
-    <!-- Header Section -->
-    <header class="header bg-white">
+    <header class="header">
       <div class="overlay has-fade"></div>
+      
       <nav class="container flex flex-jc-sb flex-ai-c">
         <a href="/" class="header__logo flex flex-ai-c">
           <img src="/images/logo-noletters.png" alt="Crafted 4 You Logo" class="logo__image" />
@@ -23,24 +23,36 @@
           <span></span>
         </a>
 
+        <!-- Desktop Navigation -->
         <div class="header__links hide-for-mobile">
-          <a href="#new-releases">New</a>
-          <a href="#collections">Collections</a>
-          <a href="#freshies">Freshies</a>
-          <a href="#cups">Cups</a>
-          <a href="#slates">Slates</a>
-          <a href="#order">Order</a>
+          <a href="/collections">Collections</a>
+          <a href="/products">Products</a>
+          <a href="/events">Upcoming Events</a>
+          <a href="/about">About</a>
+          <div class="dropdown">
+            <a href="#" class="dropdown__toggle">More</a>
+            <div class="dropdown__menu">
+              <a href="/gallery">Gallery</a>
+              <a href="/process">Our Process</a>
+              <a href="/care">Care Guide</a>
+            </div>
+          </div>
+          <a href="/inquire" class="header__cta">Get in Touch</a>
         </div>
-      </nav>
 
-      <div class="header__menu has-fade">
-        <a href="#new-releases">New</a>
-        <a href="#collections">Collections</a>
-        <a href="#freshies">Freshies</a>
-        <a href="#cups">Cups</a>
-        <a href="#slates">Slates</a>
-        <a href="#order">Order</a>
-      </div>
+        <!-- Mobile Menu (remains the same) -->
+        <div class="header__menu has-fade">
+          <div class="header__menu-content">
+            <a href="/collections">Collections</a>
+            <a href="/products">Products</a>
+            <a href="/events">Upcoming Events</a>
+            <a href="/about">About</a>
+            <a href="/gallery">Gallery</a>
+            <a href="/process">Our Process</a>
+            <a href="/care">Care Guide</a>
+            <a href="/inquire">Get in Touch</a>
+          </div>
+        </div>
     </header>
 
     <!-- Promotions Section -->
@@ -332,48 +344,53 @@
       <div class="container">
         <div class="footer__grid">
           <div class="footer__branding">
-            <h2 class="gradient-text">Crafted Joy</h2>
+            <h2 class="gradient-text">Crafted 4 You</h2>
             <p class="text-light">Handmade with love and care</p>
+            <a href="/inquire" class="button footer__cta">Get in Touch</a>
           </div>
           
           <div class="footer__links">
-            <h3 class="text-light">Quick Links</h3>
-            <a href="#new-releases">New Releases</a>
-            <a href="#collections">Collections</a>
-            <a href="#freshies">Freshies</a>
-            <a href="#cups">Cups</a>
-            <a href="#slates">Slates</a>
-            <a href="#order">Order Now</a>
+            <h3 class="text-light">Shop</h3>
+            <a href="/collections">Collections</a>
+            <a href="/products">Products</a>
+            <a href="/gallery">Gallery</a>
           </div>
-
+    
           <div class="footer__info">
-            <h3 class="text-light">Information</h3>
-            <a href="#faq">FAQ</a>
-            <a href="#shipping">Shipping Policy</a>
-            <a href="#returns">Returns Policy</a>
-            <a href="#privacy">Privacy Policy</a>
+            <h3 class="text-light">Company</h3>
+            <a href="/about">About Us</a>
+            <a href="/events">Upcoming Events</a>
+            <a href="/process">Our Process</a>
+            <a href="/care">Care Guide</a>
           </div>
-
-          <div class="footer__contact">
-            <h3 class="text-light">Contact Us</h3>
-            <p class="text-light">Email: hello@craftedjoy.com</p>
-            <p class="text-light">Follow us on social media:</p>
+    
+          <div class="footer__support">
+            <h3 class="text-light">Support</h3>
+            <a href="/shipping">Shipping Info</a>
+            <a href="/faq">FAQs</a>
+            <a href="/contact">Contact Us</a>
             <div class="footer__social">
-              <a href="#" class="social-icon">
-                <img src="/api/placeholder/24/24" alt="Instagram" />
+              <a href="#" aria-label="Facebook">
+                <img src="images/icon-facebook.svg" alt="Facebook"/>
               </a>
-              <a href="#" class="social-icon">
-                <img src="/api/placeholder/24/24" alt="Facebook" />
+              <a href="#" aria-label="YouTube">
+                <img src="images/icon-youtube.svg" alt="YouTube"/>
               </a>
-              <a href="#" class="social-icon">
-                <img src="/api/placeholder/24/24" alt="Pinterest" />
+              <a href="#" aria-label="Twitter">
+                <img src="images/icon-twitter.svg" alt="Twitter"/>
+              </a>
+              <a href="#" aria-label="Pinterest">
+                <img src="images/icon-pinterest.svg" alt="Pinterest"/>
+              </a>
+              <a href="#" aria-label="Instagram">
+                <img src="images/icon-instagram.svg" alt="Instagram"/>
               </a>
             </div>
           </div>
         </div>
         
         <div class="footer__bottom">
-          <p class="text-light">&copy; 2024 Crafted Joy. All Rights Reserved.</p>
+          <p class="text-light">&copy; 2024 Crafted 4 You. All Rights Reserved.</p>
         </div>
       </div>
     </footer>
