@@ -121,7 +121,7 @@ a, a:visited {
   right: 0;
   bottom: 0;
   left: 0;
-  background-color: rgba(84, 213, 118, 0.8);
+  background-color: rgba(84, 213, 118, 0.95); /* Using primary color */
   opacity: 0;
   visibility: hidden;
   transition: opacity 300ms ease-in-out;
@@ -213,23 +213,21 @@ a, a:visited {
 
 /* Mobile Menu Styles */
 .header__menu {
-  position: absolute;
-  top: 100%;
-  right: 1.5rem;
-  width: auto;
-  min-width: 250px;
-  max-width: 320px;
-  max-height: calc(100vh - 100px); /* Subtract header height */
+  position: fixed; /* Change from absolute to fixed */
+  top: 85px; /* Adjust based on your header height */
+  left: 50%;
+  transform: translateX(-50%);
+  width: calc(100% - 2rem);
+  max-width: 400px;
   background: var(--color-bg-white);
+  margin: 0;
   padding: 0;
-  border-radius: 0 0 5px 5px;
+  border-radius: 5px;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-  transform: none;
-  left: auto;
-  display: none;
-  margin-top: 0;
   z-index: 100;
-  overflow-y: auto; /* Enable scrolling */
+  display: none;
+  max-height: calc(100vh - 100px);
+  overflow-y: auto;
 }
 
 .header__menu-content {
@@ -242,12 +240,11 @@ a, a:visited {
 
 .header__menu a {
   display: block;
-  padding: 0.875rem 1.5rem;
+  padding: 1rem 1.5rem;
   color: var(--color-text-primary);
   text-align: left;
   border-bottom: 1px solid var(--color-bg-light);
   transition: all 0.3s ease;
-  white-space: nowrap;
 }
 
 .header__menu a:last-child {
@@ -701,6 +698,7 @@ a, a:visited {
 .footer {
   background-color: var(--color-bg-dark);
   padding: 4rem 0 2rem;
+  color: var(--color-text-light);
 }
 
 .footer__grid {
@@ -717,6 +715,7 @@ a, a:visited {
   }
 }
 
+/* Branding Section */
 .footer__branding {
   display: flex;
   flex-direction: column;
@@ -725,18 +724,34 @@ a, a:visited {
 
 .footer__branding h2 {
   margin: 0;
+  font-size: 1.8rem;
 }
 
 .footer__branding p {
   margin: 0;
   opacity: 0.8;
+  font-size: 1rem;
+  line-height: 1.5;
 }
 
 .footer__cta {
   align-self: flex-start;
   margin-top: 1rem;
+  display: inline-block;
+  padding: 0.8rem 2rem;
+  background: linear-gradient(to right, var(--color-primary), var(--color-accent-1));
+  color: white;
+  border-radius: 2rem;
+  font-weight: 600;
+  transition: transform 0.3s ease;
+  text-decoration: none;
 }
 
+.footer__cta:hover {
+  transform: translateY(-2px);
+}
+
+/* Link Sections */
 .footer__links,
 .footer__info,
 .footer__support {
@@ -761,6 +776,7 @@ a, a:visited {
   opacity: 0.8;
   transition: all 0.3s ease;
   text-decoration: none;
+  font-size: 0.95rem;
 }
 
 .footer__links a:hover,
@@ -771,6 +787,7 @@ a, a:visited {
   transform: translateX(5px);
 }
 
+/* Social Icons */
 .footer__social {
   display: flex;
   gap: 1.25rem;
@@ -780,6 +797,9 @@ a, a:visited {
 .footer__social a {
   opacity: 0.8;
   transition: all 0.3s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .footer__social a:hover {
@@ -793,6 +813,7 @@ a, a:visited {
   display: block;
 }
 
+/* Copyright Section */
 .footer__bottom {
   text-align: center;
   margin-top: 2rem;
@@ -804,23 +825,74 @@ a, a:visited {
   font-size: 0.875rem;
 }
 
+/* Mobile Styles */
 @media (max-width: 767px) {
-  .footer__grid {
-    text-align: center;
+  .footer {
+    padding: 2rem 0 1rem;
   }
-  
-  .footer__branding,
-  .footer__links,
-  .footer__info,
-  .footer__support {
+
+  .footer__grid {
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+    text-align: center;
+    padding: 0 1rem;
+  }
+
+  .footer__branding {
     align-items: center;
   }
 
-  .footer__social {
-    justify-content: center;
+  .footer__branding h2 {
+    font-size: 1.6rem;
   }
 
   .footer__cta {
     align-self: center;
+    margin: 1rem 0;
+    padding: 0.75rem 2rem;
+    width: auto;
+  }
+
+  .footer__links,
+  .footer__info,
+  .footer__support {
+    width: 100%;
+    align-items: center;
+    gap: 1rem;
+  }
+
+  .footer__links h3,
+  .footer__info h3,
+  .footer__support h3 {
+    margin-bottom: 0.5rem;
+  }
+
+  .footer__links a,
+  .footer__info a,
+  .footer__support a {
+    padding: 0.5rem 0;
+  }
+
+  .footer__social {
+    margin-top: 1rem;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 1.5rem;
+  }
+
+  .footer__social a {
+    width: 32px;
+    height: 32px;
+  }
+
+  .footer__social img {
+    width: 24px;
+    height: 24px;
+  }
+
+  .footer__bottom {
+    margin-top: 1.5rem;
+    padding: 0 1rem;
   }
 }
