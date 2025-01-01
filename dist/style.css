@@ -331,6 +331,32 @@ img {
 }
 
 /* Animation Classes */
+/* Overlay styles */
+.overlay {
+  position: fixed;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  background-image: linear-gradient(var(--color-bg-dark), transparent);
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 300ms ease-in-out;
+  z-index: 99;
+}
+
+.overlay.fade-in {
+  opacity: 0.8;
+  visibility: visible;
+}
+
+/* Ensure proper stacking context */
+.header {
+  position: relative;
+  z-index: 100;
+}
+
+/* Animation classes */
 .has-fade {
   visibility: hidden;
 }
@@ -351,7 +377,7 @@ img {
 }
 
 .fade-in {
-  animation: fade-in 200ms ease-in-out forwards;
+  animation: fade-in 300ms ease-in-out forwards;
 }
 
 @keyframes fade-out {
@@ -370,5 +396,5 @@ img {
 }
 
 .fade-out {
-  animation: fade-out 200ms ease-in-out forwards;
+  animation: fade-out 300ms ease-in-out forwards;
 }
