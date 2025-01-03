@@ -285,9 +285,130 @@ function sortProducts(method) {
     products.forEach(product => productsContainer.appendChild(product));
 }
 
+function getSelectedFilters() {
+    // Get all checkboxes from both desktop and mobile views
+    const isMobile = window.innerWidth <= 768;
+    const filterContainer = isMobile 
+        ? document.getElementById('filterPanel')
+        : document.querySelector('.products-sidebar');
+    
+    if (!filterContainer) return [];
+
+    const selectedCategories = Array.from(filterContainer.querySelectorAll('input[type="checkbox"]:checked'))
+        .map(cb => cb.value);
+        
+    return selectedCategories;
+}
+
+function syncFiltersState(sourceContainer) {
+    // Get all checked values from the source container
+    const checkedValues = Array.from(sourceContainer.querySelectorAll('input[type="checkbox"]:checked'))
+        .map(cb => cb.value);
+    
+    // Update all checkboxes with matching values
+    document.querySelectorAll('input[type="checkbox"]').forEach(checkbox => {
+        if (checkedValues.includes(checkbox.value)) {
+            checkbox.checked = true;
+        } else {
+            checkbox.checked = false;
+        }
+    });
+}
+
+// Panel management functions
+function openPanel(panel) {
+    panel.classList.add('active');
+    document.body.style.overflow = 'hidden';
+}
+
+function closePanel(panel) {
+    panel.classList.remove('active');
+    document.body.style.overflow = '';
+}
+
+function initializeMobileControls() {
+    console.log('Initializing mobile controls');
+    if (window.innerWidth > 768) return;
+
+    // Cache DOM elements
+    const filterBtn = document.getElementById('filterBtn');
+    const sortBtn = document.getElementById('sortBtn');
+    const filterPanel = document.getElementById('filterPanel');
+    const sortPanel = document.getElementById('sortPanel');
+
+    if (!filterBtn || !sortBtn || !filterPanel || !sortPanel) {
+        console.error('Missing required elements for mobile controls');
+        return;
+    }
+
+    console.log('Found all required elements');
+
+    const filterCount = filterBtn.querySelector('.filter-count');
+    
+    // Filter button click
+    filterBtn.addEventListener('click', () => {
+        console.log('Filter button clicked');
+        openPanel(filterPanel);
+    });
+
+    // Sort button click
+    sortBtn.addEventListener('click', () => {
+        console.log('Sort button clicked');
+        openPanel(sortPanel);
+    });
+
+    // Cancel buttons
+    document.getElementById('filterCancel').addEventListener('click', () => {
+        closePanel(filterPanel);
+    });
+
+    document.getElementById('sortCancel').addEventListener('click', () => {
+        closePanel(sortPanel);
+    });
+
+    // Apply buttons
+    document.getElementById('filterApply').addEventListener('click', () => {
+        closePanel(filterPanel);
+        // Update filters and refresh products
+        filterProducts();
+    });
+
+    document.getElementById('sortApply').addEventListener('click', () => {
+        closePanel(sortPanel);
+        // Apply sorting
+        const selectedOption = sortPanel.querySelector('.sort-option.active');
+        if (selectedOption) {
+            sortProducts(selectedOption.dataset.sort);
+        }
+    });
+
+    // Sort options selection
+    const sortOptions = sortPanel.querySelectorAll('.sort-option');
+    sortOptions.forEach(option => {
+        option.addEventListener('click', () => {
+            sortOptions.forEach(opt => opt.classList.remove('active'));
+            option.classList.add('active');
+        });
+    });
+
+    // Close on outside click
+    [filterPanel, sortPanel].forEach(panel => {
+        panel.addEventListener('click', (e) => {
+            if (e.target === panel) {
+                closePanel(panel);
+            }
+        });
+    });
+}
+
 // DOM Content Loaded Event Handler
 document.addEventListener('DOMContentLoaded', function() {
     if (debugProductLoading) console.log('DOM Content Loaded');
+
+    if (document.getElementById('productsContainer')) {
+        console.log('Initializing mobile controls for products page');
+        initializeMobileControls();
+    }
     
     // Header Elements with null checks
     const btnHamburger = document.querySelector('#btnHamburger');

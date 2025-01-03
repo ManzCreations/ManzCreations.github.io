@@ -59,6 +59,112 @@
           </div>
     </header>
 
+    <!-- Mobile Controls -->
+    <div class="mobile-controls">
+      <div class="mobile-search">
+          <input type="text" placeholder="Search products..." id="mobileSearch">
+      </div>
+      <div class="mobile-actions">
+          <button class="mobile-action-btn" id="filterBtn">
+              <i class="fas fa-filter"></i>
+              Filter
+              <span class="filter-count"></span>
+          </button>
+          <button class="mobile-action-btn" id="sortBtn">
+              <i class="fas fa-arrow-up-short-wide"></i>
+              Sort
+          </button>
+      </div>
+    </div>
+
+    <!-- Filter Panel -->
+    <div class="mobile-panel" id="filterPanel">
+      <div class="panel-content">
+          <div class="panel-header">
+              <h2 class="panel-title">Filter Products</h2>
+          </div>
+          <div class="panel-body">
+              <!-- Category Filter -->
+              <div class="filter-section">
+                  <h3>Categories</h3>
+                  <div class="filter-options">
+                      <label class="checkbox-container">
+                          <input type="checkbox" value="freshies">
+                          <span class="checkmark"></span>
+                          Freshies
+                      </label>
+                      <label class="checkbox-container">
+                          <input type="checkbox" value="cups">
+                          <span class="checkmark"></span>
+                          Custom Cups
+                      </label>
+                      <label class="checkbox-container">
+                          <input type="checkbox" value="slates">
+                          <span class="checkmark"></span>
+                          Decorative Slates
+                      </label>
+                  </div>
+              </div>
+
+              <!-- Tags Filter -->
+              <div class="filter-section">
+                  <h3>Filter By</h3>
+                  <div class="filter-options tags">
+                      <label class="checkbox-container">
+                          <input type="checkbox" value="new">
+                          <span class="checkmark"></span>
+                          New Arrivals
+                      </label>
+                      <label class="checkbox-container">
+                          <input type="checkbox" value="seasonal">
+                          <span class="checkmark"></span>
+                          Seasonal
+                      </label>
+                      <label class="checkbox-container">
+                          <input type="checkbox" value="custom">
+                          <span class="checkmark"></span>
+                          Custom Design
+                      </label>
+                  </div>
+              </div>
+          </div>
+          <div class="panel-actions">
+              <button class="panel-btn btn-cancel" id="filterCancel">Cancel</button>
+              <button class="panel-btn btn-apply" id="filterApply">Apply</button>
+          </div>
+      </div>
+    </div>
+
+    <!-- Sort Panel -->
+    <div class="mobile-panel" id="sortPanel">
+      <div class="panel-content">
+          <div class="panel-header">
+              <h2 class="panel-title">Sort By</h2>
+          </div>
+          <div class="panel-body">
+              <button class="sort-option active" data-sort="featured">
+                  Featured
+              </button>
+              <button class="sort-option" data-sort="price-asc">
+                  Price: Low to High
+              </button>
+              <button class="sort-option" data-sort="price-desc">
+                  Price: High to Low
+              </button>
+              <button class="sort-option" data-sort="name-asc">
+                  Name: A to Z
+              </button>
+              <button class="sort-option" data-sort="name-desc">
+                  Name: Z to A
+              </button>
+          </div>
+          <div class="panel-actions">
+              <button class="panel-btn btn-cancel" id="sortCancel">Cancel</button>
+              <button class="panel-btn btn-apply" id="sortApply">Apply</button>
+          </div>
+      </div>
+    </div>
+
     <main class="products-page">
         <!-- Shopping Appointment Button -->
         <div class="container appointment-section text-center">
