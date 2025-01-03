@@ -1,0 +1,3 @@
+title,category,price,imagePath,description,tags,isNew
+"Summer Breeze Freshie","freshies",15.99,"/images/products/summer-breeze.jpg","A refreshing summer scent...","new|seasonal|summer",true
+"Galaxy Cup","cups",24.99,"/images/products/galaxy-cup.jpg","30oz tumbler with beautiful galaxy design","custom|glitter,false",true

@@ -1,0 +1,286 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://fonts.googleapis.com/css2?family=Public+Sans:wght@300;400;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/dist/style.css">
+    <title>Inquire | Crafted 4 You</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <!-- Add Papa Parse -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.3.0/papaparse.min.js"></script>
+</head>
+<body>
+    <div id="notification-container"></div>
+    
+    <header class="header">
+        <div class="overlay has-fade"></div>
+        
+        <nav class="container flex flex-jc-sb flex-ai-c">
+            <a href="/" class="header__logo flex flex-ai-c">
+                <img src="/images/backgrounds/logo-noletters.png" alt="Crafted 4 You Logo" class="logo__image" />
+                <h1 class="gradient-text">Crafted 4 You</h1>
+            </a>
+
+            <a id="btnHamburger" href="#" class="header__toggle hide-for-desktop">
+                <span></span>
+                <span></span>
+                <span></span>
+            </a>
+
+            <!-- Desktop Navigation -->
+            <div class="header__links hide-for-mobile">
+                <a href="collections.html">Collections</a>
+                <a href="products.html">Products</a>
+                <a href="events.html">Upcoming Events</a>
+                <a href="about.html">About</a>
+                <div class="dropdown">
+                    <a href="#" class="dropdown__toggle">More</a>
+                    <div class="dropdown__menu">
+                        <a href="gallery.html">Gallery</a>
+                        <a href="process.html">Our Process</a>
+                        <a href="care.html">Care Guide</a>
+                    </div>
+                </div>
+                <a href="inquire.html" class="button header__cta">Get in Touch</a>
+            </div>
+
+            <!-- Mobile Menu -->
+            <div class="header__menu has-fade">
+                <a href="collections.html">Collections</a>
+                <a href="products.html">Products</a>
+                <a href="events.html">Upcoming Events</a>
+                <a href="about.html">About</a>
+                <a href="gallery.html">Gallery</a>
+                <a href="process.html">Our Process</a>
+                <a href="care.html">Care Guide</a>
+                <a href="inquire.html">Get in Touch</a>
+            </div>
+        </nav>
+    </header>
+
+    <main class="inquire-page">
+        <div class="container container--pall">
+            <section class="inquire-header text-center">
+                <h1 class="gradient-text">Get in Touch</h1>
+                <p class="subtitle">Interested in our products or have a custom request? We'd love to hear from you!</p>
+            </section>
+
+            <section class="inquire-form">
+                <form id="inquiryForm" class="form">
+                    <!-- Personal Information -->
+                    <div class="form__section">
+                        <h2>Your Information</h2>
+                        <div class="form__grid">
+                            <div class="form__group">
+                                <label for="firstName">First Name*</label>
+                                <input type="text" id="firstName" name="firstName" required>
+                            </div>
+                            <div class="form__group">
+                                <label for="lastName">Last Name*</label>
+                                <input type="text" id="lastName" name="lastName" required>
+                            </div>
+                        </div>
+                        <div class="form__group">
+                            <label for="email">Email Address*</label>
+                            <input type="email" id="email" name="email" required>
+                        </div>
+                        <div class="form__group">
+                            <label for="phone">Phone Number</label>
+                            <input type="tel" id="phone" name="phone" pattern="[0-9]{3}-[0-9]{3}-[0-9]{4}" placeholder="123-456-7890">
+                        </div>
+                    </div>
+
+                    <!-- Product Interest -->
+                    <div class="form__section">
+                        <h2>Product Interest</h2>
+                        <div class="form__group">
+                            <label>What products are you interested in?</label>
+                            <div class="checkbox-grid">
+                                <label class="checkbox-container">
+                                    <input type="checkbox" name="productInterest" value="freshies">
+                                    <span class="checkmark"></span>
+                                    Freshies
+                                </label>
+                                <label class="checkbox-container">
+                                    <input type="checkbox" name="productInterest" value="cups">
+                                    <span class="checkmark"></span>
+                                    Custom Cups
+                                </label>
+                                <label class="checkbox-container">
+                                    <input type="checkbox" name="productInterest" value="slates">
+                                    <span class="checkmark"></span>
+                                    Decorative Slates
+                                </label>
+                            </div>
+                        </div>
+
+                        <div class="form__group">
+                            <label for="specificProducts">Specific Products</label>
+                            <select id="specificProducts" name="specificProducts" multiple>
+                                <!-- Will be populated via JavaScript -->
+                            </select>
+                            <small>Hold Ctrl (Windows) or Cmd (Mac) to select multiple items</small>
+                        </div>
+                    </div>
+
+                    <!-- Custom Request -->
+                    <div class="form__section">
+                        <h2>Custom Request</h2>
+                        <div class="form__group">
+                            <label for="customRequest">Tell us about your custom request or any questions you have</label>
+                            <textarea id="customRequest" name="customRequest" rows="5" placeholder="Describe your ideal product, including any specific designs, colors, or themes you're interested in..."></textarea>
+                        </div>
+                    </div>
+
+                    <!-- Contact Preference -->
+                    <div class="form__section">
+                        <h2>Contact Preference</h2>
+                        <div class="form__group">
+                            <label>How would you prefer we contact you?</label>
+                            <div class="radio-group">
+                                <label class="radio-container">
+                                    <input type="radio" name="contactPreference" value="email" checked>
+                                    <span class="radio-mark"></span>
+                                    Email
+                                </label>
+                                <label class="radio-container">
+                                    <input type="radio" name="contactPreference" value="phone">
+                                    <span class="radio-mark"></span>
+                                    Phone
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <button type="submit" class="button button--lg">Send Inquiry</button>
+                </form>
+            </section>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer bg-dark">
+        <div class="container">
+            <div class="footer__grid">
+                <div class="footer__branding">
+                    <h2 class="gradient-text">Crafted 4 You</h2>
+                    <p class="text-light">Handmade with love and care</p>
+                    <a href="inquire.html" class="button footer__cta">Get in Touch</a>
+                </div>
+                
+                <div class="footer__links">
+                    <h3 class="text-light">Shop</h3>
+                    <a href="collections.html">Collections</a>
+                    <a href="products.html">Products</a>
+                    <a href="gallery.html">Gallery</a>
+                </div>
+        
+                <div class="footer__info">
+                    <h3 class="text-light">Company</h3>
+                    <a href="about.html">About Us</a>
+                    <a href="events.html">Upcoming Events</a>
+                    <a href="process.html">Our Process</a>
+                    <a href="care.html">Care Guide</a>
+                </div>
+        
+                <div class="footer__support">
+                    <h3 class="text-light">Support</h3>
+                    <a href="shipping.html">Shipping Info</a>
+                    <a href="faq.html">FAQs</a>
+                    <a href="contact.html">Contact Us</a>
+                    <div class="footer__social">
+                        <a href="#" aria-label="Facebook">
+                            <img src="/images/icons/icon-facebook.svg" alt="Facebook"/>
+                        </a>
+                        <a href="#" aria-label="YouTube">
+                            <img src="/images/icons/icon-youtube.svg" alt="YouTube"/>
+                        </a>
+                        <a href="#" aria-label="Twitter">
+                            <img src="/images/icons/icon-twitter.svg" alt="Twitter"/>
+                        </a>
+                        <a href="#" aria-label="Pinterest">
+                            <img src="/images/icons/icon-pinterest.svg" alt="Pinterest"/>
+                        </a>
+                        <a href="#" aria-label="Instagram">
+                            <img src="/images/icons/icon-instagram.svg" alt="Instagram"/>
+                        </a>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="footer__bottom">
+                <p class="text-light">&copy; 2024 Crafted 4 You. All Rights Reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="/app/js/script.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const form = document.getElementById('inquiryForm');
+
+            form.addEventListener('submit', async function(e) {
+                e.preventDefault();
+
+                // Gather form data
+                const formData = new FormData(form);
+                const data = {
+                    firstName: formData.get('firstName'),
+                    lastName: formData.get('lastName'),
+                    email: formData.get('email'),
+                    phone: formData.get('phone'),
+                    productInterest: formData.getAll('productInterest'),
+                    specificProducts: formData.getAll('specificProducts'),
+                    customRequest: formData.get('customRequest'),
+                    contactPreference: formData.get('contactPreference')
+                };
+
+                try {
+                    // Here you would typically send this to your server
+                    // For now, we'll just show a success notification
+                    const notifications = new NotificationSystem();
+                    notifications.success(
+                        'Inquiry Sent!',
+                        'Thank you for your inquiry. We\'ll get back to you shortly.'
+                    );
+                    form.reset();
+                } catch (error) {
+                    const notifications = new NotificationSystem();
+                    notifications.error(
+                        'Error',
+                        'There was a problem sending your inquiry. Please try again.'
+                    );
+                }
+            });
+
+            // Load products for the dropdown
+            async function loadProducts() {
+                try {
+                    const response = await fetch('/app/data/products.csv');
+                    const csvText = await response.text();
+                    
+                    Papa.parse(csvText, {
+                        header: true,
+                        complete: function(results) {
+                            const select = document.getElementById('specificProducts');
+                            results.data.forEach(product => {
+                                if (product.title) {
+                                    const option = document.createElement('option');
+                                    option.value = product.title;
+                                    option.textContent = product.title;
+                                    select.appendChild(option);
+                                }
+                            });
+                        }
+                    });
+                } catch (error) {
+                    console.error('Error loading products:', error);
+                }
+            }
+
+            loadProducts();
+        });
+    </script>
+</body>
+</html>

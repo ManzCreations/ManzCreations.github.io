@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://fonts.googleapis.com/css2?family=Public+Sans:wght@300;400;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/dist/style.css">
+    <title>Products | Crafted 4 You</title>
+    <!-- Add icons for view toggle -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <!-- Add Papa Parse -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.3.0/papaparse.min.js"></script>
+</head>
+<body>
+    <div id="notification-container"></div>
+    
+    <header class="header">
+        <div class="overlay has-fade"></div>
+        
+        <nav class="container flex flex-jc-sb flex-ai-c">
+          <a href="/" class="header__logo flex flex-ai-c">
+            <img src="/images/backgrounds/logo-noletters.png" alt="Crafted 4 You Logo" class="logo__image" />
+            <h1 class="gradient-text">Crafted 4 You</h1>
+          </a>
+  
+          <a id="btnHamburger" href="#" class="header__toggle hide-for-desktop">
+            <span></span>
+            <span></span>
+            <span></span>
+          </a>
+  
+          <!-- Desktop Navigation -->
+          <div class="header__links hide-for-mobile">
+            <a href="collections.html">Collections</a>
+            <a href="products.html">Products</a>
+            <a href="events.html">Upcoming Events</a>
+            <a href="about.html">About</a>
+            <div class="dropdown">
+              <a href="#" class="dropdown__toggle">More</a>
+              <div class="dropdown__menu">
+                <a href="gallery.html">Gallery</a>
+                <a href="process.html">Our Process</a>
+                <a href="care.html">Care Guide</a>
+              </div>
+            </div>
+            <a href="inquire.html" class="button header__cta">Get in Touch</a>
+          </div>
+  
+          <!-- Mobile Menu (remains the same) -->
+          <div class="header__menu has-fade">
+            <a href="collections.html">Collections</a>
+            <a href="products.html">Products</a>
+            <a href="events.html">Upcoming Events</a>
+            <a href="about.html">About</a>
+            <a href="gallery.html">Gallery</a>
+            <a href="process.html">Our Process</a>
+            <a href="care.html">Care Guide</a>
+            <a href="inquire.html">Get in Touch</a>
+          </div>
+    </header>
+
+    <main class="products-page">
+        <!-- Shopping Appointment Button -->
+        <div class="container appointment-section text-center">
+            <h1 class="gradient-text">Our Products</h1>
+            <p class="subtitle">Browse our handcrafted collection of freshies, cups, and slates</p>
+            <a href="inquire.html" class="button button--lg">Book Shopping Appointment</a>
+        </div>
+
+        <!-- Products Layout -->
+        <div class="container products-layout">
+            <!-- Left Sidebar -->
+            <aside class="products-sidebar">
+                <!-- Search Bar -->
+                <div class="search-section">
+                    <div class="search-bar">
+                        <i class="fa fa-search search-icon"></i>
+                        <input type="text" placeholder="Search products..." id="productSearch">
+                    </div>
+                </div>
+
+                <!-- Sort Options -->
+                <div class="filter-section">
+                    <h3>Sort By</h3>
+                    <select id="sortProducts" class="sort-select">
+                        <option value="featured">Featured</option>
+                        <option value="name-asc">Name (A-Z)</option>
+                        <option value="name-desc">Name (Z-A)</option>
+                        <option value="price-asc">Price (Low to High)</option>
+                        <option value="price-desc">Price (High to Low)</option>
+                    </select>
+                </div>
+
+                <!-- Category Filter -->
+                <div class="filter-section">
+                    <h3>Categories</h3>
+                    <div class="filter-options">
+                        <label class="checkbox-container">
+                            <input type="checkbox" value="freshies">
+                            <span class="checkmark"></span>
+                            Freshies
+                        </label>
+                        <label class="checkbox-container">
+                            <input type="checkbox" value="cups">
+                            <span class="checkmark"></span>
+                            Cups
+                        </label>
+                        <label class="checkbox-container">
+                            <input type="checkbox" value="slates">
+                            <span class="checkmark"></span>
+                            Slates
+                        </label>
+                    </div>
+                </div>
+
+                <!-- Tags Filter -->
+                <div class="filter-section">
+                    <h3>Filter By</h3>
+                    <div class="filter-options tags">
+                        <label class="checkbox-container">
+                            <input type="checkbox" value="new">
+                            <span class="checkmark"></span>
+                            New Arrivals
+                        </label>
+                        <label class="checkbox-container">
+                            <input type="checkbox" value="seasonal">
+                            <span class="checkmark"></span>
+                            Seasonal
+                        </label>
+                        <label class="checkbox-container">
+                            <input type="checkbox" value="custom">
+                            <span class="checkmark"></span>
+                            Custom Design
+                        </label>
+                    </div>
+                </div>
+            </aside>
+
+            <!-- Main Products Area -->
+            <div class="products-main">
+                <!-- View Toggle & Count -->
+                <div class="products-header">
+                    <div class="products-count">
+                        <span>Loading products...</span>
+                    </div>
+                    <div class="view-toggle">
+                        <button class="view-btn active" data-view="grid">
+                            <i class="fas fa-th-large"></i>
+                        </button>
+                        <button class="view-btn" data-view="gallery">
+                            <i class="fas fa-th-list"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Products Grid -->
+                <div class="products-grid" id="productsContainer">
+                    <!-- Example Product Cards -->
+                    <div class="product-card" data-category="freshies" data-tags="new,seasonal">
+                        <div class="product-image">
+                            <img src="/api/placeholder/300/300" alt="Summer Breeze Freshie">
+                            <div class="product-badge new">New</div>
+                        </div>
+                        <div class="product-info">
+                            <h3>Summer Breeze Freshie</h3>
+                            <p class="price">From $12.99</p>
+                        </div>
+                        <div class="product-description hide">
+                            <p>A refreshing summer scent that brings the beach to your car. Perfect for hot days and ocean dreams.</p>
+                            <ul class="product-tags">
+                                <li>New</li>
+                                <li>Seasonal</li>
+                                <li>Freshie</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <!-- More product cards with different variations -->
+                    <!-- Add at least 12 example products -->
+
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer bg-dark">
+        <div class="container">
+          <div class="footer__grid">
+            <div class="footer__branding">
+              <h2 class="gradient-text">Crafted 4 You</h2>
+              <p class="text-light">Handmade with love and care</p>
+              <a href="/inquire" class="button footer__cta">Get in Touch</a>
+            </div>
+            
+            <div class="footer__links">
+              <h3 class="text-light">Shop</h3>
+              <a href="/collections">Collections</a>
+              <a href="/products">Products</a>
+              <a href="/gallery">Gallery</a>
+            </div>
+      
+            <div class="footer__info">
+              <h3 class="text-light">Company</h3>
+              <a href="/about">About Us</a>
+              <a href="/events">Upcoming Events</a>
+              <a href="/process">Our Process</a>
+              <a href="/care">Care Guide</a>
+            </div>
+      
+            <div class="footer__support">
+              <h3 class="text-light">Support</h3>
+              <a href="/shipping">Shipping Info</a>
+              <a href="/faq">FAQs</a>
+              <a href="/contact">Contact Us</a>
+              <div class="footer__social">
+                <a href="#" aria-label="Facebook">
+                  <img src="../images/icons/icon-facebook.svg" alt="Facebook"/>
+                </a>
+                <a href="#" aria-label="YouTube">
+                  <img src="../images/icons/icon-youtube.svg" alt="YouTube"/>
+                </a>
+                <a href="#" aria-label="Twitter">
+                  <img src="../images/icons/icon-twitter.svg" alt="Twitter"/>
+                </a>
+                <a href="#" aria-label="Pinterest">
+                  <img src="../images/icons/icon-pinterest.svg" alt="Pinterest"/>
+                </a>
+                <a href="#" aria-label="Instagram">
+                  <img src="../images/icons/icon-instagram.svg" alt="Instagram"/>
+                </a>
+              </div>
+            </div>
+          </div>
+          
+          <div class="footer__bottom">
+            <p class="text-light">&copy; 2024 Crafted 4 You. All Rights Reserved.</p>
+          </div>
+        </div>
+    </footer>
+
+    <script src="/app/js/script.js"></script>
+</body>
+</html>
