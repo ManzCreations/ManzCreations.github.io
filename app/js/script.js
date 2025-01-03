@@ -198,53 +198,61 @@ const updateProductsList = debounce(() => {
 
 // Filter products function with improved error handling
 function filterProducts() {
-    const productsContainer = document.getElementById('productsContainer');
-    if (!productsContainer) return;
+    try {
+        const searchInput = document.getElementById('productSearch');
+        const categoryCheckboxes = document.querySelectorAll('.filter-options input[type="checkbox"]');
+        const productsContainer = document.getElementById('productsContainer');
+        const productsCount = document.querySelector('.products-count span');
+        
+        const searchTerm = searchInput ? searchInput.value.toLowerCase() : '';
+        const selectedCategories = Array.from(categoryCheckboxes)
+            .filter(cb => cb.checked)
+            .map(cb => cb.value);
 
-    const searchInput = document.getElementById('productSearch');
-    const categoryCheckboxes = document.querySelectorAll('.filter-options input[type="checkbox"]');
-    const productsCount = document.querySelector('.products-count span');
-    
-    const searchTerm = (searchInput ? searchInput.value : '').toLowerCase();
-    const selectedCategories = Array.from(categoryCheckboxes)
-        .filter(cb => cb.checked)
-        .map(cb => cb.value.toLowerCase());
+        let filteredProducts = allProducts;
 
-    let filteredProducts = allProducts;
+        if (selectedCategories.length > 0) {
+            filteredProducts = filteredProducts.filter(product => 
+                selectedCategories.includes(product.category.toLowerCase())
+            );
+        }
 
-    if (selectedCategories.length > 0) {
-        filteredProducts = filteredProducts.filter(product => 
-            selectedCategories.includes((product.category || '').toLowerCase())
-        );
-    }
+        if (searchTerm) {
+            filteredProducts = filteredProducts.filter(product => 
+                product.title.toLowerCase().includes(searchTerm) ||
+                product.description.toLowerCase().includes(searchTerm) ||
+                product.tags.some(tag => tag.toLowerCase().includes(searchTerm))
+            );
+        }
 
-    if (searchTerm) {
-        filteredProducts = filteredProducts.filter(product => 
-            (product.title || '').toLowerCase().includes(searchTerm) ||
-            (product.description || '').toLowerCase().includes(searchTerm) ||
-            (product.tags || []).some(tag => tag.toLowerCase().includes(searchTerm))
-        );
-    }
-
-    productsContainer.innerHTML = filteredProducts.map(product => `
-        <div class="product-card" data-category="${product.category || ''}" data-tags="${(product.tags || []).join(',')}">
-            <div class="product-image">
-                <img src="${product.imagePath || '#'}" alt="${product.title || ''}" onerror="this.src='fallback-image.jpg'">
-                ${product.isNew ? '<div class="product-badge new">New</div>' : ''}
+        // Create product cards with placeholder images
+        productsContainer.innerHTML = filteredProducts.map(product => `
+            <div class="product-card" data-category="${product.category}" data-tags="${product.tags.join(',')}">
+                <div class="product-image">
+                    <img src="/api/placeholder/300/300" alt="${product.title}">
+                    ${product.isNew ? '<div class="product-badge new">New</div>' : ''}
+                </div>
+                <div class="product-info">
+                    <h3>${product.title}</h3>
+                    <p class="price">From $${parseFloat(product.price).toFixed(2)}</p>
+                    <p class="product-description">${product.description}</p>
+                    <ul class="product-tags">
+                        ${product.tags.map(tag => `<li>${tag}</li>`).join('')}
+                    </ul>
+                </div>
             </div>
-            <div class="product-info">
-                <h3>${product.title || ''}</h3>
-                <p class="price">From $${(parseFloat(product.price) || 0).toFixed(2)}</p>
-                <p class="product-description">${product.description || ''}</p>
-                <ul class="product-tags">
-                    ${(product.tags || []).map(tag => `<li>${tag}</li>`).join('')}
-                </ul>
-            </div>
-        </div>
-    `).join('');
+        `).join('');
 
-    if (productsCount) {
-        productsCount.textContent = `Showing ${filteredProducts.length} products`;
+        if (productsCount) {
+            productsCount.textContent = `Showing ${filteredProducts.length} products`;
+        }
+
+    } catch (error) {
+        console.error('Filter error:', error);
+        notifications.error(
+            'Filter Error',
+            'Error filtering products. Please refresh the page.'
+        );
     }
 }
 
@@ -368,6 +376,11 @@ document.addEventListener('DOMContentLoaded', function() {
 
     if (productsContainer) {
         if (debugProductLoading) console.log('Initializing products page');
+        // Mobile-specific functionality
+        if (window.innerWidth <= 768) {
+            initializeMobileView();
+        }
+
         const urlParams = new URLSearchParams(window.location.search);
         const preloadedCategory = urlParams.get('category');
 
@@ -526,4 +539,79 @@ function initializeFormValidation() {
             }
         }
     });
+}
+
+function initializeMobileView() {
+    // Create and add filter modal
+    const filterModal = document.createElement('div');
+    filterModal.className = 'filter-modal';
+    filterModal.innerHTML = `
+        <div class="filter-modal-header">
+            <h3>Filters</h3>
+            <button class="filter-modal-close">&times;</button>
+        </div>
+        <div class="filter-modal-content">
+            ${document.querySelector('.filter-section').outerHTML}
+        </div>
+    `;
+    document.body.appendChild(filterModal);
+
+    // Create filter button
+    const filterButton = document.createElement('button');
+    filterButton.className = 'filter-button';
+    filterButton.innerHTML = '<i class="fas fa-filter"></i> Filters';
+    document.querySelector('.search-section').appendChild(filterButton);
+
+    // Handle filter button click
+    filterButton.addEventListener('click', () => {
+        filterModal.classList.add('active');
+    });
+
+    // Handle modal close
+    filterModal.querySelector('.filter-modal-close').addEventListener('click', () => {
+        filterModal.classList.remove('active');
+    });
+
+    // Handle scroll behavior
+    let lastScroll = 0;
+    const sidebar = document.querySelector('.products-sidebar');
+    
+    window.addEventListener('scroll', () => {
+        const currentScroll = window.pageYOffset;
+        
+        if (currentScroll > lastScroll && currentScroll > 50) {
+            // Scrolling down - hide sidebar
+            sidebar.classList.add('hidden');
+        } else {
+            // Scrolling up - show sidebar
+            sidebar.classList.remove('hidden');
+        }
+        
+        lastScroll = currentScroll;
+    });
+
+    // Add bottom action bar
+    const bottomBar = document.createElement('div');
+    bottomBar.className = 'bottom-action-bar';
+    bottomBar.innerHTML = `
+        <div class="products-count">
+            <span>Showing 0 products</span>
+        </div>
+        <select id="sortProductsMobile" class="sort-select">
+            <option value="featured">Featured</option>
+            <option value="price-asc">Price: Low to High</option>
+            <option value="price-desc">Price: High to Low</option>
+            <option value="name-asc">Name: A to Z</option>
+            <option value="name-desc">Name: Z to A</option>
+        </select>
+    `;
+    document.body.appendChild(bottomBar);
+
+    // Update sort functionality for mobile
+    const sortSelectMobile = document.getElementById('sortProductsMobile');
+    if (sortSelectMobile) {
+        sortSelectMobile.addEventListener('change', (e) => {
+            sortProducts(e.target.value);
+        });
+    }
 }
