@@ -109,33 +109,24 @@ async function loadProducts(onComplete) {
                     return;
                 }
                 
-                if (debugProductLoading) console.log('Papa parse complete, data length:', results.data.length);
-                
                 // Process the products with null checks
                 allProducts = results.data.map(product => ({
                     ...product,
                     tags: product.tags ? product.tags.split('|') : [],
                     price: parseFloat(product.price) || 0,
-                    isNew: product.isNew === 'true',
-                    description: product.description || '',
-                    category: (product.category || '').toLowerCase(),
-                    imagePath: product.imagePath || '#'
+                    isNew: product.isNew === 'TRUE',
+                    isFeatured: product.isFeatured === 'TRUE'
                 }));
 
-                if (debugProductLoading) console.log('Products processed, allProducts length:', allProducts.length);
+                // If we're on the index page, populate featured products
+                if (document.querySelector('.category-section')) {
+                    populateFeaturedProducts();
+                }
 
-                // If callback provided, execute it
+                // If callback provided, execute it (for products page)
                 if (onComplete && typeof onComplete === 'function') {
-                    if (debugProductLoading) console.log('Executing onComplete callback');
                     onComplete(allProducts);
                 }
-            },
-            error: function(error) {
-                console.error('Papa Parse error:', error);
-                notifications.error(
-                    'Data Load Error',
-                    'Error parsing product data. Please refresh the page.'
-                );
             }
         });
     } catch (error) {
@@ -145,6 +136,37 @@ async function loadProducts(onComplete) {
             'Unable to load product data. Please refresh the page.'
         );
     }
+}
+
+// Add this new function to handle featured products on the index page
+function populateFeaturedProducts() {
+    const categories = ['freshies-charms', 'cups', 'photo-slates', 'accessories-home'];
+    
+    categories.forEach(category => {
+        const section = document.getElementById(category);
+        if (!section) return;
+
+        const productsGrid = section.querySelector('.products-grid');
+        if (!productsGrid) return;
+
+        // Get featured products for this category
+        const featuredProducts = allProducts
+            .filter(product => product.category === category && product.isFeatured === true)
+            .slice(0, 3); // Get up to 3 featured products
+
+        // Update the grid with featured products
+        productsGrid.innerHTML = featuredProducts.map(product => `
+            <div class="product-card">
+                <div class="product-image">
+                    <img src="${product.imagePath}" alt="${product.title}" />
+                </div>
+                <div class="product-info">
+                    <h3>${product.title}</h3>
+                    <p class="price">$${product.price.toFixed(2)}</p>
+                </div>
+            </div>
+        `).join('');
+    });
 }
 
 // Product List Update Function - Now with debounce applied
