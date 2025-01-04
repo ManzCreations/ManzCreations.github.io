@@ -1771,7 +1771,26 @@ body.noscroll {
 
 /* Mobile Styles */
 @media (max-width: 768px) {
-    /* Hide desktop elements */
+  /* Disclaimer */ 
+  .disclaimer { 
+    background-color: #f5f5f5; /* Light grey background */ 
+    padding: 20px 0; /* Vertical padding */ 
+    text-align: center; /* Centered text */ 
+  } 
+
+  .disclaimer .container { 
+    max-width: 1200px; /* Ensures it doesn't get too wide */ 
+    margin: 0 auto; /* Centers the container */ 
+    padding: 0 20px; /* Adds some padding on the sides */ 
+  } 
+
+  .disclaimer p { 
+    color: #fb0707; /* Dark grey text color */ 
+    font-size: 16px; /* Font size */ 
+    line-height: 1.5; /* Line height for better readability */ 
+  }  
+  
+  /* Hide desktop elements */
     .products-sidebar {
         display: none;
     }
