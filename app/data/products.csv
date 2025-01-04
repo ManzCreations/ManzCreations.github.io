@@ -1,3 +1,4 @@
-title,category,price,imagePath,description,tags,isNew
-"Summer Breeze Freshie","freshies",15.99,"/images/products/summer-breeze.jpg","A refreshing summer scent...","new|seasonal|summer",true
-"Galaxy Cup","cups",24.99,"/images/products/galaxy-cup.jpg","30oz tumbler with beautiful galaxy design","custom|glitter,false",true
+title,price,category,subcategory,description,tags,isNew,imagePath
+"Summer Breeze Freshie",15.99,freshies-charms,freshies,"A refreshing summer scent","seasonal|new",true,"/images/products/summer-breeze.jpg"
+"Galaxy Tumbler",24.99,cups,sublimation-tumblers,"Custom galaxy design tumbler","custom|glitter",false,"/images/products/galaxy-tumbler.jpg"
+"Kids Unicorn Cup",19.99,cups,kids-cups,"Magical unicorn design for kids","kids|custom",false,"/images/products/unicorn-cup.jpg"

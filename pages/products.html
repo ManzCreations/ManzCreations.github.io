@@ -6,183 +6,93 @@
     <link href="https://fonts.googleapis.com/css2?family=Public+Sans:wght@300;400;600&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="/dist/style.css">
     <title>Products | Crafted 4 You</title>
-    <!-- Add icons for view toggle -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-    <!-- Add Papa Parse -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.3.0/papaparse.min.js"></script>
 </head>
 <body>
     <div id="notification-container"></div>
+
+    <!-- Mobile Controls -->
+    <div class="mobile-controls">
+        <div class="mobile-search">
+            <input type="text" placeholder="Search products..." id="mobileSearch">
+        </div>
+        <div class="mobile-actions">
+            <button class="mobile-action-btn" id="filterBtn">
+                <i class="fas fa-filter"></i>
+                Filter
+                <span class="filter-count"></span>
+            </button>
+            <button class="mobile-action-btn" id="sortBtn">
+                <i class="fas fa-arrow-up-short-wide"></i>
+                Sort
+            </button>
+        </div>
+    </div>
     
     <header class="header">
         <div class="overlay has-fade"></div>
         
         <nav class="container flex flex-jc-sb flex-ai-c">
-          <a href="/" class="header__logo flex flex-ai-c">
-            <img src="/images/backgrounds/logo-noletters.png" alt="Crafted 4 You Logo" class="logo__image" />
-            <h1 class="gradient-text">Crafted 4 You</h1>
-          </a>
-  
-          <a id="btnHamburger" href="#" class="header__toggle hide-for-desktop">
-            <span></span>
-            <span></span>
-            <span></span>
-          </a>
-  
-          <!-- Desktop Navigation -->
-          <div class="header__links hide-for-mobile">
-            <a href="collections.html">Collections</a>
-            <a href="products.html">Products</a>
-            <a href="events.html">Upcoming Events</a>
-            <a href="about.html">About</a>
-            <div class="dropdown">
-              <a href="#" class="dropdown__toggle">More</a>
-              <div class="dropdown__menu">
+            <a href="/" class="header__logo flex flex-ai-c">
+                <img src="/images/backgrounds/logo-noletters.png" alt="Crafted 4 You Logo" class="logo__image" />
+                <h1 class="gradient-text">Crafted 4 You</h1>
+            </a>
+
+            <a id="btnHamburger" href="#" class="header__toggle hide-for-desktop">
+                <span></span>
+                <span></span>
+                <span></span>
+            </a>
+
+            <!-- Desktop Navigation -->
+            <div class="header__links hide-for-mobile">
+                <a href="collections.html">Collections</a>
+                <a href="products.html">Products</a>
+                <a href="events.html">Upcoming Events</a>
+                <a href="about.html">About</a>
+                <div class="dropdown">
+                    <a href="#" class="dropdown__toggle">More</a>
+                    <div class="dropdown__menu">
+                        <a href="gallery.html">Gallery</a>
+                        <a href="process.html">Our Process</a>
+                        <a href="care.html">Care Guide</a>
+                    </div>
+                </div>
+                <a href="inquire.html" class="button header__cta">Get in Touch</a>
+            </div>
+
+            <!-- Mobile Menu -->
+            <div class="header__menu has-fade">
+                <a href="collections.html">Collections</a>
+                <a href="products.html">Products</a>
+                <a href="events.html">Upcoming Events</a>
+                <a href="about.html">About</a>
                 <a href="gallery.html">Gallery</a>
                 <a href="process.html">Our Process</a>
                 <a href="care.html">Care Guide</a>
-              </div>
+                <a href="inquire.html">Get in Touch</a>
             </div>
-            <a href="inquire.html" class="button header__cta">Get in Touch</a>
-          </div>
-  
-          <!-- Mobile Menu (remains the same) -->
-          <div class="header__menu has-fade">
-            <a href="collections.html">Collections</a>
-            <a href="products.html">Products</a>
-            <a href="events.html">Upcoming Events</a>
-            <a href="about.html">About</a>
-            <a href="gallery.html">Gallery</a>
-            <a href="process.html">Our Process</a>
-            <a href="care.html">Care Guide</a>
-            <a href="inquire.html">Get in Touch</a>
-          </div>
+        </nav>
     </header>
 
-    <!-- Mobile Controls -->
-    <div class="mobile-controls">
-      <div class="mobile-search">
-          <input type="text" placeholder="Search products..." id="mobileSearch">
-      </div>
-      <div class="mobile-actions">
-          <button class="mobile-action-btn" id="filterBtn">
-              <i class="fas fa-filter"></i>
-              Filter
-              <span class="filter-count"></span>
-          </button>
-          <button class="mobile-action-btn" id="sortBtn">
-              <i class="fas fa-arrow-up-short-wide"></i>
-              Sort
-          </button>
-      </div>
+    <div class="container appointment-section text-center">
+        <h1 class="gradient-text">Our Products</h1>
+        <p class="subtitle">Browse our handcrafted collection of freshies, cups, and slates</p>
+        <a href="inquire.html" class="button button--lg">Book Shopping Appointment</a>
     </div>
 
-    <!-- Filter Panel -->
-    <div class="mobile-panel" id="filterPanel">
-      <div class="panel-content">
-          <div class="panel-header">
-              <h2 class="panel-title">Filter Products</h2>
-          </div>
-          <div class="panel-body">
-              <!-- Category Filter -->
-              <div class="filter-section">
-                  <h3>Categories</h3>
-                  <div class="filter-options">
-                      <label class="checkbox-container">
-                          <input type="checkbox" value="freshies">
-                          <span class="checkmark"></span>
-                          Freshies
-                      </label>
-                      <label class="checkbox-container">
-                          <input type="checkbox" value="cups">
-                          <span class="checkmark"></span>
-                          Custom Cups
-                      </label>
-                      <label class="checkbox-container">
-                          <input type="checkbox" value="slates">
-                          <span class="checkmark"></span>
-                          Decorative Slates
-                      </label>
-                  </div>
-              </div>
-
-              <!-- Tags Filter -->
-              <div class="filter-section">
-                  <h3>Filter By</h3>
-                  <div class="filter-options tags">
-                      <label class="checkbox-container">
-                          <input type="checkbox" value="new">
-                          <span class="checkmark"></span>
-                          New Arrivals
-                      </label>
-                      <label class="checkbox-container">
-                          <input type="checkbox" value="seasonal">
-                          <span class="checkmark"></span>
-                          Seasonal
-                      </label>
-                      <label class="checkbox-container">
-                          <input type="checkbox" value="custom">
-                          <span class="checkmark"></span>
-                          Custom Design
-                      </label>
-                  </div>
-              </div>
-          </div>
-          <div class="panel-actions">
-              <button class="panel-btn btn-cancel" id="filterCancel">Cancel</button>
-              <button class="panel-btn btn-apply" id="filterApply">Apply</button>
-          </div>
-      </div>
-    </div>
-
-    <!-- Sort Panel -->
-    <div class="mobile-panel" id="sortPanel">
-      <div class="panel-content">
-          <div class="panel-header">
-              <h2 class="panel-title">Sort By</h2>
-          </div>
-          <div class="panel-body">
-              <button class="sort-option active" data-sort="featured">
-                  Featured
-              </button>
-              <button class="sort-option" data-sort="price-asc">
-                  Price: Low to High
-              </button>
-              <button class="sort-option" data-sort="price-desc">
-                  Price: High to Low
-              </button>
-              <button class="sort-option" data-sort="name-asc">
-                  Name: A to Z
-              </button>
-              <button class="sort-option" data-sort="name-desc">
-                  Name: Z to A
-              </button>
-          </div>
-          <div class="panel-actions">
-              <button class="panel-btn btn-cancel" id="sortCancel">Cancel</button>
-              <button class="panel-btn btn-apply" id="sortApply">Apply</button>
-          </div>
-      </div>
-    </div>
-
-    <main class="products-page">
-        <!-- Shopping Appointment Button -->
-        <div class="container appointment-section text-center">
-            <h1 class="gradient-text">Our Products</h1>
-            <p class="subtitle">Browse our handcrafted collection of freshies, cups, and slates</p>
-            <a href="inquire.html" class="button button--lg">Book Shopping Appointment</a>
-        </div>
-
-        <!-- Products Layout -->
-        <div class="container products-layout">
+    <!-- Main Content -->
+    <div class="container">
+        <div class="products-layout">
             <!-- Left Sidebar -->
             <aside class="products-sidebar">
                 <!-- Search Bar -->
                 <div class="search-section">
-                  <div class="search-bar">
-                      <i class="fa fa-search search-icon"></i>
-                      <input type="text" placeholder="Search products..." id="productSearch">
-                  </div>
+                    <div class="search-bar">
+                        <i class="fa fa-search search-icon"></i>
+                        <input type="text" placeholder="Search products..." id="productSearch">
+                    </div>
                 </div>
 
                 <!-- Sort Options -->
@@ -199,24 +109,126 @@
 
                 <!-- Category Filter -->
                 <div class="filter-section">
-                    <h3>Categories</h3>
-                    <div class="filter-options">
+                  <h3>Categories</h3>
+                  <div class="filter-options">
+                    <!-- Main Categories -->
+                    <div class="category-group">
+                      <div class="category-main">
                         <label class="checkbox-container">
-                            <input type="checkbox" value="freshies">
-                            <span class="checkmark"></span>
-                            Freshies
+                          <input type="checkbox" value="freshies-charms" data-category-type="main">
+                          <span class="checkmark"></span>
+                          Freshies & Car Charms
+                        </label>
+                        <button class="toggle-subcategories">+</button>
+                      </div>
+                      <div class="subcategory-list hidden">
+                        <label class="checkbox-container">
+                          <input type="checkbox" value="freshies" data-category-type="sub">
+                          <span class="checkmark"></span>
+                          Freshies
                         </label>
                         <label class="checkbox-container">
-                            <input type="checkbox" value="cups">
-                            <span class="checkmark"></span>
-                            Cups
+                          <input type="checkbox" value="beaded-car-charms" data-category-type="sub">
+                          <span class="checkmark"></span>
+                          Beaded Car Charms
                         </label>
-                        <label class="checkbox-container">
-                            <input type="checkbox" value="slates">
-                            <span class="checkmark"></span>
-                            Slates
-                        </label>
+                      </div>
                     </div>
+
+                    <div class="category-group">
+                      <div class="category-main">
+                        <label class="checkbox-container">
+                          <input type="checkbox" value="cups" data-category-type="main">
+                          <span class="checkmark"></span>
+                          Cups
+                        </label>
+                        <button class="toggle-subcategories">+</button>
+                      </div>
+                      <div class="subcategory-list hidden">
+                        <label class="checkbox-container">
+                          <input type="checkbox" value="sublimation-tumblers" data-category-type="sub">
+                          <span class="checkmark"></span>
+                          Sublimation Tumblers
+                        </label>
+                        <label class="checkbox-container">
+                          <input type="checkbox" value="water-bottles" data-category-type="sub">
+                          <span class="checkmark"></span>
+                          Water Bottles
+                        </label>
+                        <label class="checkbox-container">
+                          <input type="checkbox" value="kids-cups" data-category-type="sub">
+                          <span class="checkmark"></span>
+                          Kids Cups
+                        </label>
+                        <label class="checkbox-container">
+                          <input type="checkbox" value="coasters" data-category-type="sub">
+                          <span class="checkmark"></span>
+                          Coasters
+                        </label>
+                      </div>
+                    </div>
+
+                    <div class="category-group">
+                      <div class="category-main">
+                        <label class="checkbox-container">
+                          <input type="checkbox" value="photo-slates" data-category-type="main">
+                          <span class="checkmark"></span>
+                          Photo Slates
+                        </label>
+                        <button class="toggle-subcategories">+</button>
+                      </div>
+                      <div class="subcategory-list hidden">
+                        <label class="checkbox-container">
+                          <input type="checkbox" value="photo-slates" data-category-type="sub">
+                          <span class="checkmark"></span>
+                          Photo Slates
+                        </label>
+                      </div>
+                    </div>
+
+                    <div class="category-group">
+                      <div class="category-main">
+                        <label class="checkbox-container">
+                          <input type="checkbox" value="accessories-home" data-category-type="main">
+                          <span class="checkmark"></span>
+                          Accessories & Home
+                        </label>
+                        <button class="toggle-subcategories">+</button>
+                      </div>
+                      <div class="subcategory-list hidden">
+                        <label class="checkbox-container">
+                          <input type="checkbox" value="keychains" data-category-type="sub">
+                          <span class="checkmark"></span>
+                          Keychains
+                        </label>
+                        <label class="checkbox-container">
+                          <input type="checkbox" value="sanitizer-holders" data-category-type="sub">
+                          <span class="checkmark"></span>
+                          Sanitizer Holders
+                        </label>
+                        <label class="checkbox-container">
+                          <input type="checkbox" value="lipstick-holders" data-category-type="sub">
+                          <span class="checkmark"></span>
+                          Lipstick/Chapstick Holders
+                        </label>
+                        <label class="checkbox-container">
+                          <input type="checkbox" value="spinners" data-category-type="sub">
+                          <span class="checkmark"></span>
+                          Spinners
+                        </label>
+                        <label class="checkbox-container">
+                          <input type="checkbox" value="cutting-boards" data-category-type="sub">
+                          <span class="checkmark"></span>
+                          Cutting Boards
+                        </label>
+                        <label class="checkbox-container">
+                          <input type="checkbox" value="license-plates" data-category-type="sub">
+                          <span class="checkmark"></span>
+                          License Plates
+                        </label>
+                      </div>
+                    </div>
+                  </div>
                 </div>
 
                 <!-- Tags Filter -->
@@ -261,87 +273,232 @@
 
                 <!-- Products Grid -->
                 <div class="products-grid" id="productsContainer">
-                    <!-- Example Product Cards -->
-                    <div class="product-card" data-category="freshies" data-tags="new,seasonal">
-                        <div class="product-image">
-                            <img src="/api/placeholder/300/300" alt="Summer Breeze Freshie">
-                            <div class="product-badge new">New</div>
-                        </div>
-                        <div class="product-info">
-                            <h3>Summer Breeze Freshie</h3>
-                            <p class="price">From $12.99</p>
-                        </div>
-                        <div class="product-description hide">
-                            <p>A refreshing summer scent that brings the beach to your car. Perfect for hot days and ocean dreams.</p>
-                            <ul class="product-tags">
-                                <li>New</li>
-                                <li>Seasonal</li>
-                                <li>Freshie</li>
-                            </ul>
-                        </div>
-                    </div>
-
-                    <!-- More product cards with different variations -->
-                    <!-- Add at least 12 example products -->
-
+                    <!-- Products will be populated here via JavaScript -->
                 </div>
             </div>
         </div>
-    </main>
+    </div>
+
+    <!-- Mobile Filter Panel -->
+    <div class="mobile-panel" id="filterPanel">
+      <div class="panel-content">
+          <div class="panel-header">
+              <h2 class="panel-title">Filter Products</h2>
+          </div>
+          <div class="panel-body">
+              <!-- Category Filter -->
+              <div class="filter-section">
+                  <h3>Categories</h3>
+                  <div class="filter-options">
+                      <div class="category-group">
+                          <div class="category-main">
+                              <label class="checkbox-container">
+                                  <input type="checkbox" value="freshies-charms" data-category-type="main">
+                                  <span class="checkmark"></span>
+                                  Freshies & Car Charms
+                              </label>
+                              <button class="toggle-subcategories">+</button>
+                          </div>
+                          <div class="subcategory-list hidden">
+                              <label class="checkbox-container">
+                                  <input type="checkbox" value="freshies" data-category-type="sub">
+                                  <span class="checkmark"></span>
+                                  Freshies
+                              </label>
+                              <label class="checkbox-container">
+                                  <input type="checkbox" value="beaded-car-charms" data-category-type="sub">
+                                  <span class="checkmark"></span>
+                                  Beaded Car Charms
+                              </label>
+                          </div>
+                      </div>
+
+                      <div class="category-group">
+                          <div class="category-main">
+                              <label class="checkbox-container">
+                                  <input type="checkbox" value="cups" data-category-type="main">
+                                  <span class="checkmark"></span>
+                                  Cups
+                              </label>
+                              <button class="toggle-subcategories">+</button>
+                          </div>
+                          <div class="subcategory-list hidden">
+                              <label class="checkbox-container">
+                                  <input type="checkbox" value="sublimation-tumblers" data-category-type="sub">
+                                  <span class="checkmark"></span>
+                                  Sublimation Tumblers
+                              </label>
+                              <label class="checkbox-container">
+                                  <input type="checkbox" value="water-bottles" data-category-type="sub">
+                                  <span class="checkmark"></span>
+                                  Water Bottles
+                              </label>
+                              <label class="checkbox-container">
+                                  <input type="checkbox" value="kids-cups" data-category-type="sub">
+                                  <span class="checkmark"></span>
+                                  Kids Cups
+                              </label>
+                              <label class="checkbox-container">
+                                  <input type="checkbox" value="coasters" data-category-type="sub">
+                                  <span class="checkmark"></span>
+                                  Coasters
+                              </label>
+                          </div>
+                      </div>
+
+                      <div class="category-group">
+                          <div class="category-main">
+                              <label class="checkbox-container">
+                                  <input type="checkbox" value="photo-slates" data-category-type="main">
+                                  <span class="checkmark"></span>
+                                  Photo Slates
+                              </label>
+                              <button class="toggle-subcategories">+</button>
+                          </div>
+                          <div class="subcategory-list hidden">
+                              <label class="checkbox-container">
+                                  <input type="checkbox" value="photo-slates" data-category-type="sub">
+                                  <span class="checkmark"></span>
+                                  Photo Slates
+                              </label>
+                          </div>
+                      </div>
+
+                      <div class="category-group">
+                          <div class="category-main">
+                              <label class="checkbox-container">
+                                  <input type="checkbox" value="accessories-home" data-category-type="main">
+                                  <span class="checkmark"></span>
+                                  Accessories & Home
+                              </label>
+                              <button class="toggle-subcategories">+</button>
+                          </div>
+                          <div class="subcategory-list hidden">
+                              <label class="checkbox-container">
+                                  <input type="checkbox" value="keychains" data-category-type="sub">
+                                  <span class="checkmark"></span>
+                                  Keychains
+                              </label>
+                              <label class="checkbox-container">
+                                  <input type="checkbox" value="sanitizer-holders" data-category-type="sub">
+                                  <span class="checkmark"></span>
+                                  Sanitizer Holders
+                              </label>
+                              <label class="checkbox-container">
+                                  <input type="checkbox" value="lipstick-holders" data-category-type="sub">
+                                  <span class="checkmark"></span>
+                                  Lipstick/Chapstick Holders
+                              </label>
+                              <label class="checkbox-container">
+                                  <input type="checkbox" value="spinners" data-category-type="sub">
+                                  <span class="checkmark"></span>
+                                  Spinners
+                              </label>
+                              <label class="checkbox-container">
+                                  <input type="checkbox" value="cutting-boards" data-category-type="sub">
+                                  <span class="checkmark"></span>
+                                  Cutting Boards
+                              </label>
+                              <label class="checkbox-container">
+                                  <input type="checkbox" value="license-plates" data-category-type="sub">
+                                  <span class="checkmark"></span>
+                                  License Plates
+                              </label>
+                          </div>
+                      </div>
+                  </div>
+              </div>
+          </div>
+          <div class="panel-actions">
+              <button class="panel-btn btn-cancel" id="filterCancel">Cancel</button>
+              <button class="panel-btn btn-apply" id="filterApply">Apply</button>
+          </div>
+      </div>
+    </div>
+
+    <!-- Mobile Sort Panel -->
+    <div class="mobile-panel" id="sortPanel">
+        <div class="panel-content">
+            <div class="panel-header">
+                <h2 class="panel-title">Sort By</h2>
+            </div>
+            <div class="panel-body">
+                <button class="sort-option active" data-sort="featured">
+                    Featured
+                </button>
+                <button class="sort-option" data-sort="price-asc">
+                    Price: Low to High
+                </button>
+                <button class="sort-option" data-sort="price-desc">
+                    Price: High to Low
+                </button>
+                <button class="sort-option" data-sort="name-asc">
+                    Name: A to Z
+                </button>
+                <button class="sort-option" data-sort="name-desc">
+                    Name: Z to A
+                </button>
+            </div>
+            <div class="panel-actions">
+                <button class="panel-btn btn-cancel" id="sortCancel">Cancel</button>
+                <button class="panel-btn btn-apply" id="sortApply">Apply</button>
+            </div>
+        </div>
+    </div>
 
     <!-- Footer -->
     <footer class="footer bg-dark">
         <div class="container">
-          <div class="footer__grid">
-            <div class="footer__branding">
-              <h2 class="gradient-text">Crafted 4 You</h2>
-              <p class="text-light">Handmade with love and care</p>
-              <a href="/inquire" class="button footer__cta">Get in Touch</a>
+            <div class="footer__grid">
+                <div class="footer__branding">
+                    <h2 class="gradient-text">Crafted 4 You</h2>
+                    <p class="text-light">Handmade with love and care</p>
+                    <a href="inquire.html" class="button footer__cta">Get in Touch</a>
+                </div>
+                
+                <div class="footer__links">
+                    <h3 class="text-light">Shop</h3>
+                    <a href="collections.html">Collections</a>
+                    <a href="products.html">Products</a>
+                    <a href="gallery.html">Gallery</a>
+                </div>
+        
+                <div class="footer__info">
+                    <h3 class="text-light">Company</h3>
+                    <a href="about.html">About Us</a>
+                    <a href="events.html">Upcoming Events</a>
+                    <a href="process.html">Our Process</a>
+                    <a href="care.html">Care Guide</a>
+                </div>
+        
+                <div class="footer__support">
+                    <h3 class="text-light">Support</h3>
+                    <a href="shipping.html">Shipping Info</a>
+                    <a href="faq.html">FAQs</a>
+                    <a href="contact.html">Contact Us</a>
+                    <div class="footer__social">
+                        <a href="#" aria-label="Facebook">
+                            <img src="/images/icons/icon-facebook.svg" alt="Facebook"/>
+                        </a>
+                        <a href="#" aria-label="YouTube">
+                            <img src="/images/icons/icon-youtube.svg" alt="YouTube"/>
+                        </a>
+                        <a href="#" aria-label="Twitter">
+                            <img src="/images/icons/icon-twitter.svg" alt="Twitter"/>
+                        </a>
+                        <a href="#" aria-label="Pinterest">
+                            <img src="/images/icons/icon-pinterest.svg" alt="Pinterest"/>
+                        </a>
+                        <a href="#" aria-label="Instagram">
+                            <img src="/images/icons/icon-instagram.svg" alt="Instagram"/>
+                        </a>
+                    </div>
+                </div>
             </div>
             
-            <div class="footer__links">
-              <h3 class="text-light">Shop</h3>
-              <a href="/collections">Collections</a>
-              <a href="/products">Products</a>
-              <a href="/gallery">Gallery</a>
+            <div class="footer__bottom">
+                <p class="text-light">&copy; 2024 Crafted 4 You. All Rights Reserved.</p>
             </div>
-      
-            <div class="footer__info">
-              <h3 class="text-light">Company</h3>
-              <a href="/about">About Us</a>
-              <a href="/events">Upcoming Events</a>
-              <a href="/process">Our Process</a>
-              <a href="/care">Care Guide</a>
-            </div>
-      
-            <div class="footer__support">
-              <h3 class="text-light">Support</h3>
-              <a href="/shipping">Shipping Info</a>
-              <a href="/faq">FAQs</a>
-              <a href="/contact">Contact Us</a>
-              <div class="footer__social">
-                <a href="#" aria-label="Facebook">
-                  <img src="../images/icons/icon-facebook.svg" alt="Facebook"/>
-                </a>
-                <a href="#" aria-label="YouTube">
-                  <img src="../images/icons/icon-youtube.svg" alt="YouTube"/>
-                </a>
-                <a href="#" aria-label="Twitter">
-                  <img src="../images/icons/icon-twitter.svg" alt="Twitter"/>
-                </a>
-                <a href="#" aria-label="Pinterest">
-                  <img src="../images/icons/icon-pinterest.svg" alt="Pinterest"/>
-                </a>
-                <a href="#" aria-label="Instagram">
-                  <img src="../images/icons/icon-instagram.svg" alt="Instagram"/>
-                </a>
-              </div>
-            </div>
-          </div>
-          
-          <div class="footer__bottom">
-            <p class="text-light">&copy; 2024 Crafted 4 You. All Rights Reserved.</p>
-          </div>
         </div>
     </footer>
 

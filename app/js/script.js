@@ -196,56 +196,151 @@ const updateProductsList = debounce(() => {
     });
 }, 100);
 
+const CATEGORY_MAPPING = {
+    'freshies-charms': ['freshies', 'beaded-car-charms'],
+    'cups': ['sublimation-tumblers', 'water-bottles', 'kids-cups', 'coasters'],
+    'photo-slates': ['photo-slates'],
+    'accessories-home': ['keychains', 'sanitizer-holders', 'lipstick-holders', 'spinners', 'cutting-boards', 'license-plates']
+  };  
+
+// Function to update products display
+function updateProductsDisplay(products) {
+    const productsContainer = document.getElementById('productsContainer');
+    if (!productsContainer) return;
+
+    productsContainer.innerHTML = products.map(product => `
+        <div class="product-card" data-category="${product.category}" data-subcategory="${product.subcategory}">
+        <div class="product-image">
+            <img src="${product.imagePath || '/api/placeholder/300/300'}" alt="${product.title}">
+            ${product.isNew ? '<div class="product-badge new">New</div>' : ''}
+        </div>
+        <div class="product-info">
+            <h3>${product.title}</h3>
+            <p class="price">From $${parseFloat(product.price).toFixed(2)}</p>
+            <p class="product-description">${product.description || ''}</p>
+            <ul class="product-tags">
+            ${(product.tags || []).map(tag => `<li>${tag}</li>`).join('')}
+            </ul>
+        </div>
+        </div>
+    `).join('');
+
+    // Update view based on current view mode
+    const currentView = document.querySelector('.view-btn.active');
+    if (currentView) {
+        productsContainer.classList.toggle('gallery-view', currentView.dataset.view === 'gallery');
+    }
+}
+
+function setupCategoryFilters() {
+    const categoryGroups = document.querySelectorAll('.category-group');
+
+    categoryGroups.forEach(group => {
+        const mainCheckbox = group.querySelector('input[data-category-type="main"]');
+        const subCheckboxes = group.querySelectorAll('input[data-category-type="sub"]');
+        
+        // Handle main category changes
+        mainCheckbox.addEventListener('change', (e) => {
+        // Update all subcategories to match main category state
+        subCheckboxes.forEach(sub => {
+            sub.checked = e.target.checked;
+        });
+        filterProducts();
+        });
+
+        // Handle subcategory changes
+        subCheckboxes.forEach(sub => {
+        sub.addEventListener('change', () => {
+            // Check if any subcategories are selected
+            const anySubChecked = Array.from(subCheckboxes).some(checkbox => checkbox.checked);
+            mainCheckbox.checked = anySubChecked;
+            filterProducts();
+        });
+        });
+    });
+}
+
 // Filter products function with improved error handling
 function filterProducts() {
     try {
-        const searchInput = document.getElementById('productSearch');
-        const categoryCheckboxes = document.querySelectorAll('.filter-options input[type="checkbox"]');
+        const searchInputs = [
+            document.getElementById('productSearch'),
+            document.getElementById('mobileSearch')
+        ].filter(Boolean);
+        
+        const searchTerm = (searchInputs[0]?.value || '').toLowerCase();
         const productsContainer = document.getElementById('productsContainer');
         const productsCount = document.querySelector('.products-count span');
         
-        const searchTerm = searchInput ? searchInput.value.toLowerCase() : '';
-        const selectedCategories = Array.from(categoryCheckboxes)
-            .filter(cb => cb.checked)
+        // Get selected categories
+        const selectedMainCategories = Array.from(document.querySelectorAll('input[data-category-type="main"]:checked'))
+            .map(cb => cb.value);
+            
+        const selectedSubCategories = Array.from(document.querySelectorAll('input[data-category-type="sub"]:checked'))
             .map(cb => cb.value);
 
         let filteredProducts = allProducts;
 
-        if (selectedCategories.length > 0) {
-            filteredProducts = filteredProducts.filter(product => 
-                selectedCategories.includes(product.category.toLowerCase())
-            );
-        }
-
+        // Apply search filter first
         if (searchTerm) {
-            filteredProducts = filteredProducts.filter(product => 
-                product.title.toLowerCase().includes(searchTerm) ||
-                product.description.toLowerCase().includes(searchTerm) ||
-                product.tags.some(tag => tag.toLowerCase().includes(searchTerm))
-            );
+            filteredProducts = filteredProducts.filter(product => {
+                // Search in title
+                if (product.title.toLowerCase().includes(searchTerm)) return true;
+                
+                // Search in category
+                if (product.category.toLowerCase().includes(searchTerm)) return true;
+                
+                // Search in subcategory
+                if (product.subcategory.toLowerCase().includes(searchTerm)) return true;
+                
+                // Search in collection (if exists)
+                if (product.collection && product.collection.toLowerCase().includes(searchTerm)) return true;
+                
+                // Search in tags
+                if (product.tags && Array.isArray(product.tags)) {
+                    if (product.tags.some(tag => tag.toLowerCase().includes(searchTerm))) return true;
+                }
+                
+                // Search in description
+                if (product.description && product.description.toLowerCase().includes(searchTerm)) return true;
+                
+                return false;
+            });
         }
 
-        // Create product cards with placeholder images
-        productsContainer.innerHTML = filteredProducts.map(product => `
-            <div class="product-card" data-category="${product.category}" data-tags="${product.tags.join(',')}">
-                <div class="product-image">
-                    <img src="/api/placeholder/300/300" alt="${product.title}">
-                    ${product.isNew ? '<div class="product-badge new">New</div>' : ''}
-                </div>
-                <div class="product-info">
-                    <h3>${product.title}</h3>
-                    <p class="price">From $${parseFloat(product.price).toFixed(2)}</p>
-                    <p class="product-description">${product.description}</p>
-                    <ul class="product-tags">
-                        ${product.tags.map(tag => `<li>${tag}</li>`).join('')}
-                    </ul>
-                </div>
-            </div>
-        `).join('');
+        // Apply category filters
+        if (selectedMainCategories.length > 0 || selectedSubCategories.length > 0) {
+            filteredProducts = filteredProducts.filter(product => {
+                // If only main categories are selected (no subcategories selected)
+                if (selectedMainCategories.length > 0 && selectedSubCategories.length === 0) {
+                    return selectedMainCategories.includes(product.category);
+                }
+                
+                // If only subcategories are selected (no main categories selected)
+                if (selectedSubCategories.length > 0 && selectedMainCategories.length === 0) {
+                    return selectedSubCategories.includes(product.subcategory);
+                }
+                
+                // If both main and subcategories are selected
+                if (selectedMainCategories.length > 0 && selectedSubCategories.length > 0) {
+                    return selectedMainCategories.includes(product.category) && 
+                           selectedSubCategories.includes(product.subcategory);
+                }
+                
+                return false;
+            });
+        }
 
+        // Update the products display
+        updateProductsDisplay(filteredProducts);
+        
+        // Update count
         if (productsCount) {
             productsCount.textContent = `Showing ${filteredProducts.length} products`;
         }
+
+        // Update filter count for mobile
+        updateFilterCount();
 
     } catch (error) {
         console.error('Filter error:', error);
@@ -300,6 +395,29 @@ function getSelectedFilters() {
     return selectedCategories;
 }
 
+// Update filter count based on categories with active filters
+function updateFilterCount() {
+    // Get the filter count element
+    const filterCount = document.querySelector('.filter-count');
+    if (!filterCount) return;
+
+    // Count categories that have active filters
+    let activeCategories = 0;
+
+    // Check category filters
+    const hasActiveCategories = Array.from(document.querySelectorAll('input[type="checkbox"][value="freshies"], input[type="checkbox"][value="cups"], input[type="checkbox"][value="slates"]'))
+        .some(cb => cb.checked);
+    if (hasActiveCategories) activeCategories++;
+
+    // Check tag filters
+    const hasActiveTags = Array.from(document.querySelectorAll('input[type="checkbox"][value="new"], input[type="checkbox"][value="seasonal"], input[type="checkbox"][value="custom"]'))
+        .some(cb => cb.checked);
+    if (hasActiveTags) activeCategories++;
+
+    // Update the filter count display
+    filterCount.textContent = activeCategories > 0 ? `(${activeCategories})` : '';
+}
+
 function syncFiltersState(sourceContainer) {
     // Get all checked values from the source container
     const checkedValues = Array.from(sourceContainer.querySelectorAll('input[type="checkbox"]:checked'))
@@ -327,8 +445,14 @@ function closePanel(panel) {
 }
 
 function initializeMobileControls() {
-    console.log('Initializing mobile controls');
-    if (window.innerWidth > 768) return;
+    console.log('Starting initializeMobileControls');
+
+    // Check window width
+    console.log('Window width:', window.innerWidth);
+    if (window.innerWidth > 768) {
+        console.log('Window too wide, exiting mobile controls');
+        return;
+    }
 
     // Cache DOM elements
     const filterBtn = document.getElementById('filterBtn');
@@ -336,30 +460,74 @@ function initializeMobileControls() {
     const filterPanel = document.getElementById('filterPanel');
     const sortPanel = document.getElementById('sortPanel');
 
+    // Log element existence
+    console.log('Elements found:', {
+        filterBtn: !!filterBtn,
+        sortBtn: !!sortBtn,
+        filterPanel: !!filterPanel,
+        sortPanel: !!sortPanel
+    });
+
     if (!filterBtn || !sortBtn || !filterPanel || !sortPanel) {
         console.error('Missing required elements for mobile controls');
         return;
     }
 
-    console.log('Found all required elements');
+    // Add debugging to panel functions
+    function openPanel(panel) {
+        console.log('Opening panel:', panel.id);
+        panel.classList.add('active');
+        document.body.style.overflow = 'hidden';
+        console.log('Panel classes after open:', panel.className);
+    }
 
-    const filterCount = filterBtn.querySelector('.filter-count');
-    
+    function closePanel(panel) {
+        console.log('Closing panel:', panel.id);
+        panel.classList.remove('active');
+        document.body.style.overflow = '';
+        console.log('Panel classes after close:', panel.className);
+    }
+
     // Filter button click
-    filterBtn.addEventListener('click', () => {
+    filterBtn.addEventListener('click', (e) => {
         console.log('Filter button clicked');
+        e.preventDefault();
         openPanel(filterPanel);
     });
 
     // Sort button click
-    sortBtn.addEventListener('click', () => {
+    sortBtn.addEventListener('click', (e) => {
         console.log('Sort button clicked');
+        e.preventDefault();
         openPanel(sortPanel);
+    });
+
+    // Log event listener attachment
+    console.log('Event listeners attached to buttons');
+
+    // Add logging to panel styles
+    console.log('Initial panel styles:', {
+        filterPanel: {
+            display: window.getComputedStyle(filterPanel).display,
+            visibility: window.getComputedStyle(filterPanel).visibility,
+            opacity: window.getComputedStyle(filterPanel).opacity,
+            position: window.getComputedStyle(filterPanel).position,
+            zIndex: window.getComputedStyle(filterPanel).zIndex
+        },
+        sortPanel: {
+            display: window.getComputedStyle(sortPanel).display,
+            visibility: window.getComputedStyle(sortPanel).visibility,
+            opacity: window.getComputedStyle(sortPanel).opacity,
+            position: window.getComputedStyle(sortPanel).position,
+            zIndex: window.getComputedStyle(sortPanel).zIndex
+        }
     });
 
     // Cancel buttons
     document.getElementById('filterCancel').addEventListener('click', () => {
         closePanel(filterPanel);
+        // Reset filters to state before panel was opened
+        restoreFilterState();
     });
 
     document.getElementById('sortCancel').addEventListener('click', () => {
@@ -368,14 +536,14 @@ function initializeMobileControls() {
 
     // Apply buttons
     document.getElementById('filterApply').addEventListener('click', () => {
+        // Save current filter state
+        saveFilterState();
         closePanel(filterPanel);
-        // Update filters and refresh products
         filterProducts();
     });
 
     document.getElementById('sortApply').addEventListener('click', () => {
         closePanel(sortPanel);
-        // Apply sorting
         const selectedOption = sortPanel.querySelector('.sort-option.active');
         if (selectedOption) {
             sortProducts(selectedOption.dataset.sort);
@@ -396,8 +564,30 @@ function initializeMobileControls() {
         panel.addEventListener('click', (e) => {
             if (e.target === panel) {
                 closePanel(panel);
+                if (panel === filterPanel) {
+                    restoreFilterState();
+                }
             }
         });
+    });
+}
+
+// Add these helper functions for managing filter state
+let savedFilterState = new Map();
+
+function saveFilterState() {
+    savedFilterState.clear();
+    document.querySelectorAll('#filterPanel input[type="checkbox"]').forEach(checkbox => {
+        savedFilterState.set(checkbox.value, checkbox.checked);
+    });
+}
+
+function restoreFilterState() {
+    document.querySelectorAll('#filterPanel input[type="checkbox"]').forEach(checkbox => {
+        const savedState = savedFilterState.get(checkbox.value);
+        if (savedState !== undefined) {
+            checkbox.checked = savedState;
+        }
     });
 }
 
@@ -406,8 +596,26 @@ document.addEventListener('DOMContentLoaded', function() {
     if (debugProductLoading) console.log('DOM Content Loaded');
 
     if (document.getElementById('productsContainer')) {
+        console.log('Initializing products page');
+        initializeMobileControls();
+        setupCategoryFilters(); // Add this line
+        
+        // Load products and initialize page
+        loadProducts(() => {
+        filterProducts();
+        });
+
         console.log('Initializing mobile controls for products page');
         initializeMobileControls();
+    }
+
+    // Make sure updateFilterCount is called when filters change
+    const filterPanel = document.getElementById('filterPanel');
+    if (filterPanel) {
+        const checkboxes = filterPanel.querySelectorAll('input[type="checkbox"]');
+        checkboxes.forEach(checkbox => {
+            checkbox.addEventListener('change', updateFilterCount);
+        });
     }
     
     // Header Elements with null checks
@@ -569,6 +777,46 @@ document.addEventListener('DOMContentLoaded', function() {
             initializeInquiryForm();
         });
     }
+
+    // Initialize category toggles
+    const toggleButtons = document.querySelectorAll('.toggle-subcategories');
+    toggleButtons.forEach(button => {
+        button.addEventListener('click', (e) => {
+        e.preventDefault();
+        const categoryGroup = button.closest('.category-group');
+        const subcategoryList = categoryGroup.querySelector('.subcategory-list');
+        const isHidden = subcategoryList.classList.contains('hidden');
+        
+        // Toggle button text
+        button.textContent = isHidden ? '−' : '+';
+        
+        // Toggle subcategory list
+        subcategoryList.classList.toggle('hidden');
+        });
+    });
+
+    // Setup search functionality for both desktop and mobile search inputs
+    const searchInputs = [
+        document.getElementById('productSearch'),
+        document.getElementById('mobileSearch')
+    ].filter(Boolean); // Filter out any null elements
+
+    searchInputs.forEach(searchInput => {
+        searchInput.addEventListener('input', debounce(() => {
+            filterProducts();
+        }, 300)); // 300ms debounce to prevent too frequent updates
+    });
+
+    // Sync the search inputs
+    searchInputs.forEach(searchInput => {
+        searchInput.addEventListener('input', (e) => {
+            searchInputs.forEach(input => {
+                if (input !== e.target) {
+                    input.value = e.target.value;
+                }
+            });
+        });
+    });
 });
 
 // Separate function for inquiry form initialization with improved error handling
@@ -710,23 +958,6 @@ function initializeMobileView() {
         
         lastScroll = currentScroll;
     });
-
-    // Add bottom action bar
-    const bottomBar = document.createElement('div');
-    bottomBar.className = 'bottom-action-bar';
-    bottomBar.innerHTML = `
-        <div class="products-count">
-            <span>Showing 0 products</span>
-        </div>
-        <select id="sortProductsMobile" class="sort-select">
-            <option value="featured">Featured</option>
-            <option value="price-asc">Price: Low to High</option>
-            <option value="price-desc">Price: High to Low</option>
-            <option value="name-asc">Name: A to Z</option>
-            <option value="name-desc">Name: Z to A</option>
-        </select>
-    `;
-    document.body.appendChild(bottomBar);
 
     // Update sort functionality for mobile
     const sortSelectMobile = document.getElementById('sortProductsMobile');

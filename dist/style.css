@@ -1294,6 +1294,50 @@ a {
   }
 }
 
+/* Category Groups */
+.category-group {
+  border: 1px solid var(--color-bg-light);
+  border-radius: var(--radius-md);
+  margin-bottom: var(--spacing-4);
+  overflow: hidden;
+}
+
+.category-main {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: var(--spacing-2);
+  background-color: var(--color-bg-white);
+}
+
+.toggle-subcategories {
+  width: 24px;
+  height: 24px;
+  border: none;
+  background: none;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--color-text-secondary);
+}
+
+.toggle-subcategories:hover {
+  color: var(--color-primary);
+}
+
+.subcategory-list {
+  padding: var(--spacing-2);
+  background-color: var(--color-bg-light);
+}
+
+.subcategory-list .checkbox-container {
+  padding-left: var(--spacing-6);
+}
+
+.subcategory-list.hidden {
+  display: none;
+}
 
 /* Notification Styles */
 #notification-container {
@@ -1681,262 +1725,284 @@ body.noscroll {
   }
 }
 
-/* Mobile-First Products Layout */
+/* Hide mobile elements by default */
+.mobile-controls,
+.mobile-panel {
+    display: none;
+}
+
+/* Mobile Styles */
 @media (max-width: 768px) {
-  /* Top Controls Container */
-  .mobile-controls {
-      position: fixed;
-      top: 0;
-      left: 0;
-      right: 0;
-      display: flex;
-      flex-direction: column;
-      gap: 0.75rem;
-      background: var(--color-bg-white);
-      padding: 1rem;
-      box-shadow: var(--shadow-md);
-      z-index: 100;
-  }
+    /* Hide desktop elements */
+    .products-sidebar {
+        display: none;
+    }
 
-  /* Search Bar */
-  .mobile-search {
-      width: 100%;
-  }
+    .view-toggle {
+        display: none;
+    }
 
-  .mobile-search input {
-      width: 100%;
-      padding: 0.75rem 1rem 0.75rem 2.5rem;
-      border-radius: var(--radius-full);
-      border: 1px solid var(--color-bg-light);
-      background-color: var(--color-bg-light);
-  }
+    /* Header */
+    .header {
+        position: relative; /* Change from fixed to relative */
+        width: 100%;
+        z-index: 1;
+    }
 
-  .mobile-actions {
-      display: flex;
-      gap: 0.75rem;
-  }
+    /* Mobile Controls */
+    .mobile-controls {
+        position: sticky;
+        top: 0;
+        left: 0;
+        right: 0;
+        display: flex;
+        flex-direction: column;
+        gap: 0.75rem;
+        padding: 1rem;
+        background: var(--color-bg-white);
+        z-index: 50;
+        box-shadow: var(--shadow-md);
+    }
 
-  .mobile-action-btn {
-      flex: 1;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 0.5rem;
-      padding: 0.75rem;
-      background: var(--color-bg-light);
-      border: none;
-      border-radius: var(--radius-md);
-      color: var(--color-text-primary);
-      font-size: 0.875rem;
-      font-weight: 500;
-      cursor: pointer;
-  }
+    /* Search Bar */
+    .mobile-search input {
+        width: 100%;
+        padding: 0.75rem 1rem 0.75rem 2.5rem;
+        border-radius: var(--radius-full);
+        border: 1px solid var(--color-bg-light);
+        background-color: var(--color-bg-light);
+        font-size: 1rem;
+    }
 
-  .mobile-action-btn:hover {
-      background: var(--color-bg-dark);
-      color: var(--color-text-light);
-  }
+    /* Action Buttons */
+    .mobile-actions {
+        display: flex;
+        gap: 0.75rem;
+    }
 
-  /* Filter Count */
-  .filter-count {
-      color: var(--color-primary);
-  }
+    .mobile-action-btn {
+        flex: 1;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 0.5rem;
+        padding: 0.75rem;
+        background: var(--color-bg-light);
+        border: none;
+        border-radius: var(--radius-md);
+        color: var(--color-text-primary);
+        font-size: 0.875rem;
+        font-weight: 500;
+        cursor: pointer;
+    }
 
-  /* Panel Base Styles */
-  .mobile-panel {
-      position: fixed;
-      inset: 0;
-      background: rgba(0, 0, 0, 0.5);
-      z-index: 1000;
-      opacity: 0;
-      visibility: hidden;
-      transition: opacity 0.3s ease;
-  }
+    /* Adjust main content position */
+    .products-main {
+        margin-top: 0; /* Remove margin since we don't have fixed positioning anymore */
+        padding: 1rem;
+    }
 
-  .mobile-panel.active {
-      opacity: 1;
-      visibility: visible;
-  }
+    /* Mobile Panels */
+    .mobile-panel {
+        display: none;
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: rgba(0, 0, 0, 0.5);
+        z-index: 1000;
+    }
 
-  .mobile-panel .panel-content {
-      position: absolute;
-      bottom: 0;
-      left: 0;
-      right: 0;
-      background: var(--color-bg-white);
-      border-radius: var(--radius-lg) var(--radius-lg) 0 0;
-      transform: translateY(100%);
-      transition: transform 0.3s ease;
-      max-height: 80vh;
-      overflow-y: auto;
-  }
+    .mobile-panel.active {
+        display: block;
+    }
 
-  .mobile-panel.active .panel-content {
-      transform: translateY(0);
-  }
+    .panel-content {
+        position: fixed;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        background: white;
+        border-radius: 16px 16px 0 0;
+        padding: 16px;
+        transform: translateY(100%);
+        transition: transform 0.3s ease-out;
+    }
 
-  .panel-content {
-      position: absolute;
-      bottom: 0;
-      left: 0;
-      right: 0;
-      background: var(--color-bg-white);
-      border-radius: var(--radius-lg) var(--radius-lg) 0 0;
-      transform: translateY(100%);
-      transition: transform 0.3s ease;
-      max-height: 80vh;
-      overflow-y: auto;
-  }
+    .mobile-panel.active .panel-content {
+        transform: translateY(0);
+    }
 
-  .mobile-panel.active .panel-content {
-      transform: translateY(0);
-  }
+    .mobile-panel .category-group {
+        margin-bottom: var(--spacing-4);
+        background: var(--color-bg-white);
+        border-radius: var(--radius-md);
+    }
+    
+    .mobile-panel .category-main {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: var(--spacing-3);
+        border-bottom: 1px solid var(--color-bg-light);
+    }
+    
+    .mobile-panel .toggle-subcategories {
+        width: 24px;
+        height: 24px;
+        border: none;
+        background: none;
+        color: var(--color-text-secondary);
+        font-size: 1.25rem;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+    
+    .mobile-panel .subcategory-list {
+        padding: var(--spacing-2);
+    }
+    
+    .mobile-panel .subcategory-list .checkbox-container {
+        padding: var(--spacing-2) var(--spacing-6);
+    }
+    
+    .mobile-panel .subcategory-list.hidden {
+        display: none;
+    }
+    
+    /* Improve touch targets for mobile */
+    .mobile-panel .checkbox-container {
+        min-height: 44px;
+        display: flex;
+        align-items: center;
+    }
+    
+    .mobile-panel .checkmark {
+        width: 24px;
+        height: 24px;
+    }
 
-  /* Panel Header */
-  .panel-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      padding: 1rem;
-      border-bottom: 1px solid var(--color-bg-light);
-      position: sticky;
-      top: 0;
-      background: var(--color-bg-white);
-      z-index: 1;
-  }
+    /* Panel Header */
+    .panel-header {
+        padding: 1rem;
+        border-bottom: 1px solid var(--color-bg-light);
+        position: sticky;
+        top: 0;
+        background: var(--color-bg-white);
+        z-index: 1;
+    }
 
-  .panel-title {
-      font-size: 1.125rem;
-      font-weight: 600;
-  }
+    .panel-title {
+        font-size: 1.25rem;
+        font-weight: 600;
+        margin: 0;
+    }
 
-  /* Panel Body */
-  .panel-body {
-      padding: 1rem;
-  }
+    /* Panel Body */
+    .panel-body {
+        padding: 1rem;
+    }
 
-  /* Filter Options */
-  .filter-section {
-      margin-bottom: 1.5rem;
-  }
+    /* Filter Options */
+    .panel-body .filter-section {
+        margin-bottom: 1.5rem;
+    }
 
-  .filter-section:last-child {
-      margin-bottom: 0;
-  }
+    .panel-body .filter-section h3 {
+        font-size: 1rem;
+        margin-bottom: 1rem;
+        color: var(--color-text-primary);
+    }
 
-  .filter-section h3 {
-      font-size: 1rem;
-      margin-bottom: 1rem;
-  }
+    /* Checkboxes */
+    .panel-body .checkbox-container {
+        display: flex;
+        align-items: center;
+        padding: 0.75rem 0;
+        cursor: pointer;
+    }
 
-  /* Sort Options */
-  .sort-option {
-      display: flex;
-      align-items: center;
-      width: 100%;
-      padding: 1rem;
-      border: none;
-      background: none;
-      text-align: left;
-      font-size: 1rem;
-      color: var(--color-text-primary);
-      cursor: pointer;
-  }
+    .panel-body .checkmark {
+        margin-right: 12px;
+        width: 20px;
+        height: 20px;
+        background: var(--color-bg-white);
+        border: 2px solid var(--color-bg-light);
+        border-radius: 4px;
+        position: relative;
+    }
 
-  .sort-option.active {
-      color: var(--color-primary);
-      font-weight: 600;
-  }
+    .panel-body .checkbox-container input:checked ~ .checkmark {
+        background: var(--color-primary);
+        border-color: var(--color-primary);
+    }
 
-  /* Panel Actions */
-  .panel-actions {
-      display: flex;
-      gap: 1rem;
-      padding: 1rem;
-      border-top: 1px solid var(--color-bg-light);
-      position: sticky;
-      bottom: 0;
-      background: var(--color-bg-white);
-  }
+    .panel-body .checkmark:after {
+        content: "";
+        position: absolute;
+        display: none;
+        left: 6px;
+        top: 2px;
+        width: 5px;
+        height: 10px;
+        border: solid white;
+        border-width: 0 2px 2px 0;
+        transform: rotate(45deg);
+    }
 
-  .panel-btn {
-      flex: 1;
-      padding: 0.75rem;
-      border-radius: var(--radius-md);
-      font-size: 0.875rem;
-      font-weight: 500;
-      cursor: pointer;
-      transition: all 0.2s ease;
-  }
+    .panel-body .checkbox-container input:checked ~ .checkmark:after {
+        display: block;
+    }
 
-  .btn-cancel {
-      background: var(--color-bg-light);
-      border: none;
-      color: var(--color-text-primary);
-  }
+    /* Sort Options */
+    .sort-option {
+        width: 100%;
+        padding: 1rem;
+        text-align: left;
+        background: none;
+        border: none;
+        color: var(--color-text-primary);
+        font-size: 1rem;
+        cursor: pointer;
+    }
 
-  .btn-apply {
-      background: var(--color-primary);
-      border: none;
-      color: white;
-  }
+    .sort-option.active {
+        color: var(--color-primary);
+        font-weight: 600;
+    }
 
-  /* Hide desktop elements */
-  .products-sidebar,
-  .view-toggle {
-      display: none;
-  }
+    /* Panel Actions */
+    .panel-actions {
+        padding: 1rem;
+        border-top: 1px solid var(--color-bg-light);
+        display: flex;
+        gap: 1rem;
+        position: sticky;
+        bottom: 0;
+        background: var(--color-bg-white);
+    }
 
-  /* Adjust main content */
-  .products-main {
-      margin-top: 120px;
-      padding: 1rem;
-  }
+    .panel-btn {
+        flex: 1;
+        padding: 0.75rem;
+        border-radius: var(--radius-md);
+        font-size: 0.875rem;
+        font-weight: 500;
+        cursor: pointer;
+    }
 
-  .products-sidebar .filter-section {
-      display: none; /* Hide desktop filters on mobile */
-  }
+    .btn-cancel {
+        background: var(--color-bg-light);
+        border: none;
+        color: var(--color-text-primary);
+    }
 
-  .panel-body .filter-section {
-      padding: 1rem 0;
-      border-bottom: 1px solid var(--color-bg-light);
-  }
-
-  .panel-body .filter-section:last-child {
-      border-bottom: none;
-  }
-
-  .panel-body .filter-section h3 {
-      color: var(--color-text-primary);
-      font-size: 1rem;
-      font-weight: 600;
-      margin-bottom: 1rem;
-  }
-
-  .panel-body .checkbox-container {
-      display: flex;
-      align-items: center;
-      padding: 0.75rem 0;
-      margin: 0;
-      cursor: pointer;
-  }
-
-  .panel-body .checkmark {
-      margin-right: 0.75rem;
-  }
-
-  .panel-body .filter-options {
-      display: flex;
-      flex-direction: column;
-      gap: 0.25rem;
-  }
-
-  /* Override any desktop specific padding/margins */
-  .panel-body .filter-section {
-      margin: 0;
-  }
-
-  .panel-body .filter-options label {
-      margin: 0;
-  }
+    .btn-apply {
+        background: var(--color-primary);
+        border: none;
+        color: white;
+    }
 }
