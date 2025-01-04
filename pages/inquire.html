@@ -9,6 +9,7 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <!-- Add Papa Parse -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.3.0/papaparse.min.js"></script>
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
 </head>
 <body>
     <div id="notification-container"></div>
@@ -30,7 +31,6 @@
 
             <!-- Desktop Navigation -->
             <div class="header__links hide-for-mobile">
-                <a href="collections.html">Collections</a>
                 <a href="products.html">Products</a>
                 <a href="events.html">Upcoming Events</a>
                 <a href="about.html">About</a>
@@ -47,7 +47,6 @@
 
             <!-- Mobile Menu -->
             <div class="header__menu has-fade">
-                <a href="collections.html">Collections</a>
                 <a href="products.html">Products</a>
                 <a href="events.html">Upcoming Events</a>
                 <a href="about.html">About</a>
@@ -58,6 +57,15 @@
             </div>
         </nav>
     </header>
+
+    <!-- Disclaimer Section --> 
+    <section class="disclaimer">
+        <div class="container">
+            <p>
+            The artwork designs used in our products are not owned by us. We only own the materials used to create the products but do not hold any rights to the designs themselves.
+            </p>
+        </div>
+    </section>
 
     <main class="inquire-page">
         <div class="container container--pall">
@@ -98,9 +106,9 @@
                             <label>What products are you interested in?</label>
                             <div class="checkbox-grid">
                                 <label class="checkbox-container">
-                                    <input type="checkbox" name="productInterest" value="freshies">
+                                    <input type="checkbox" name="productInterest" value="freshies-charms">
                                     <span class="checkmark"></span>
-                                    Freshies
+                                    Freshies & Car Charms
                                 </label>
                                 <label class="checkbox-container">
                                     <input type="checkbox" name="productInterest" value="cups">
@@ -108,13 +116,18 @@
                                     Custom Cups
                                 </label>
                                 <label class="checkbox-container">
-                                    <input type="checkbox" name="productInterest" value="slates">
+                                    <input type="checkbox" name="productInterest" value="photo-slates">
                                     <span class="checkmark"></span>
-                                    Decorative Slates
+                                    Photo Slates
+                                </label>
+                                <label class="checkbox-container">
+                                    <input type="checkbox" name="productInterest" value="accessories-home">
+                                    <span class="checkmark"></span>
+                                    Accessories & Home
                                 </label>
                             </div>
                         </div>
-
+                    
                         <div class="form__group">
                             <label for="specificProducts">Specific Products</label>
                             <select id="specificProducts" name="specificProducts" multiple>
@@ -216,71 +229,5 @@
     </footer>
 
     <script src="/app/js/script.js"></script>
-    <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            const form = document.getElementById('inquiryForm');
-
-            form.addEventListener('submit', async function(e) {
-                e.preventDefault();
-
-                // Gather form data
-                const formData = new FormData(form);
-                const data = {
-                    firstName: formData.get('firstName'),
-                    lastName: formData.get('lastName'),
-                    email: formData.get('email'),
-                    phone: formData.get('phone'),
-                    productInterest: formData.getAll('productInterest'),
-                    specificProducts: formData.getAll('specificProducts'),
-                    customRequest: formData.get('customRequest'),
-                    contactPreference: formData.get('contactPreference')
-                };
-
-                try {
-                    // Here you would typically send this to your server
-                    // For now, we'll just show a success notification
-                    const notifications = new NotificationSystem();
-                    notifications.success(
-                        'Inquiry Sent!',
-                        'Thank you for your inquiry. We\'ll get back to you shortly.'
-                    );
-                    form.reset();
-                } catch (error) {
-                    const notifications = new NotificationSystem();
-                    notifications.error(
-                        'Error',
-                        'There was a problem sending your inquiry. Please try again.'
-                    );
-                }
-            });
-
-            // Load products for the dropdown
-            async function loadProducts() {
-                try {
-                    const response = await fetch('/app/data/products.csv');
-                    const csvText = await response.text();
-                    
-                    Papa.parse(csvText, {
-                        header: true,
-                        complete: function(results) {
-                            const select = document.getElementById('specificProducts');
-                            results.data.forEach(product => {
-                                if (product.title) {
-                                    const option = document.createElement('option');
-                                    option.value = product.title;
-                                    option.textContent = product.title;
-                                    select.appendChild(option);
-                                }
-                            });
-                        }
-                    });
-                } catch (error) {
-                    console.error('Error loading products:', error);
-                }
-            }
-
-            loadProducts();
-        });
-    </script>
 </body>
 </html>

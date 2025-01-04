@@ -1,3 +1,89 @@
+// Configuration settings
+const CONFIG = {
+    email: {
+        recipient: 'stevenmanz063018@gmail.com',
+        serviceID: 'YOUR_EMAILJS_SERVICE_ID',
+        templateID: {
+            quickInquiry: 'YOUR_QUICK_TEMPLATE_ID',
+            fullInquiry: 'YOUR_FULL_TEMPLATE_ID'
+        },
+        publicKey: 'YOUR_EMAILJS_PUBLIC_KEY'
+    }
+};
+
+function generateEmailContent(formData, formType) {
+    let content = '';
+    
+    if (formType === 'quick') {
+        content = `
+Name: ${formData.name}
+Email: ${formData.email}
+Product Type: ${formData.product}
+${formData.specificProduct ? `Specific Product: ${formData.specificProduct}` : ''}
+Question: ${formData.message}
+Preferred Contact: ${formData.contactPreference}
+${formData.phone ? `Phone: ${formData.phone}` : ''}
+        `;
+    } else if (formType === 'full') {
+        content = `
+Name: ${formData.firstName} ${formData.lastName}
+Email: ${formData.email}
+${formData.phone ? `Phone: ${formData.phone}` : ''}
+Product Interest: ${formData.productInterest.join(', ')}
+${formData.specificProducts.length ? `Specific Products: ${formData.specificProducts.join(', ')}` : ''}
+Custom Request: ${formData.customRequest}
+Preferred Contact: ${formData.contactPreference}
+        `;
+    }
+    
+    return content.trim();
+}
+
+async function sendEmail(formData, formType) {
+    if (debugProductLoading) {
+        console.log('Attempting to send email:', {
+            type: formType,
+            formData: formData,
+            emailjsAvailable: typeof emailjs !== 'undefined'
+        });
+    }
+
+    if (typeof emailjs === 'undefined') {
+        throw new Error('Email service not available');
+    }
+
+    const templateID = formType === 'quick' ? 
+        CONFIG.email.templateID.quickInquiry : 
+        CONFIG.email.templateID.fullInquiry;
+
+    try {
+        if (debugProductLoading) {
+            console.log('Sending email with config:', {
+                serviceID: CONFIG.email.serviceID,
+                templateID: templateID
+            });
+        }
+
+        await emailjs.send(
+            CONFIG.email.serviceID,
+            templateID,
+            {
+                to_email: CONFIG.email.recipient,
+                ...formData
+            }
+        );
+
+        if (debugProductLoading) {
+            console.log('Email sent successfully');
+        }
+
+        return true;
+    } catch (error) {
+        console.error('Email send failed:', error);
+        throw error;
+    }
+}
+
 // Utility Functions - Moved to top for availability
 function debounce(func, wait) {
     let timeout;
@@ -35,9 +121,9 @@ class NotificationSystem {
         const notification = document.createElement('div');
         notification.className = `notification ${type}`;
         
-        const icon = type === 'error' ? '❌' : 
-                    type === 'warning' ? '⚠️' : 
-                    '✅';
+        const icon = type === 'error' ? 'âŒ' : 
+                    type === 'warning' ? 'âš ï¸' : 
+                    'âœ…';
 
         notification.innerHTML = `
             <span class="notification__icon">${icon}</span>
@@ -45,7 +131,7 @@ class NotificationSystem {
                 <div class="notification__title">${title}</div>
                 <div class="notification__message">${message}</div>
             </div>
-            <button class="notification__close">×</button>
+            <button class="notification__close">Ã—</button>
         `;
 
         this.container.appendChild(notification);
@@ -87,10 +173,16 @@ let allProducts = [];
 
 // Add debug flag
 let debugProductLoading = true;
+let debugFeaturedProducts = true;
 
 // Products Functionality
 async function loadProducts(onComplete) {
-    if (debugProductLoading) console.log('loadProducts called');
+    if (debugProductLoading) {
+        console.log('loadProducts called');
+        console.log('Current URL:', window.location.pathname);
+        console.log('Attempting to fetch products.csv...');
+    }
+
     try {
         const response = await fetch('/app/data/products.csv');
         if (!response.ok) {
@@ -98,35 +190,67 @@ async function loadProducts(onComplete) {
         }
         
         const csvText = await response.text();
-        if (debugProductLoading) console.log('CSV fetched successfully');
+        if (debugProductLoading) {
+            console.log('CSV fetched successfully');
+            console.log('First 200 chars of CSV:', csvText.substring(0, 200));
+        }
         
         Papa.parse(csvText, {
             header: true,
             skipEmptyLines: true,
             complete: function(results) {
+                if (debugProductLoading) {
+                    console.log('Papa Parse complete');
+                    console.log('Parse errors:', results.errors);
+                    console.log('Number of rows:', results.data.length);
+                    if (results.data.length > 0) {
+                        console.log('Sample row:', results.data[0]);
+                    }
+                }
+
                 if (results.errors.length > 0) {
                     console.error('Parse errors:', results.errors);
                     return;
                 }
                 
-                // Process the products with null checks
-                allProducts = results.data.map(product => ({
-                    ...product,
-                    tags: product.tags ? product.tags.split('|') : [],
-                    price: parseFloat(product.price) || 0,
-                    isNew: product.isNew === 'TRUE',
-                    isFeatured: product.isFeatured === 'TRUE'
-                }));
+                allProducts = results.data.map(product => {
+                    const processed = {
+                        ...product,
+                        tags: product.tags ? product.tags.split('|') : [],
+                        price: parseFloat(product.price) || 0,
+                        isNew: product.isNew === 'TRUE',
+                        isFeatured: product.isFeatured === 'TRUE'
+                    };
+                    if (debugProductLoading) {
+                        console.log('Processed product:', processed);
+                    }
+                    return processed;
+                });
+
+                if (debugProductLoading) {
+                    console.log('All products processed');
+                    console.log('Total products:', allProducts.length);
+                }
 
                 // If we're on the index page, populate featured products
-                if (document.querySelector('.category-section')) {
+                const categorySection = document.querySelector('.category-section');
+                if (categorySection) {
+                    if (debugProductLoading) {
+                        console.log('Found category section, calling populateFeaturedProducts');
+                    }
                     populateFeaturedProducts();
                 }
 
-                // If callback provided, execute it (for products page)
+                // If callback provided, execute it
                 if (onComplete && typeof onComplete === 'function') {
+                    if (debugProductLoading) {
+                        console.log('Executing onComplete callback');
+                    }
                     onComplete(allProducts);
                 }
+            },
+            error: function(error) {
+                console.error('Papa Parse error:', error);
             }
         });
     } catch (error) {
@@ -135,58 +259,211 @@ async function loadProducts(onComplete) {
             'Data Load Error',
             'Unable to load product data. Please refresh the page.'
         );
+        throw error; // Re-throw to be caught by the caller
     }
+}
+
+function populateNewReleases() {
+    if (debugProductLoading) console.log('populateNewReleases called');
+    
+    const newReleasesGrid = document.querySelector('#new-releases .products-grid');
+    if (!newReleasesGrid) {
+        if (debugProductLoading) console.log('New releases grid not found');
+        return;
+    }
+
+    // Get new products
+    const newProducts = allProducts
+        .filter(product => product.isNew === 'TRUE' || product.isNew === true)
+        .reduce((acc, product) => {
+            // Only take first product from each category if we don't have it yet
+            if (!acc.some(p => p.category === product.category) && acc.length < 3) {
+                acc.push(product);
+            }
+            return acc;
+        }, []);
+
+    if (debugProductLoading) {
+        console.log('Found new products:', newProducts);
+    }
+
+    // Update each product card slot
+    const productCards = newReleasesGrid.querySelectorAll('.product-card');
+    productCards.forEach((card, index) => {
+        const product = newProducts[index];
+        
+        const imageElement = card.querySelector('img');
+        const titleElement = card.querySelector('h3');
+        const priceElement = card.querySelector('.price');
+
+        if (product) {
+            if (imageElement) {
+                imageElement.src = product.imagePath || '/images/placeholder.jpg';
+                imageElement.alt = product.title;
+            }
+            if (titleElement) {
+                titleElement.textContent = product.title;
+            }
+            if (priceElement) {
+                priceElement.textContent = `$${parseFloat(product.price).toFixed(2)}`;
+            }
+        }
+    });
 }
 
 // Add this new function to handle featured products on the index page
 function populateFeaturedProducts() {
-    const categories = ['freshies-charms', 'cups', 'photo-slates', 'accessories-home'];
+    if (debugFeaturedProducts) console.log('populateFeaturedProducts called');
     
-    categories.forEach(category => {
-        const section = document.getElementById(category);
-        if (!section) return;
+    const sections = [
+        {
+            id: 'freshies-charms',
+            category: 'freshies-charms'
+        },
+        {
+            id: 'cups',
+            category: 'cups'
+        },
+        {
+            id: 'photo-slates',
+            category: 'photo-slates'
+        },
+        {
+            id: 'accessories-home',
+            category: 'accessories-home'
+        }
+    ];
 
-        const productsGrid = section.querySelector('.products-grid');
-        if (!productsGrid) return;
+    if (debugFeaturedProducts) {
+        console.log('Current allProducts:', allProducts);
+        console.log('Total products loaded:', allProducts.length);
+    }
+
+    // Process each section
+    sections.forEach(section => {
+        const sectionGrid = document.querySelector(`#${section.id} .products-grid`);
+        if (!sectionGrid) {
+            if (debugFeaturedProducts) console.log(`Grid not found for section: ${section.id}`);
+            return;
+        }
 
         // Get featured products for this category
-        const featuredProducts = allProducts
-            .filter(product => product.category === category && product.isFeatured === true)
-            .slice(0, 3); // Get up to 3 featured products
+        const featuredProducts = allProducts.filter(product => {
+            const isCorrectCategory = product.category === section.category;
+            const isFeatured = product.isFeatured === true || product.isFeatured === 'TRUE';
+            
+            if (debugFeaturedProducts) {
+                console.log(`Product: ${product.title}`);
+                console.log(`Category check (${section.category}):`, isCorrectCategory);
+                console.log('Featured check:', isFeatured);
+                console.log('Raw isFeatured value:', product.isFeatured);
+            }
+            
+            return isCorrectCategory && isFeatured;
+        }).slice(0, 3);
 
-        // Update the grid with featured products
-        productsGrid.innerHTML = featuredProducts.map(product => `
-            <div class="product-card">
-                <div class="product-image">
-                    <img src="${product.imagePath}" alt="${product.title}" />
-                </div>
-                <div class="product-info">
-                    <h3>${product.title}</h3>
-                    <p class="price">$${product.price.toFixed(2)}</p>
-                </div>
-            </div>
-        `).join('');
+        if (debugFeaturedProducts) {
+            console.log(`Featured ${section.id} found:`, featuredProducts);
+            console.log(`Number of featured ${section.id}:`, featuredProducts.length);
+        }
+
+        // Get all product card slots in this section
+        const productCards = sectionGrid.querySelectorAll('.product-card');
+        
+        if (debugFeaturedProducts) {
+            console.log(`Found product card slots for ${section.id}:`, productCards.length);
+        }
+
+        // Update each product card slot
+        productCards.forEach((card, index) => {
+            const product = featuredProducts[index];
+            if (debugFeaturedProducts) {
+                console.log(`Updating ${section.id} slot ${index + 1}:`, product);
+            }
+
+            const imageElement = card.querySelector('img');
+            const titleElement = card.querySelector('h3');
+            const priceElement = card.querySelector('.price');
+
+            if (product) {
+                if (imageElement) {
+                    imageElement.src = product.imagePath || '/images/placeholder.jpg';
+                    imageElement.alt = product.title;
+                    if (debugFeaturedProducts) console.log(`Updated image for ${section.id}:`, product.imagePath);
+                }
+
+                if (titleElement) {
+                    titleElement.textContent = product.title;
+                    if (debugFeaturedProducts) console.log(`Updated title for ${section.id}:`, product.title);
+                }
+
+                if (priceElement) {
+                    priceElement.textContent = `$${parseFloat(product.price).toFixed(2)}`;
+                    if (debugFeaturedProducts) console.log(`Updated price for ${section.id}:`, product.price);
+                }
+
+                // Add new product badge if applicable
+                if (product.isNew === true || product.isNew === 'TRUE') {
+                    const existingBadge = card.querySelector('.product-badge.new');
+                    if (!existingBadge) {
+                        const badge = document.createElement('div');
+                        badge.className = 'product-badge new';
+                        badge.textContent = 'New';
+                        card.querySelector('.product-image').appendChild(badge);
+                    }
+                }
+            } else {
+                // Keep default placeholder state
+                if (debugFeaturedProducts) console.log(`No product data for ${section.id} slot ${index + 1}`);
+                if (imageElement) imageElement.src = '/images/placeholder.jpg';
+                if (titleElement) titleElement.textContent = 'Loading...';
+                if (priceElement) priceElement.textContent = '$0.00';
+            }
+        });
     });
 }
 
 // Product List Update Function - Now with debounce applied
-const updateProductsList = debounce(() => {
-    if (debugProductLoading) console.log('updateProductsList called');
+function updateProductsList() {
+    if (debugProductLoading) {
+        console.log('Updating products list');
+        console.log('Current allProducts:', allProducts);
+    }
+    
     const select = document.getElementById('specificProducts');
     if (!select) {
-        if (debugProductLoading) console.log('No select element found');
+        if (debugProductLoading) console.log('No products select element found');
         return;
     }
     
-    // Get selected categories with null check
+    // Get selected categories
     const selectedCategories = Array.from(document.querySelectorAll('input[name="productInterest"]:checked'))
         .map(checkbox => checkbox.value.toLowerCase());
+    
+    if (debugProductLoading) {
+        console.log('Selected categories:', selectedCategories);
+        console.log('Number of products before filtering:', allProducts.length);
+    }
     
     // Clear existing options
     select.innerHTML = '';
     
-    // Sort products based on selected categories
-    const sortedProducts = [...allProducts].sort((a, b) => {
+    // Filter and sort products based on selected categories
+    let relevantProducts = allProducts;
+    
+    // Only filter by category if categories are selected
+    if (selectedCategories.length > 0) {
+        relevantProducts = allProducts.filter(product => {
+            const productCategory = (product.category || '').toLowerCase();
+            if (debugProductLoading) {
+                console.log('Checking product:', product.title, 'Category:', productCategory);
+            }
+            return selectedCategories.includes(productCategory);
+        });
+    }
+
+    // Sort products
+    relevantProducts.sort((a, b) => {
         const aCategory = (a.category || '').toLowerCase();
         const bCategory = (b.category || '').toLowerCase();
         
@@ -195,14 +472,17 @@ const updateProductsList = debounce(() => {
         
         if (aSelected && !bSelected) return -1;
         if (!aSelected && bSelected) return 1;
-        if (aSelected === bSelected && aSelected) {
-            return selectedCategories.indexOf(aCategory) - selectedCategories.indexOf(bCategory);
-        }
-        return 0;
+        
+        return a.title.localeCompare(b.title);
     });
+
+    if (debugProductLoading) {
+        console.log('Filtered products:', relevantProducts);
+        console.log('Number of products after filtering:', relevantProducts.length);
+    }
     
-    // Add sorted product options with null checks
-    sortedProducts.forEach(product => {
+    // Add sorted product options
+    relevantProducts.forEach(product => {
         if (product.title) {
             const option = document.createElement('option');
             option.value = product.title;
@@ -216,14 +496,14 @@ const updateProductsList = debounce(() => {
             select.appendChild(option);
         }
     });
-}, 100);
+}
 
 const CATEGORY_MAPPING = {
     'freshies-charms': ['freshies', 'beaded-car-charms'],
-    'cups': ['sublimation-tumblers', 'water-bottles', 'kids-cups', 'coasters'],
+    'cups': ['sublimation-tumblers', 'water-bottles', 'kids-cups'],
     'photo-slates': ['photo-slates'],
-    'accessories-home': ['keychains', 'sanitizer-holders', 'lipstick-holders', 'spinners', 'cutting-boards', 'license-plates']
-  };  
+    'accessories-home': ['keychains', 'sanitizer-holders', 'lipstick-holders', 'wind-spinners', 'coasters', 'cutting-boards', 'license-plates']
+  };
 
 // Function to update products display
 function updateProductsDisplay(products) {
@@ -294,63 +574,83 @@ function filterProducts() {
         const productsContainer = document.getElementById('productsContainer');
         const productsCount = document.querySelector('.products-count span');
         
-        // Get selected categories
-        const selectedMainCategories = Array.from(document.querySelectorAll('input[data-category-type="main"]:checked'))
-            .map(cb => cb.value);
-            
-        const selectedSubCategories = Array.from(document.querySelectorAll('input[data-category-type="sub"]:checked'))
-            .map(cb => cb.value);
+        // Initialize filteredProducts first
+        let filteredProducts = [...allProducts];
 
-        let filteredProducts = allProducts;
+        // Get URL parameters
+        const urlParams = new URLSearchParams(window.location.search);
+        const collectionFilter = urlParams.get('collection');
+        const showCollections = urlParams.get('filter') === 'collections';
+        const showNew = urlParams.get('filter') === 'new';
+
+        // Auto-check filters based on URL parameters
+        if (showNew) {
+            // Find and check the "New Arrivals" checkbox
+            const newArrivalsCheckbox = document.querySelector('input[value="new"][data-filter-type="tag"]');
+            if (newArrivalsCheckbox) {
+                newArrivalsCheckbox.checked = true;
+            }
+        }
+
+        if (collectionFilter) {
+            // Find and check the specific collection checkbox
+            const collectionCheckbox = document.querySelector(`input[value="${collectionFilter}"][data-filter-type="collection"]`);
+            if (collectionCheckbox) {
+                collectionCheckbox.checked = true;
+            }
+        }
+
+        if (showCollections) {
+            // Check all collection checkboxes
+            const collectionCheckboxes = document.querySelectorAll('input[data-filter-type="collection"]');
+            collectionCheckboxes.forEach(checkbox => {
+                checkbox.checked = true;
+            });
+        }
 
         // Apply search filter first
         if (searchTerm) {
             filteredProducts = filteredProducts.filter(product => {
-                // Search in title
-                if (product.title.toLowerCase().includes(searchTerm)) return true;
-                
-                // Search in category
-                if (product.category.toLowerCase().includes(searchTerm)) return true;
-                
-                // Search in subcategory
-                if (product.subcategory.toLowerCase().includes(searchTerm)) return true;
-                
-                // Search in collection (if exists)
-                if (product.collection && product.collection.toLowerCase().includes(searchTerm)) return true;
-                
-                // Search in tags
-                if (product.tags && Array.isArray(product.tags)) {
-                    if (product.tags.some(tag => tag.toLowerCase().includes(searchTerm))) return true;
-                }
-                
-                // Search in description
-                if (product.description && product.description.toLowerCase().includes(searchTerm)) return true;
-                
-                return false;
+                return (
+                    product.title?.toLowerCase().includes(searchTerm) ||
+                    product.category?.toLowerCase().includes(searchTerm) ||
+                    product.subcategory?.toLowerCase().includes(searchTerm) ||
+                    product.collection?.toLowerCase().includes(searchTerm) ||
+                    (product.tags && Array.isArray(product.tags) && 
+                     product.tags.some(tag => tag.toLowerCase().includes(searchTerm))) ||
+                    product.description?.toLowerCase().includes(searchTerm)
+                );
             });
         }
 
-        // Apply category filters
-        if (selectedMainCategories.length > 0 || selectedSubCategories.length > 0) {
-            filteredProducts = filteredProducts.filter(product => {
-                // If only main categories are selected (no subcategories selected)
-                if (selectedMainCategories.length > 0 && selectedSubCategories.length === 0) {
-                    return selectedMainCategories.includes(product.category);
-                }
-                
-                // If only subcategories are selected (no main categories selected)
-                if (selectedSubCategories.length > 0 && selectedMainCategories.length === 0) {
-                    return selectedSubCategories.includes(product.subcategory);
-                }
-                
-                // If both main and subcategories are selected
-                if (selectedMainCategories.length > 0 && selectedSubCategories.length > 0) {
-                    return selectedMainCategories.includes(product.category) && 
-                           selectedSubCategories.includes(product.subcategory);
-                }
-                
-                return false;
-            });
+        // Apply New filter
+        if (showNew || document.querySelector('input[value="new"][data-filter-type="tag"]:checked')) {
+            filteredProducts = filteredProducts.filter(product => 
+                product.isNew === 'TRUE' || product.isNew === true
+            );
+        }
+
+        // Apply Collection filters
+        if (showCollections) {
+            // Show all products that have any collection
+            filteredProducts = filteredProducts.filter(product => 
+                product.collection && product.collection.trim() !== ''
+            );
+        } else if (collectionFilter) {
+            // Show products from specific collection
+            filteredProducts = filteredProducts.filter(product => 
+                product.collection && product.collection.toLowerCase() === collectionFilter.toLowerCase()
+            );
+        }
+
+        // Check if any collection checkboxes are manually checked
+        const checkedCollections = Array.from(document.querySelectorAll('input[data-filter-type="collection"]:checked'))
+            .map(checkbox => checkbox.value);
+        
+        if (checkedCollections.length > 0 && !showCollections && !collectionFilter) {
+            filteredProducts = filteredProducts.filter(product => 
+                product.collection && checkedCollections.includes(product.collection)
+            );
         }
 
         // Update the products display
@@ -615,20 +915,52 @@ function restoreFilterState() {
 
 // DOM Content Loaded Event Handler
 document.addEventListener('DOMContentLoaded', function() {
-    if (debugProductLoading) console.log('DOM Content Loaded');
+    // Initialize EmailJS
+    if (typeof emailjs !== 'undefined') {
+        emailjs.init(CONFIG.email.publicKey);
+    }
+    
+    if (debugProductLoading) {
+        console.log('DOM Content Loaded');
+        console.log('Current URL:', window.location.href);
+    }
 
+    // Initialize products page if applicable
     if (document.getElementById('productsContainer')) {
-        console.log('Initializing products page');
-        initializeMobileControls();
-        setupCategoryFilters(); // Add this line
+        if (debugProductLoading) console.log('Initializing products page');
         
-        // Load products and initialize page
-        loadProducts(() => {
-        filterProducts();
-        });
-
-        console.log('Initializing mobile controls for products page');
         initializeMobileControls();
+        setupCategoryFilters();
+        
+        loadProducts(() => {
+            if (debugProductLoading) console.log('Products loaded callback executed');
+            filterProducts();
+        }).catch(error => {
+            console.error('Error loading products:', error);
+        });
+    }
+    // Initialize index page if applicable
+    else if (document.querySelector('#new-releases') || document.querySelector('.category-section')) {
+        if (debugProductLoading) {
+            console.log('Initializing index page');
+        }
+
+        // Load products for index page
+        loadProducts(() => {
+            if (debugProductLoading) {
+                console.log('Products loaded for index page');
+                console.log('allProducts length:', allProducts.length);
+            }
+            // Populate both new releases and featured products
+            if (document.querySelector('#new-releases')) {
+                populateNewReleases();
+            }
+            if (document.querySelector('.category-section')) {
+                populateFeaturedProducts();
+            }
+        }).catch(error => {
+            console.error('Error loading products:', error);
+        });
     }
 
     // Make sure updateFilterCount is called when filters change
@@ -713,7 +1045,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 });
                 
                 answer.classList.toggle('active');
-                toggle.textContent = answer.classList.contains('active') ? '−' : '+';
+                toggle.textContent = answer.classList.contains('active') ? 'âˆ’' : '+';
             });
         });
     }
@@ -777,12 +1109,40 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     }
 
-    // Inquiry Form Initialization
+    // Initialize inquiry form if it exists
     const inquiryForm = document.getElementById('inquiryForm');
-    if (debugProductLoading) {
-        console.log('Page elements found:', {
-            inquiryForm: !!inquiryForm,
-            productsContainer: !!productsContainer
+    if (inquiryForm) {
+        if (debugProductLoading) console.log('Found inquiry form, initializing');
+        
+        loadProducts(() => {
+            if (debugProductLoading) {
+                console.log('Products loaded for inquiry form');
+                console.log('Products available:', allProducts.length);
+            }
+            initializeInquiryForm();
+        }).catch(error => {
+            console.error('Error loading products:', error);
+            notifications.error(
+                'Error',
+                'Unable to load products. Please refresh the page.'
+            );
+        });
+    }
+
+    // Initialize quick inquiry form if it exists
+    const quickInquiryForm = document.querySelector('#quick-inquiry form');
+    if (quickInquiryForm) {
+        if (debugProductLoading) console.log('Found quick inquiry form, initializing');
+        
+        loadProducts(() => {
+            if (debugProductLoading) console.log('Products loaded for quick inquiry form');
+            initializeQuickInquiryForm();
+        }).catch(error => {
+            console.error('Error loading products:', error);
+            notifications.error(
+                'Error',
+                'Unable to load products. Please refresh the page.'
+            );
         });
     }
 
@@ -810,7 +1170,7 @@ document.addEventListener('DOMContentLoaded', function() {
         const isHidden = subcategoryList.classList.contains('hidden');
         
         // Toggle button text
-        button.textContent = isHidden ? '−' : '+';
+        button.textContent = isHidden ? 'âˆ’' : '+';
         
         // Toggle subcategory list
         subcategoryList.classList.toggle('hidden');
@@ -843,23 +1203,100 @@ document.addEventListener('DOMContentLoaded', function() {
 
 // Separate function for inquiry form initialization with improved error handling
 function initializeInquiryForm() {
-    if (debugProductLoading) console.log('Initializing inquiry form functionality');
+    if (debugProductLoading) console.log('Initializing inquiry form');
     
-    // Do initial product list update
+    const form = document.getElementById('inquiryForm');
+    if (!form) {
+        if (debugProductLoading) console.log('No inquiry form found');
+        return;
+    }
+
+    if (debugProductLoading) {
+        console.log('Current allProducts status:', {
+            exists: !!allProducts,
+            length: allProducts ? allProducts.length : 0
+        });
+    }
+
+    // Initialize form validation
+    initializeFormValidation();
+
+    // Initial population of products list
     updateProductsList();
-    
-    // Add event listeners to product interest checkboxes
-    const productInterestCheckboxes = document.querySelectorAll('input[name="productInterest"]');
-    if (debugProductLoading) console.log('Found checkboxes:', productInterestCheckboxes.length);
-    
-    productInterestCheckboxes.forEach(checkbox => {
-        // Remove any existing event listeners (using clone technique for safety)
-        const newCheckbox = checkbox.cloneNode(true);
-        checkbox.parentNode.replaceChild(newCheckbox, checkbox);
+
+    // Handle form submission
+    form.addEventListener('submit', async function(e) {
+        e.preventDefault();
+
+        if (debugProductLoading) console.log('Form submitted');
+
+        // Gather form data
+        const formData = new FormData(form);
+        const data = {
+            firstName: formData.get('firstName'),
+            lastName: formData.get('lastName'),
+            email: formData.get('email'),
+            phone: formData.get('phone'),
+            productInterest: formData.getAll('productInterest'),
+            specificProducts: formData.getAll('specificProducts'),
+            customRequest: formData.get('customRequest'),
+            contactPreference: formData.get('contactPreference')
+        };
+
+        // Add event listeners to product interest checkboxes
+        const productInterestCheckboxes = form.querySelectorAll('input[name="productInterest"]');
+        if (debugProductLoading) {
+            console.log('Found checkboxes:', productInterestCheckboxes.length);
+        }
         
-        // Add new event listener
-        newCheckbox.addEventListener('change', () => {
-            if (debugProductLoading) console.log('Checkbox changed:', newCheckbox.value);
+        productInterestCheckboxes.forEach(checkbox => {
+            checkbox.addEventListener('change', () => {
+                if (debugProductLoading) {
+                    console.log('Checkbox changed:', checkbox.value, 'Checked:', checkbox.checked);
+                }
+                updateProductsList();
+            });
+        });
+
+        if (debugProductLoading) console.log('Form data:', data);
+
+        try {
+            // Show loading state
+            const submitButton = form.querySelector('button[type="submit"]');
+            const originalText = submitButton.textContent;
+            submitButton.disabled = true;
+            submitButton.textContent = 'Sending...';
+
+            // Send email
+            await sendEmail(data, 'full');
+
+            // Show success notification
+            notifications.success(
+                'Inquiry Sent!',
+                'We\'ll get back to you as soon as possible.'
+            );
+            
+            // Reset form
+            form.reset();
+            updateProductsList();
+        } catch (error) {
+            console.error('Error sending email:', error);
+            notifications.error(
+                'Error',
+                'There was a problem sending your inquiry. Please try again.'
+            );
+        } finally {
+            // Restore button state
+            submitButton.disabled = false;
+            submitButton.textContent = originalText;
+        }
+    });
+
+    // Add event listeners to product interest checkboxes
+    const productInterestCheckboxes = form.querySelectorAll('input[name="productInterest"]');
+    productInterestCheckboxes.forEach(checkbox => {
+        checkbox.addEventListener('change', () => {
+            if (debugProductLoading) console.log('Product interest changed:', checkbox.value);
             updateProductsList();
         });
     });
@@ -928,6 +1365,96 @@ function initializeFormValidation() {
             if (firstInvalid) {
                 firstInvalid.focus();
             }
+        }
+    });
+}
+
+function initializeQuickInquiryForm() {
+    const form = document.querySelector('#quick-inquiry form');
+    const productTypeSelect = document.getElementById('productType');
+    const specificProductSelect = document.getElementById('specificProduct');
+    const contactPreferenceSelect = document.getElementById('contactPreference');
+    const phoneInput = document.querySelector('.phone-input');
+
+    if (!form) return;
+
+    // Handle product type changes
+    productTypeSelect?.addEventListener('change', function() {
+        const selectedCategory = this.value;
+        
+        // Clear and disable specific product select if no category selected
+        if (!selectedCategory) {
+            specificProductSelect.innerHTML = '<option value="">Select a specific product...</option>';
+            specificProductSelect.disabled = true;
+            return;
+        }
+
+        // Filter products by selected category
+        const categoryProducts = allProducts.filter(product => 
+            product.category === selectedCategory
+        );
+
+        // Update specific product dropdown
+        specificProductSelect.innerHTML = '<option value="">Select a specific product...</option>';
+        categoryProducts.forEach(product => {
+            const option = document.createElement('option');
+            option.value = product.title;
+            option.textContent = product.title;
+            specificProductSelect.appendChild(option);
+        });
+        
+        specificProductSelect.disabled = false;
+    });
+
+    // Handle contact preference changes
+    contactPreferenceSelect?.addEventListener('change', function() {
+        const phoneRequired = this.value === 'phone';
+        phoneInput.style.display = phoneRequired ? 'block' : 'none';
+        const phoneInputElement = document.getElementById('phone');
+        phoneInputElement.required = phoneRequired;
+    });
+
+    // Handle form submission
+    form.addEventListener('submit', async function(e) {
+        e.preventDefault();
+
+        const formData = Object.fromEntries(new FormData(form));
+
+        try {
+            // Show loading state
+            const submitButton = form.querySelector('button[type="submit"]');
+            const originalText = submitButton.textContent;
+            submitButton.disabled = true;
+            submitButton.textContent = 'Sending...';
+
+            // Send email
+            await sendEmail(formData, 'quick');
+
+            // Show success notification
+            notifications.success(
+                'Question Sent!',
+                'We\'ll get back to you as soon as possible.'
+            );
+
+            // Reset form
+            form.reset();
+            if (specificProductSelect) {
+                specificProductSelect.innerHTML = '<option value="">Select a specific product...</option>';
+                specificProductSelect.disabled = true;
+            }
+            if (phoneInput) {
+                phoneInput.style.display = 'none';
+            }
+        } catch (error) {
+            console.error('Error sending email:', error);
+            notifications.error(
+                'Error',
+                'There was a problem sending your message. Please try again.'
+            );
+        } finally {
+            // Restore button state
+            submitButton.disabled = false;
+            submitButton.textContent = originalText;
         }
     });
 }
