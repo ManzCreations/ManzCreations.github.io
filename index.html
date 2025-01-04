@@ -5,6 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <link href="https://fonts.googleapis.com/css2?family=Public+Sans:wght@300;400;600&display=swap" rel="stylesheet" />
     <link rel="stylesheet" href="/dist/style.css" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.3.0/papaparse.min.js"></script>
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
     <title>Crafted 4 You</title>
   </head>
   <body>
@@ -27,7 +29,6 @@
 
         <!-- Desktop Navigation -->
         <div class="header__links hide-for-mobile">
-          <a href="pages/collections.html">Collections</a>
           <a href="pages/products.html">Products</a>
           <a href="pages/events.html">Upcoming Events</a>
           <a href="pages/about.html">About</a>
@@ -44,7 +45,6 @@
 
         <!-- Mobile Menu (remains the same) -->
         <div class="header__menu has-fade">
-          <a href="pages/collections.html">Collections</a>
           <a href="pages/products.html">Products</a>
           <a href="pages/events.html">Upcoming Events</a>
           <a href="pages/about.html">About</a>
@@ -86,35 +86,38 @@
       <div class="container container--pall">
         <div class="section-header">
           <h2 class="gradient-text">New Releases</h2>
-          <a href="/new-releases" class="button">View All</a>
+          <a href="pages/products.html?filter=new" class="button">View All New Items</a>
         </div>
         <div class="products-grid">
-          <div class="product-card">
-            <div class="product-image">
-              <img src="https://images.unsplash.com/photo-1490312278390-ab64016e0aa9" alt="Summer Breeze Freshie" />
-            </div>
-            <div class="product-info">
-              <h3>Summer Breeze Freshie</h3>
-              <p class="price">$15.99</p>
-            </div>
+          <div class="product-card" data-slot="1">
+              <div class="product-image">
+                  <img src="/images/placeholder.jpg" alt="New Product 1" />
+                  <div class="product-badge new">New</div>
+              </div>
+              <div class="product-info">
+                  <h3>Loading...</h3>
+                  <p class="price">$0.00</p>
+              </div>
           </div>
-          <div class="product-card">
-            <div class="product-image">
-              <img src="https://images.unsplash.com/photo-1514228742587-6b1558fcca3d" alt="Ocean Wave Tumbler" />
-            </div>
-            <div class="product-info">
-              <h3>Ocean Wave Tumbler</h3>
-              <p class="price">$24.99</p>
-            </div>
+          <div class="product-card" data-slot="2">
+              <div class="product-image">
+                  <img src="/images/placeholder.jpg" alt="New Product 2" />
+                  <div class="product-badge new">New</div>
+              </div>
+              <div class="product-info">
+                  <h3>Loading...</h3>
+                  <p class="price">$0.00</p>
+              </div>
           </div>
-          <div class="product-card">
-            <div class="product-image">
-              <img src="https://images.unsplash.com/photo-1597484662317-9bd7bdda2907" alt="Welcome Slate" />
-            </div>
-            <div class="product-info">
-              <h3>Rustic Welcome Slate</h3>
-              <p class="price">$29.99</p>
-            </div>
+          <div class="product-card" data-slot="3">
+              <div class="product-image">
+                  <img src="/images/placeholder.jpg" alt="New Product 3" />
+                  <div class="product-badge new">New</div>
+              </div>
+              <div class="product-info">
+                  <h3>Loading...</h3>
+                  <p class="price">$0.00</p>
+              </div>
           </div>
         </div>
       </div>
@@ -125,23 +128,26 @@
       <div class="container container--pall">
         <div class="section-header">
           <h2 class="gradient-text">Featured Collections</h2>
-          <a href="/collections" class="button">View All</a>
+          <a href="pages/products.html?filter=collections" class="button">View All</a>
         </div>
         <div class="collections__grid">
           <div class="collection-card">
-            <img src="/images/backgrounds/grinch-collection.png" alt="Grinch Collection" />
-            <div class="collection-overlay">
-              <h3>Merry Grinchmas</h3>
-              <p>Come enjoy the fun!</p>
-            </div>
+              <img src="/images/backgrounds/grinch-collection.png" alt="Grinch Collection" />
+              <div class="collection-overlay">
+                  <h3>Who-ville's Most Wanted</h3>
+                  <p>Make your heart grow three sizes with our Grinch-tastic designs!</p>
+              </div>
+              <a href="pages/products.html?collection=grinch" class="collection-link"></a>
           </div>
           <div class="collection-card">
-            <img src="/images/backgrounds/cow-collection.png" alt="Cow Collection" />
-            <div class="collection-overlay">
-              <h3>"Moo"ve this way!</h3>
-              <p>Take a look at our fashionable cow designs.</p>
-            </div>
+              <img src="/images/backgrounds/cow-collection.png" alt="Cow Collection" />
+              <div class="collection-overlay">
+                  <h3>Holy Cow!</h3>
+                  <p>Utterly amazing designs that will make you flip!</p>
+              </div>
+              <a href="pages/products.html?collection=cow" class="collection-link"></a>
           </div>
+        </div>
         </div>
       </div>
     </section>
@@ -154,13 +160,31 @@
           <a href="pages/products.html?category=freshies-charms" class="button">Shop Car Accessories</a>
         </div>
         <div class="products-grid">
-          <div class="product-card">
+          <div class="product-card" data-slot="1">
             <div class="product-image">
-              <img src="${imagePath from CSV}" alt="${title from CSV}" />
+              <img src="/images/placeholder.jpg" alt="Product 1" />
             </div>
             <div class="product-info">
-              <h3>${title from CSV}</h3>
-              <p class="price">${price from CSV}</p>
+              <h3>Loading...</h3>
+              <p class="price">$0.00</p>
+            </div>
+          </div>
+          <div class="product-card" data-slot="2">
+            <div class="product-image">
+              <img src="/images/placeholder.jpg" alt="Product 2" />
+            </div>
+            <div class="product-info">
+              <h3>Loading...</h3>
+              <p class="price">$0.00</p>
+            </div>
+          </div>
+          <div class="product-card" data-slot="3">
+            <div class="product-image">
+              <img src="/images/placeholder.jpg" alt="Product 3" />
+            </div>
+            <div class="product-info">
+              <h3>Loading...</h3>
+              <p class="price">$0.00</p>
             </div>
           </div>
         </div>
@@ -175,15 +199,34 @@
           <a href="pages/products.html?category=cups" class="button">Shop Cups</a>
         </div>
         <div class="products-grid">
-          <div class="product-card">
+          <div class="product-card" data-slot="1">
             <div class="product-image">
-              <img src="${imagePath from CSV}" alt="${title from CSV}" />
+              <img src="/images/placeholder.jpg" alt="Product 1" />
             </div>
             <div class="product-info">
-              <h3>${title from CSV}</h3>
-              <p class="price">${price from CSV}</p>
+              <h3>Loading...</h3>
+              <p class="price">$0.00</p>
             </div>
           </div>
+          <div class="product-card" data-slot="2">
+            <div class="product-image">
+              <img src="/images/placeholder.jpg" alt="Product 2" />
+            </div>
+            <div class="product-info">
+              <h3>Loading...</h3>
+              <p class="price">$0.00</p>
+            </div>
+          </div>
+          <div class="product-card" data-slot="3">
+            <div class="product-image">
+              <img src="/images/placeholder.jpg" alt="Product 3" />
+            </div>
+            <div class="product-info">
+              <h3>Loading...</h3>
+              <p class="price">$0.00</p>
+            </div>
+          </div>
+        </div>
         </div>
       </div>
     </section>
@@ -196,13 +239,31 @@
           <a href="pages/products.html?category=photo-slates" class="button">Shop Slates</a>
         </div>
         <div class="products-grid">
-          <div class="product-card">
+          <div class="product-card" data-slot="1">
             <div class="product-image">
-              <img src="${imagePath from CSV}" alt="${title from CSV}" />
+              <img src="/images/placeholder.jpg" alt="Product 1" />
             </div>
             <div class="product-info">
-              <h3>${title from CSV}</h3>
-              <p class="price">${price from CSV}</p>
+              <h3>Loading...</h3>
+              <p class="price">$0.00</p>
+            </div>
+          </div>
+          <div class="product-card" data-slot="2">
+            <div class="product-image">
+              <img src="/images/placeholder.jpg" alt="Product 2" />
+            </div>
+            <div class="product-info">
+              <h3>Loading...</h3>
+              <p class="price">$0.00</p>
+            </div>
+          </div>
+          <div class="product-card" data-slot="3">
+            <div class="product-image">
+              <img src="/images/placeholder.jpg" alt="Product 3" />
+            </div>
+            <div class="product-info">
+              <h3>Loading...</h3>
+              <p class="price">$0.00</p>
             </div>
           </div>
         </div>
@@ -217,15 +278,34 @@
           <a href="pages/products.html?category=accessories-home" class="button">Shop Collection</a>
         </div>
         <div class="products-grid">
-          <div class="product-card">
+          <div class="product-card" data-slot="1">
             <div class="product-image">
-              <img src="${imagePath from CSV}" alt="${title from CSV}" />
+              <img src="/images/placeholder.jpg" alt="Product 1" />
             </div>
             <div class="product-info">
-              <h3>${title from CSV}</h3>
-              <p class="price">${price from CSV}</p>
+              <h3>Loading...</h3>
+              <p class="price">$0.00</p>
             </div>
           </div>
+          <div class="product-card" data-slot="2">
+            <div class="product-image">
+              <img src="/images/placeholder.jpg" alt="Product 2" />
+            </div>
+            <div class="product-info">
+              <h3>Loading...</h3>
+              <p class="price">$0.00</p>
+            </div>
+          </div>
+          <div class="product-card" data-slot="3">
+            <div class="product-image">
+              <img src="/images/placeholder.jpg" alt="Product 3" />
+            </div>
+            <div class="product-info">
+              <h3>Loading...</h3>
+              <p class="price">$0.00</p>
+            </div>
+          </div>
+        </div>
         </div>
       </div>
     </section>
@@ -270,39 +350,61 @@
     </section>
 
     <!-- Order Form Section -->
-    <section id="order" class="order bg-light">
+    <section id="quick-inquiry" class="order bg-light">
       <div class="container container--pall">
-        <h2 class="gradient-text text-center">Place Your Order</h2>
-        <p class="text-center">Fill out the form below to request your custom piece</p>
-        
-        <form class="order__form">
-          <div class="form__group">
-            <label for="name">Name</label>
-            <input type="text" id="name" name="name" required>
-          </div>
+          <h2 class="gradient-text text-center">Have a Question?</h2>
+          <p class="text-center">Ask us about any of our products or custom designs</p>
           
-          <div class="form__group">
-            <label for="email">Email</label>
-            <input type="email" id="email" name="email" required>
-          </div>
-          
-          <div class="form__group">
-            <label for="product">Product Type</label>
-            <select id="product" name="product" required>
-              <option value="">Select a product...</option>
-              <option value="freshie">Freshie</option>
-              <option value="cup">Custom Cup</option>
-              <option value="slate">Decorative Slate</option>
-            </select>
-          </div>
-          
-          <div class="form__group">
-            <label for="message">Order Details</label>
-            <textarea id="message" name="message" placeholder="Please include any specific design requests, colors, or themes you'd like" rows="5" required></textarea>
-          </div>
-          
-          <button type="submit" class="button">Submit Order Request</button>
-        </form>
+          <form class="order__form">
+              <div class="form__group">
+                  <label for="name">Name*</label>
+                  <input type="text" id="name" name="name" required>
+              </div>
+              
+              <div class="form__group">
+                  <label for="email">Email*</label>
+                  <input type="email" id="email" name="email" required>
+              </div>
+              
+              <div class="form__group">
+                  <label for="productType">What type of product are you asking about?*</label>
+                  <select id="productType" name="product" required>
+                      <option value="">Select a product type...</option>
+                      <option value="freshies-charms">Freshies & Car Charms</option>
+                      <option value="cups">Custom Cups</option>
+                      <option value="photo-slates">Photo Slates</option>
+                      <option value="accessories-home">Accessories & Home</option>
+                  </select>
+              </div>
+  
+              <div class="form__group">
+                  <label for="specificProduct">Specific Product</label>
+                  <select id="specificProduct" name="specificProduct">
+                      <option value="">Select a specific product...</option>
+                      <!-- Will be populated based on product type selection -->
+                  </select>
+              </div>
+              
+              <div class="form__group">
+                  <label for="message">Your Question*</label>
+                  <textarea id="message" name="message" placeholder="What would you like to know about this product? Ask about pricing, customization options, availability..." rows="5" required></textarea>
+              </div>
+              
+              <div class="form__group">
+                  <label for="contactPreference">Preferred Contact Method*</label>
+                  <select id="contactPreference" name="contactPreference" required>
+                      <option value="email">Email</option>
+                      <option value="phone">Phone</option>
+                  </select>
+              </div>
+  
+              <div class="form__group phone-input" style="display: none;">
+                  <label for="phone">Phone Number*</label>
+                  <input type="tel" id="phone" name="phone" pattern="[0-9]{3}-[0-9]{3}-[0-9]{4}" placeholder="123-456-7890">
+              </div>
+              
+              <button type="submit" class="button">Send Question</button>
+          </form>
       </div>
     </section>
 
