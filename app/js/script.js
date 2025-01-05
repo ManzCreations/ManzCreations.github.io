@@ -1,87 +1,101 @@
-// Configuration settings
-const CONFIG = {
-    email: {
-        recipient: 'stevenmanz063018@gmail.com',
-        serviceID: 'YOUR_EMAILJS_SERVICE_ID',
-        templateID: {
-            quickInquiry: 'YOUR_QUICK_TEMPLATE_ID',
-            fullInquiry: 'YOUR_FULL_TEMPLATE_ID'
-        },
-        publicKey: 'YOUR_EMAILJS_PUBLIC_KEY'
-    }
+// First, remove the entire CONFIG object and replace with this simpler configuration
+const EMAIL_CONFIG = {
+    recipient: 'stevenmanz063018@gmail.com',
+    sender: 'stevenmanz063018@gmail.com',
+    password: 'abue ptjl trdg rrok'
 };
 
-function generateEmailContent(formData, formType) {
-    let content = '';
-    
-    if (formType === 'quick') {
-        content = `
-Name: ${formData.name}
-Email: ${formData.email}
-Product Type: ${formData.product}
-${formData.specificProduct ? `Specific Product: ${formData.specificProduct}` : ''}
-Question: ${formData.message}
-Preferred Contact: ${formData.contactPreference}
-${formData.phone ? `Phone: ${formData.phone}` : ''}
-        `;
-    } else if (formType === 'full') {
-        content = `
-Name: ${formData.firstName} ${formData.lastName}
-Email: ${formData.email}
-${formData.phone ? `Phone: ${formData.phone}` : ''}
-Product Interest: ${formData.productInterest.join(', ')}
-${formData.specificProducts.length ? `Specific Products: ${formData.specificProducts.join(', ')}` : ''}
-Custom Request: ${formData.customRequest}
-Preferred Contact: ${formData.contactPreference}
-        `;
-    }
-    
-    return content.trim();
-}
-
+// Replace the existing sendEmail function with this new implementation
 async function sendEmail(formData, formType) {
-    if (debugProductLoading) {
-        console.log('Attempting to send email:', {
-            type: formType,
-            formData: formData,
-            emailjsAvailable: typeof emailjs !== 'undefined'
-        });
-    }
-
-    if (typeof emailjs === 'undefined') {
-        throw new Error('Email service not available');
-    }
-
-    const templateID = formType === 'quick' ? 
-        CONFIG.email.templateID.quickInquiry : 
-        CONFIG.email.templateID.fullInquiry;
+    console.log('Starting sendEmail function with:', {
+        formType: formType,
+        formDataKeys: Object.keys(formData)
+    });
 
     try {
-        if (debugProductLoading) {
-            console.log('Sending email with config:', {
-                serviceID: CONFIG.email.serviceID,
-                templateID: templateID
-            });
+        // Generate email content
+        console.log('Generating email content...');
+        const emailContent = generateEmailContent(formData, formType);
+        console.log('Generated email content:', {
+            subject: emailContent.subject,
+            bodyLength: emailContent.body.length
+        });
+
+        // Check if SMTP.js is loaded
+        if (typeof Email === 'undefined') {
+            console.error('SMTP.js not loaded! Email object not found.');
+            throw new Error('SMTP.js not loaded');
         }
+        console.log('SMTP.js is loaded and available');
 
-        await emailjs.send(
-            CONFIG.email.serviceID,
-            templateID,
-            {
-                to_email: CONFIG.email.recipient,
-                ...formData
-            }
-        );
+        // Log email configuration (excluding password)
+        console.log('Preparing to send email with config:', {
+            Host: "smtp.gmail.com",
+            Username: EMAIL_CONFIG.sender,
+            To: EMAIL_CONFIG.recipient,
+            From: EMAIL_CONFIG.sender,
+            HasPassword: !!EMAIL_CONFIG.password
+        });
 
-        if (debugProductLoading) {
-            console.log('Email sent successfully');
-        }
+        // Attempt to send email
+        console.log('Initiating email send...');
+        const result = await Email.send({
+            Host: "smtp.gmail.com",
+            Username: EMAIL_CONFIG.sender,
+            Password: EMAIL_CONFIG.password,
+            To: EMAIL_CONFIG.recipient,
+            From: EMAIL_CONFIG.sender,
+            Subject: emailContent.subject,
+            Body: emailContent.body
+        });
 
-        return true;
+        console.log('Email send completed with result:', result);
+        return result;
     } catch (error) {
-        console.error('Email send failed:', error);
+        console.error('Detailed email send error:', {
+            error: error,
+            message: error.message,
+            stack: error.stack
+        });
         throw error;
     }
+}
+
+// Update the generateEmailContent function
+function generateEmailContent(formData, formType) {
+    console.log('Generating email content for form type:', formType);
+    let subject, body;
+    
+    if (formType === 'quick') {
+        subject = `Quick Inquiry: ${formData.productType} - ${formData.name}`;
+        body = `
+            <h2>Quick Product Inquiry</h2>
+            <p><strong>Customer Name:</strong> ${formData.name}</p>
+            <p><strong>Email:</strong> ${formData.email}</p>
+            <p><strong>Phone:</strong> ${formData.phone || 'Not provided'}</p>
+            <p><strong>Product Type:</strong> ${formData.productType}</p>
+            <p><strong>Specific Product:</strong> ${formData.specificProduct || 'Not specified'}</p>
+            <p><strong>Question:</strong> ${formData.message}</p>
+            <p><strong>Preferred Contact Method:</strong> ${formData.contactPreference}</p>
+        `;
+    } else if (formType === 'full') {
+        subject = `Full Inquiry: Custom Order - ${formData.firstName} ${formData.lastName}`;
+        body = `
+            <h2>Full Product Inquiry</h2>
+            <p><strong>Customer Name:</strong> ${formData.firstName} ${formData.lastName}</p>
+            <p><strong>Email:</strong> ${formData.email}</p>
+            <p><strong>Phone:</strong> ${formData.phone || 'Not provided'}</p>
+            <p><strong>Products of Interest:</strong> ${formData.productInterest.join(', ')}</p>
+            <p><strong>Specific Products:</strong> ${formData.specificProducts.join(', ') || 'None specified'}</p>
+            <p><strong>Custom Request Details:</strong> ${formData.customRequest}</p>
+            <p><strong>Preferred Contact Method:</strong> ${formData.contactPreference}</p>
+        `;
+    }
+
+    return {
+        subject,
+        body
+    };
 }
 
 // Utility Functions - Moved to top for availability
@@ -565,6 +579,8 @@ function setupCategoryFilters() {
 // Filter products function with improved error handling
 function filterProducts() {
     try {
+        if (debugProductLoading) console.log('Starting filterProducts function');
+        
         const searchInputs = [
             document.getElementById('productSearch'),
             document.getElementById('mobileSearch')
@@ -583,32 +599,35 @@ function filterProducts() {
         const showCollections = urlParams.get('filter') === 'collections';
         const showNew = urlParams.get('filter') === 'new';
 
-        // Auto-check filters based on URL parameters
-        if (showNew) {
-            // Find and check the "New Arrivals" checkbox
-            const newArrivalsCheckbox = document.querySelector('input[value="new"][data-filter-type="tag"]');
-            if (newArrivalsCheckbox) {
-                newArrivalsCheckbox.checked = true;
-            }
-        }
-
-        if (collectionFilter) {
-            // Find and check the specific collection checkbox
-            const collectionCheckbox = document.querySelector(`input[value="${collectionFilter}"][data-filter-type="collection"]`);
-            if (collectionCheckbox) {
-                collectionCheckbox.checked = true;
-            }
-        }
-
-        if (showCollections) {
-            // Check all collection checkboxes
-            const collectionCheckboxes = document.querySelectorAll('input[data-filter-type="collection"]');
-            collectionCheckboxes.forEach(checkbox => {
-                checkbox.checked = true;
+        if (debugProductLoading) {
+            console.log('Initial state:', {
+                totalProducts: allProducts.length,
+                showNew,
+                showCollections,
+                collectionFilter
             });
         }
 
-        // Apply search filter first
+        // Get all selected filters
+        const selectedMainCategories = Array.from(document.querySelectorAll('input[data-category-type="main"]:checked'))
+            .map(cb => cb.value);
+        const selectedSubCategories = Array.from(document.querySelectorAll('input[data-category-type="sub"]:checked'))
+            .map(cb => cb.value);
+        const selectedTags = Array.from(document.querySelectorAll('input[data-filter-type="tag"]:checked'))
+            .map(cb => cb.value);
+        const selectedCollections = Array.from(document.querySelectorAll('input[data-filter-type="collection"]:checked'))
+            .map(cb => cb.value);
+
+        if (debugProductLoading) {
+            console.log('Selected filters:', {
+                mainCategories: selectedMainCategories,
+                subCategories: selectedSubCategories,
+                tags: selectedTags,
+                collections: selectedCollections
+            });
+        }
+
+        // Apply search filter
         if (searchTerm) {
             filteredProducts = filteredProducts.filter(product => {
                 return (
@@ -623,34 +642,57 @@ function filterProducts() {
             });
         }
 
-        // Apply New filter
-        if (showNew || document.querySelector('input[value="new"][data-filter-type="tag"]:checked')) {
-            filteredProducts = filteredProducts.filter(product => 
-                product.isNew === 'TRUE' || product.isNew === true
-            );
+        // Apply category filters
+        if (selectedMainCategories.length > 0 || selectedSubCategories.length > 0) {
+            filteredProducts = filteredProducts.filter(product => {
+                const mainCategoryMatch = selectedMainCategories.length === 0 || 
+                    selectedMainCategories.includes(product.category);
+                const subCategoryMatch = selectedSubCategories.length === 0 || 
+                    selectedSubCategories.includes(product.subcategory);
+                return mainCategoryMatch && subCategoryMatch;
+            });
         }
 
-        // Apply Collection filters
-        if (showCollections) {
-            // Show all products that have any collection
-            filteredProducts = filteredProducts.filter(product => 
-                product.collection && product.collection.trim() !== ''
-            );
-        } else if (collectionFilter) {
-            // Show products from specific collection
-            filteredProducts = filteredProducts.filter(product => 
-                product.collection && product.collection.toLowerCase() === collectionFilter.toLowerCase()
-            );
+        // Apply tag filters
+        if (selectedTags.length > 0 || showNew) {
+            filteredProducts = filteredProducts.filter(product => {
+                // Handle "new" filter
+                if ((selectedTags.includes('new') || showNew) && 
+                    !(product.isNew === 'TRUE' || product.isNew === true)) {
+                    return false;
+                }
+                
+                // Handle other tags
+                const productTags = Array.isArray(product.tags) ? product.tags : 
+                    (typeof product.tags === 'string' ? product.tags.split('|') : []);
+                
+                return selectedTags.every(tag => {
+                    if (tag === 'new') return true; // Already handled above
+                    if (tag === 'seasonal') return productTags.includes('seasonal');
+                    if (tag === 'custom') return productTags.includes('custom');
+                    return true;
+                });
+            });
         }
 
-        // Check if any collection checkboxes are manually checked
-        const checkedCollections = Array.from(document.querySelectorAll('input[data-filter-type="collection"]:checked'))
-            .map(checkbox => checkbox.value);
-        
-        if (checkedCollections.length > 0 && !showCollections && !collectionFilter) {
-            filteredProducts = filteredProducts.filter(product => 
-                product.collection && checkedCollections.includes(product.collection)
-            );
+        // Apply collection filters
+        if (selectedCollections.length > 0 || showCollections || collectionFilter) {
+            filteredProducts = filteredProducts.filter(product => {
+                if (showCollections) {
+                    return product.collection && product.collection.trim() !== '';
+                }
+                if (collectionFilter) {
+                    return product.collection === collectionFilter;
+                }
+                return selectedCollections.includes(product.collection);
+            });
+        }
+
+        if (debugProductLoading) {
+            console.log('After filtering:', {
+                filteredCount: filteredProducts.length,
+                remainingProducts: filteredProducts.slice(0, 2)
+            });
         }
 
         // Update the products display
@@ -671,6 +713,91 @@ function filterProducts() {
             'Error filtering products. Please refresh the page.'
         );
     }
+}
+
+function handleUrlFilters() {
+    const urlParams = new URLSearchParams(window.location.search);
+    const showNew = urlParams.get('filter') === 'new';
+    const collectionFilter = urlParams.get('collection');
+
+    // Handle 'new' filter
+    const newArrivalsCheckbox = document.querySelector('input[value="new"][data-filter-type="tag"]');
+    if (newArrivalsCheckbox && showNew) {
+        newArrivalsCheckbox.checked = true;
+        // Add change event listener to allow unchecking
+        newArrivalsCheckbox.addEventListener('change', function() {
+            if (!this.checked) {
+                // Remove the filter parameter from URL
+                urlParams.delete('filter');
+                const newUrl = `${window.location.pathname}${urlParams.toString() ? '?' + urlParams.toString() : ''}`;
+                history.replaceState({}, '', newUrl);
+            }
+            filterProducts();
+        });
+    }
+
+    // Handle collection filter similarly
+    if (collectionFilter) {
+        const collectionCheckbox = document.querySelector(`input[value="${collectionFilter}"][data-filter-type="collection"]`);
+        if (collectionCheckbox) {
+            collectionCheckbox.checked = true;
+            collectionCheckbox.addEventListener('change', function() {
+                if (!this.checked) {
+                    urlParams.delete('collection');
+                    const newUrl = `${window.location.pathname}${urlParams.toString() ? '?' + urlParams.toString() : ''}`;
+                    history.replaceState({}, '', newUrl);
+                }
+                filterProducts();
+            });
+        }
+    }
+}
+
+function formatPhoneNumber(phoneNumber) {
+    // Remove all non-digit characters
+    const cleaned = phoneNumber.replace(/\D/g, '');
+    
+    // Check for valid length (10 or 11 digits)
+    if (cleaned.length < 10 || cleaned.length > 11) {
+        return false;
+    }
+    
+    // If 11 digits, first digit should be 1
+    if (cleaned.length === 11 && cleaned[0] !== '1') {
+        return false;
+    }
+    
+    return true;
+}
+
+function initializePhoneValidation() {
+    const phoneInputs = document.querySelectorAll('input[type="tel"]');
+    
+    phoneInputs.forEach(input => {
+        input.addEventListener('input', function(e) {
+            // Allow empty value since it's optional
+            if (!this.value) {
+                this.setCustomValidity('');
+                return;
+            }
+            
+            // Validate phone number
+            if (formatPhoneNumber(this.value)) {
+                this.setCustomValidity('');
+            } else {
+                this.setCustomValidity('Please enter a valid phone number');
+            }
+        });
+        
+        // Prevent form submission if phone number is invalid
+        input.closest('form')?.addEventListener('submit', function(e) {
+            const phoneInput = this.querySelector('input[type="tel"]');
+            if (phoneInput && phoneInput.value && !formatPhoneNumber(phoneInput.value)) {
+                e.preventDefault();
+                phoneInput.reportValidity();
+            }
+        });
+    });
 }
 
 // Sort products function with improved error handling
@@ -915,11 +1042,6 @@ function restoreFilterState() {
 
 // DOM Content Loaded Event Handler
 document.addEventListener('DOMContentLoaded', function() {
-    // Initialize EmailJS
-    if (typeof emailjs !== 'undefined') {
-        emailjs.init(CONFIG.email.publicKey);
-    }
-    
     if (debugProductLoading) {
         console.log('DOM Content Loaded');
         console.log('Current URL:', window.location.href);
@@ -931,9 +1053,11 @@ document.addEventListener('DOMContentLoaded', function() {
         
         initializeMobileControls();
         setupCategoryFilters();
+        initializePhoneValidation();
         
         loadProducts(() => {
             if (debugProductLoading) console.log('Products loaded callback executed');
+            handleUrlFilters(); // Add this line
             filterProducts();
         }).catch(error => {
             console.error('Error loading products:', error);
