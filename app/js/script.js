@@ -1,101 +1,87 @@
-// First, remove the entire CONFIG object and replace with this simpler configuration
+// EmailJS Configuration
 const EMAIL_CONFIG = {
-    recipient: 'stevenmanz063018@gmail.com',
-    sender: 'stevenmanz063018@gmail.com',
-    password: 'abue ptjl trdg rrok'
+    PUBLIC_KEY: 'efItYR0lBt25vHKZ-',
+    SERVICE_ID: 'service_rojg3ef',
+    TEMPLATES: {
+        QUICK: 'template_562otjh',
+        FULL: 'template_9wcbbkd'
+    }
 };
 
-// Replace the existing sendEmail function with this new implementation
-async function sendEmail(formData, formType) {
-    console.log('Starting sendEmail function with:', {
-        formType: formType,
-        formDataKeys: Object.keys(formData)
+// Initialize EmailJS
+function initializeEmailJS() {
+    console.log('Initializing EmailJS with config:', {
+        publicKey: EMAIL_CONFIG.PUBLIC_KEY,
+        keyLength: EMAIL_CONFIG.PUBLIC_KEY.length,
+        serviceId: EMAIL_CONFIG.SERVICE_ID
     });
 
     try {
-        // Generate email content
-        console.log('Generating email content...');
-        const emailContent = generateEmailContent(formData, formType);
-        console.log('Generated email content:', {
-            subject: emailContent.subject,
-            bodyLength: emailContent.body.length
-        });
-
-        // Check if SMTP.js is loaded
-        if (typeof Email === 'undefined') {
-            console.error('SMTP.js not loaded! Email object not found.');
-            throw new Error('SMTP.js not loaded');
+        // Make sure emailjs is loaded
+        if (typeof emailjs === 'undefined') {
+            throw new Error('EmailJS library not loaded');
         }
-        console.log('SMTP.js is loaded and available');
 
-        // Log email configuration (excluding password)
-        console.log('Preparing to send email with config:', {
-            Host: "smtp.gmail.com",
-            Username: EMAIL_CONFIG.sender,
-            To: EMAIL_CONFIG.recipient,
-            From: EMAIL_CONFIG.sender,
-            HasPassword: !!EMAIL_CONFIG.password
-        });
+        // Initialize with user ID
+        emailjs.init(EMAIL_CONFIG.PUBLIC_KEY);
+        console.log('EmailJS initialized successfully');
 
-        // Attempt to send email
-        console.log('Initiating email send...');
-        const result = await Email.send({
-            Host: "smtp.gmail.com",
-            Username: EMAIL_CONFIG.sender,
-            Password: EMAIL_CONFIG.password,
-            To: EMAIL_CONFIG.recipient,
-            From: EMAIL_CONFIG.sender,
-            Subject: emailContent.subject,
-            Body: emailContent.body
-        });
-
-        console.log('Email send completed with result:', result);
-        return result;
+        // Test if initialization worked
+        if (typeof emailjs.send !== 'function') {
+            throw new Error('EmailJS not properly initialized');
+        }
     } catch (error) {
-        console.error('Detailed email send error:', {
-            error: error,
-            message: error.message,
-            stack: error.stack
-        });
+        console.error('EmailJS initialization failed:', error);
         throw error;
     }
 }
 
-// Update the generateEmailContent function
-function generateEmailContent(formData, formType) {
-    console.log('Generating email content for form type:', formType);
-    let subject, body;
-    
-    if (formType === 'quick') {
-        subject = `Quick Inquiry: ${formData.productType} - ${formData.name}`;
-        body = `
-            <h2>Quick Product Inquiry</h2>
-            <p><strong>Customer Name:</strong> ${formData.name}</p>
-            <p><strong>Email:</strong> ${formData.email}</p>
-            <p><strong>Phone:</strong> ${formData.phone || 'Not provided'}</p>
-            <p><strong>Product Type:</strong> ${formData.productType}</p>
-            <p><strong>Specific Product:</strong> ${formData.specificProduct || 'Not specified'}</p>
-            <p><strong>Question:</strong> ${formData.message}</p>
-            <p><strong>Preferred Contact Method:</strong> ${formData.contactPreference}</p>
-        `;
-    } else if (formType === 'full') {
-        subject = `Full Inquiry: Custom Order - ${formData.firstName} ${formData.lastName}`;
-        body = `
-            <h2>Full Product Inquiry</h2>
-            <p><strong>Customer Name:</strong> ${formData.firstName} ${formData.lastName}</p>
-            <p><strong>Email:</strong> ${formData.email}</p>
-            <p><strong>Phone:</strong> ${formData.phone || 'Not provided'}</p>
-            <p><strong>Products of Interest:</strong> ${formData.productInterest.join(', ')}</p>
-            <p><strong>Specific Products:</strong> ${formData.specificProducts.join(', ') || 'None specified'}</p>
-            <p><strong>Custom Request Details:</strong> ${formData.customRequest}</p>
-            <p><strong>Preferred Contact Method:</strong> ${formData.contactPreference}</p>
-        `;
-    }
+// Send email using EmailJS
+async function sendEmail(formData, formType) {
+    console.log('Starting email send process...');
+    console.log('Form data:', formData);
+    console.log('Form type:', formType);
 
-    return {
-        subject,
-        body
-    };
+    try {
+        // Ensure EmailJS is initialized
+        if (typeof emailjs.send !== 'function') {
+            console.log('EmailJS not initialized, attempting to initialize...');
+            initializeEmailJS();
+        }
+
+        const templateId = formType === 'quick' ? EMAIL_CONFIG.TEMPLATES.QUICK : EMAIL_CONFIG.TEMPLATES.FULL;
+        
+        // Prepare email data
+        const emailData = {
+            ...formData,
+            to_name: 'Steven',
+            from_name: formData.name || `${formData.firstName} ${formData.lastName}` || 'Website Visitor'
+        };
+
+        console.log('Sending email with:', {
+            serviceId: EMAIL_CONFIG.SERVICE_ID,
+            templateId: templateId,
+            dataKeys: Object.keys(emailData)
+        });
+
+        // Send the email
+        const response = await emailjs.send(
+            EMAIL_CONFIG.SERVICE_ID,
+            templateId,
+            emailData
+        );
+
+        console.log('Email sent successfully:', response);
+        return response;
+    } catch (error) {
+        console.error('Email send error:', {
+            error: error,
+            message: error.message,
+            emailjsStatus: typeof emailjs,
+            emailjsSendStatus: typeof emailjs?.send
+        });
+        throw error;
+    }
 }
 
 // Utility Functions - Moved to top for availability
@@ -1047,6 +1033,13 @@ document.addEventListener('DOMContentLoaded', function() {
         console.log('Current URL:', window.location.href);
     }
 
+    try {
+        console.log('DOM loaded, initializing EmailJS...');
+        initializeEmailJS();
+    } catch (error) {
+        console.error('Failed to initialize EmailJS on load:', error);
+    }
+
     // Initialize products page if applicable
     if (document.getElementById('productsContainer')) {
         if (debugProductLoading) console.log('Initializing products page');
@@ -1494,93 +1487,197 @@ function initializeFormValidation() {
 }
 
 function initializeQuickInquiryForm() {
+    console.log('Starting form initialization...');
+
+    // Form element validation
     const form = document.querySelector('#quick-inquiry form');
-    const productTypeSelect = document.getElementById('productType');
-    const specificProductSelect = document.getElementById('specificProduct');
-    const contactPreferenceSelect = document.getElementById('contactPreference');
-    const phoneInput = document.querySelector('.phone-input');
+    if (!form) {
+        console.error('Critical Error: Quick inquiry form not found');
+        return;
+    }
+    console.log('Form element found:', {
+        id: form.id,
+        action: form.action,
+        method: form.method
+    });
 
-    if (!form) return;
+    // Form components validation
+    const elements = {
+        productTypeSelect: document.getElementById('productType'),
+        specificProductSelect: document.getElementById('specificProduct'),
+        contactPreferenceSelect: document.getElementById('contactPreference'),
+        phoneInput: document.querySelector('.phone-input'),
+        submitButton: form.querySelector('button[type="submit"]')
+    };
 
-    // Handle product type changes
-    productTypeSelect?.addEventListener('change', function() {
-        const selectedCategory = this.value;
-        
-        // Clear and disable specific product select if no category selected
-        if (!selectedCategory) {
-            specificProductSelect.innerHTML = '<option value="">Select a specific product...</option>';
-            specificProductSelect.disabled = true;
+    // Log form elements status
+    Object.entries(elements).forEach(([name, element]) => {
+        console.log(`Form element "${name}" status:`, {
+            found: !!element,
+            id: element?.id,
+            type: element?.type,
+            value: element?.value
+        });
+    });
+
+    // Verify EmailJS configuration
+    console.log('EmailJS Configuration:', {
+        publicKeyExists: !!EMAIL_CONFIG?.PUBLIC_KEY,
+        publicKeyLength: EMAIL_CONFIG?.PUBLIC_KEY?.length,
+        serviceIdExists: !!EMAIL_CONFIG?.SERVICE_ID,
+        templateExists: !!EMAIL_CONFIG?.TEMPLATES?.QUICK
+    });
+
+    // Handle product type changes with error handling
+    elements.productTypeSelect?.addEventListener('change', function() {
+        try {
+            console.log('Product type changed:', this.value);
+            const selectedCategory = this.value;
+            
+            if (!selectedCategory) {
+                console.log('No category selected, resetting specific product select');
+                elements.specificProductSelect.innerHTML = '<option value="">Select a specific product...</option>';
+                elements.specificProductSelect.disabled = true;
+                return;
+            }
+
+            // Verify allProducts exists
+            if (!Array.isArray(allProducts)) {
+                console.error('Products data not properly loaded:', allProducts);
+                throw new Error('Products data not available');
+            }
+
+            // Filter products
+            const categoryProducts = allProducts.filter(product => 
+                product.category === selectedCategory
+            );
+            console.log(`Found ${categoryProducts.length} products for category "${selectedCategory}"`);
+
+            // Update dropdown
+            elements.specificProductSelect.innerHTML = '<option value="">Select a specific product...</option>';
+            categoryProducts.forEach(product => {
+                const option = document.createElement('option');
+                option.value = product.title;
+                option.textContent = product.title;
+                elements.specificProductSelect.appendChild(option);
+            });
+            
+            elements.specificProductSelect.disabled = false;
+        } catch (error) {
+            console.error('Error handling product type change:', error);
+            notifications.error('Error', 'Failed to load product options');
+        }
+    });
+
+    // Handle contact preference changes with validation
+    elements.contactPreferenceSelect?.addEventListener('change', function() {
+        try {
+            const phoneRequired = this.value === 'phone';
+            console.log('Contact preference changed:', {
+                value: this.value,
+                phoneRequired
+            });
+
+            elements.phoneInput.style.display = phoneRequired ? 'block' : 'none';
+            const phoneInputElement = document.getElementById('phone');
+            if (phoneInputElement) {
+                phoneInputElement.required = phoneRequired;
+                console.log('Phone input updated:', {
+                    display: elements.phoneInput.style.display,
+                    required: phoneInputElement.required
+                });
+            }
+        } catch (error) {
+            console.error('Error handling contact preference change:', error);
+        }
+    });
+
+    // Handle form submission with detailed error tracking
+    form.addEventListener('submit', async function(e) {
+        e.preventDefault();
+        console.log('Form submission started');
+
+        // Validate required form elements
+        if (!elements.submitButton) {
+            console.error('Submit button not found in form');
             return;
         }
 
-        // Filter products by selected category
-        const categoryProducts = allProducts.filter(product => 
-            product.category === selectedCategory
-        );
-
-        // Update specific product dropdown
-        specificProductSelect.innerHTML = '<option value="">Select a specific product...</option>';
-        categoryProducts.forEach(product => {
-            const option = document.createElement('option');
-            option.value = product.title;
-            option.textContent = product.title;
-            specificProductSelect.appendChild(option);
-        });
-        
-        specificProductSelect.disabled = false;
-    });
-
-    // Handle contact preference changes
-    contactPreferenceSelect?.addEventListener('change', function() {
-        const phoneRequired = this.value === 'phone';
-        phoneInput.style.display = phoneRequired ? 'block' : 'none';
-        const phoneInputElement = document.getElementById('phone');
-        phoneInputElement.required = phoneRequired;
-    });
-
-    // Handle form submission
-    form.addEventListener('submit', async function(e) {
-        e.preventDefault();
-
-        const formData = Object.fromEntries(new FormData(form));
+        const originalText = elements.submitButton.textContent;
+        let formData = null;
 
         try {
             // Show loading state
-            const submitButton = form.querySelector('button[type="submit"]');
-            const originalText = submitButton.textContent;
-            submitButton.disabled = true;
-            submitButton.textContent = 'Sending...';
+            elements.submitButton.disabled = true;
+            elements.submitButton.textContent = 'Sending...';
 
-            // Send email
+            // Prepare and validate form data
+            formData = Object.fromEntries(new FormData(this));
+            console.log('Form data collected:', {
+                fields: Object.keys(formData),
+                values: Object.fromEntries(
+                    Object.entries(formData).map(([key, value]) => [
+                        key,
+                        key.toLowerCase().includes('password') ? '[REDACTED]' : value
+                    ])
+                )
+            });
+
+            // Verify EmailJS is loaded
+            if (typeof emailjs === 'undefined') {
+                throw new Error('EmailJS not loaded');
+            }
+
+            // Attempt to send email
+            console.log('Attempting to send email...');
             await sendEmail(formData, 'quick');
+            console.log('Email sent successfully');
 
-            // Show success notification
+            // Show success message
             notifications.success(
-                'Question Sent!',
+                'Message Sent!',
                 'We\'ll get back to you as soon as possible.'
             );
 
             // Reset form
-            form.reset();
-            if (specificProductSelect) {
-                specificProductSelect.innerHTML = '<option value="">Select a specific product...</option>';
-                specificProductSelect.disabled = true;
+            console.log('Resetting form...');
+            this.reset();
+
+            // Reset specific product select
+            if (elements.specificProductSelect) {
+                elements.specificProductSelect.innerHTML = '<option value="">Select a specific product...</option>';
+                elements.specificProductSelect.disabled = true;
             }
-            if (phoneInput) {
-                phoneInput.style.display = 'none';
+
+            // Reset phone input
+            if (elements.phoneInput) {
+                elements.phoneInput.style.display = 'none';
             }
+
         } catch (error) {
-            console.error('Error sending email:', error);
+            console.error('Detailed form submission error:', {
+                error: error,
+                message: error.message,
+                stack: error.stack,
+                formData: formData ? Object.keys(formData) : null,
+                emailjsPresent: typeof emailjs !== 'undefined',
+                emailjsSendPresent: typeof emailjs?.send === 'function'
+            });
+
             notifications.error(
                 'Error',
                 'There was a problem sending your message. Please try again.'
             );
         } finally {
             // Restore button state
-            submitButton.disabled = false;
-            submitButton.textContent = originalText;
+            if (elements.submitButton) {
+                elements.submitButton.disabled = false;
+                elements.submitButton.textContent = originalText;
+            }
         }
     });
+
+    console.log('Form initialization completed');
 }
 
 function initializeMobileView() {
