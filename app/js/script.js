@@ -180,7 +180,12 @@ async function loadProducts(onComplete) {
         console.log('Attempting to fetch from Google Sheets...');
     }
 
-    const API_KEY = 'AIzaSyDy6KZcSASsTBMNd_PLc_bOW7WJNWZYtp8';
+    if (typeof config === 'undefined') {
+        console.error('Config not found. Make sure config.js is included in your HTML.');
+        return;
+    }
+
+    const API_KEY = config.API_KEY;
     const SHEET_ID = '13W8dMCMOwq5jhl2SnEwwb4rJNfD77UrdDWlAVyji6Ik';
     const SHEETS_URL = `https://sheets.googleapis.com/v4/spreadsheets/${SHEET_ID}/values/products_list?key=${API_KEY}`;
 
