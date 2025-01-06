@@ -177,87 +177,70 @@ let debugFeaturedProducts = true;
 async function loadProducts(onComplete) {
     if (debugProductLoading) {
         console.log('loadProducts called');
-        console.log('Current URL:', window.location.pathname);
-        console.log('Attempting to fetch products.csv...');
+        console.log('Attempting to fetch from Google Sheets...');
     }
 
+    const API_KEY = 'AIzaSyDy6KZcSASsTBMNd_PLc_bOW7WJNWZYtp8';
+    const SHEET_ID = '13W8dMCMOwq5jhl2SnEwwb4rJNfD77UrdDWlAVyji6Ik';
+    const SHEETS_URL = `https://sheets.googleapis.com/v4/spreadsheets/${SHEET_ID}/values/products_list?key=${API_KEY}`;
+
     try {
-        const response = await fetch('/app/data/products.csv');
+        const response = await fetch(SHEETS_URL, {
+            method: 'GET',
+            headers: {
+                'Accept': 'application/json'
+            }
+        });
+
         if (!response.ok) {
             throw new Error(`HTTP error! status: ${response.status}`);
         }
+
+        const data = await response.json();
         
-        const csvText = await response.text();
         if (debugProductLoading) {
-            console.log('CSV fetched successfully');
-            console.log('First 200 chars of CSV:', csvText.substring(0, 200));
+            console.log('Sheet data fetched:', data);
         }
-        
-        Papa.parse(csvText, {
-            header: true,
-            skipEmptyLines: true,
-            complete: function(results) {
-                if (debugProductLoading) {
-                    console.log('Papa Parse complete');
-                    console.log('Parse errors:', results.errors);
-                    console.log('Number of rows:', results.data.length);
-                    if (results.data.length > 0) {
-                        console.log('Sample row:', results.data[0]);
-                    }
-                }
 
-                if (results.errors.length > 0) {
-                    console.error('Parse errors:', results.errors);
-                    return;
-                }
-                
-                allProducts = results.data.map(product => {
-                    const processed = {
-                        ...product,
-                        tags: product.tags ? product.tags.split('|') : [],
-                        price: parseFloat(product.price) || 0,
-                        isNew: product.isNew === 'TRUE',
-                        isFeatured: product.isFeatured === 'TRUE'
-                    };
-                    if (debugProductLoading) {
-                        console.log('Processed product:', processed);
-                    }
-                    return processed;
-                });
+        if (!data.values || data.values.length < 2) { // Check we have headers and at least one row
+            throw new Error('No data found in sheet');
+        }
 
-                if (debugProductLoading) {
-                    console.log('All products processed');
-                    console.log('Total products:', allProducts.length);
-                }
+        const headers = data.values[0];
+        const rows = data.values.slice(1);
 
-                // If we're on the index page, populate featured products
-                const categorySection = document.querySelector('.category-section');
-                if (categorySection) {
-                    if (debugProductLoading) {
-                        console.log('Found category section, calling populateFeaturedProducts');
-                    }
-                    populateFeaturedProducts();
-                }
-
-                // If callback provided, execute it
-                if (onComplete && typeof onComplete === 'function') {
-                    if (debugProductLoading) {
-                        console.log('Executing onComplete callback');
-                    }
-                    onComplete(allProducts);
-                }
-            },
-            error: function(error) {
-                console.error('Papa Parse error:', error);
-            }
+        // Convert to object array
+        const products = rows.map(row => {
+            const product = {};
+            headers.forEach((header, index) => {
+                product[header.trim()] = row[index] || '';
+            });
+            return product;
         });
+
+        allProducts = products.map(product => ({
+            ...product,
+            tags: product.tags ? product.tags.split('|') : [],
+            price: parseFloat(product.price) || 0,
+            isNew: product.isNew === 'TRUE',
+            isFeatured: product.isFeatured === 'TRUE'
+        }));
+
+        if (debugProductLoading) {
+            console.log('Processed products:', allProducts);
+        }
+
+        if (onComplete && typeof onComplete === 'function') {
+            onComplete(allProducts);
+        }
+
     } catch (error) {
         console.error('Load error:', error);
         notifications.error(
             'Data Load Error',
             'Unable to load product data. Please refresh the page.'
         );
-        throw error; // Re-throw to be caught by the caller
+        throw error;
     }
 }
 
@@ -303,7 +286,7 @@ function populateNewReleases() {
                 titleElement.textContent = product.title;
             }
             if (priceElement) {
-                priceElement.textContent = `$${parseFloat(product.price).toFixed(2)}`;
+                priceElement.textContent = `From $${parseFloat(product.price).toFixed(2)}`;
             }
         }
     });
@@ -396,7 +379,7 @@ function populateFeaturedProducts() {
                 }
 
                 if (priceElement) {
-                    priceElement.textContent = `$${parseFloat(product.price).toFixed(2)}`;
+                    priceElement.textContent = `From $${parseFloat(product.price).toFixed(2)}`;
                     if (debugFeaturedProducts) console.log(`Updated price for ${section.id}:`, product.price);
                 }
 
