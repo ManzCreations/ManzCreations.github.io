@@ -186,7 +186,7 @@ a {
 /* -------------------------------- */
 .header {
   position: relative;
-  z-index: 100;
+  z-index: 1000;
   background-color: var(--color-bg-white);
 }
 
@@ -245,8 +245,8 @@ a {
 /* Overlay */
 .overlay {
   position: fixed;
-  inset: 0;  /* shorthand for top: 0; right: 0; bottom: 0; left: 0; */
-  background-color: rgba(84, 213, 118, 0.95);
+  inset: 0;  
+  background-color: rgba(84, 213, 118, 0.45);
   z-index: 999;
 }
 
@@ -255,14 +255,29 @@ a {
   visibility: visible;
 }
 
+/* Header overlay specific styles */
 .header .overlay {
   position: fixed;
-  inset: 0;
-  background-color: rgba(84, 213, 118, 0.95);
+  top: calc(85px + var(--spacing-4) * 2);
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(84, 213, 118, 0.45);
+  backdrop-filter: blur(3px);
   opacity: 0;
   visibility: hidden;
   transition: opacity var(--transition-base);
   z-index: 99;
+}
+
+/* Products page specific overlay adjustment */
+.products-layout ~ .header .overlay {
+  top: 200px; /* Moves blur start point below search and filters */
+}
+
+.header .overlay.fade-in {
+  opacity: 1;
+  visibility: visible;
 }
 
 /* Desktop Navigation */
@@ -393,49 +408,43 @@ a {
 
 /* Mobile Menu */
 .header__menu {
-  position: fixed;
-  top: 85px;
-  right: 1.5rem;
-  width: auto;
-  min-width: 250px;
-  max-width: 320px;
-  background: var(--color-bg-white);
-  padding: 1.5rem;
-  border-radius: var(--radius-md);
-  box-shadow: var(--shadow-md);
-  z-index: 1000;
+  position: absolute;
+  top: 100%; /* This ensures it starts right after the header */
+  left: 0;
+  right: 0;
+  width: 100%;
+  transform: translateY(-100%);
   opacity: 0;
-  transition: opacity 300ms ease-in-out, visibility 300ms ease-in-out;
+  visibility: hidden;
+  background: rgba(255, 255, 255, 0.92);
+  padding: 0;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  transition: all 0.3s ease-in-out;
+  z-index: 999;
 }
 
 .header__menu.fade-in {
-    opacity: 1;
-    transform: translateY(0);
-    pointer-events: auto;
+  transform: translateY(0);
+  opacity: 1;
+  visibility: visible;
 }
 
-/* Menu items */
 .header__menu a {
   display: block;
-  padding: var(--spacing-4) var(--spacing-6);
+  padding: 1rem 1.5rem;
   color: var(--color-text-primary);
-  text-align: left;
   border-bottom: 1px solid var(--color-bg-light);
-  transition: all var(--transition-base);
-}
-
-.header__menu a:not(:last-child) {
-  border-bottom: 1px solid var(--color-bg-light);
-}
-
-.header__menu a:last-child {
-  border-bottom: none;
+  transition: all 0.3s ease-in-out;
 }
 
 .header__menu a:hover {
   background-color: var(--color-bg-light);
   color: var(--color-primary);
-  padding-left: var(--spacing-8);
+  padding-left: 2rem;
+}
+
+.header__menu a:last-child {
+  border-bottom: none;
 }
 
 /* -------------------------------- */
@@ -676,10 +685,11 @@ a {
   }
 }
 
+/* Base Product Grid and Card Styles */
 .products-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-  gap: var(--spacing-8);
+  grid-template-columns: repeat(auto-fit, minmax(175px, 1fr)); /* Reduced from 250px */
+  gap: var(--spacing-6); /* Reduced from spacing-8 */
 }
 
 .product-card {
@@ -696,7 +706,7 @@ a {
 
 .product-image {
   width: 100%;
-  height: 250px;
+  height: 175px; /* Reduced from 250px */
   overflow: hidden;
 }
 
@@ -712,13 +722,79 @@ a {
 }
 
 .product-info {
-  padding: var(--spacing-6);
+  padding: var(--spacing-4); /* Reduced from spacing-6 */
+}
+
+.product-info h3 {
+  font-size: 1rem; /* Reduced from 1.1rem */
+  margin-bottom: 0.5rem;
 }
 
 .price {
   color: var(--color-primary);
   font-weight: 600;
-  font-size: var(--font-lg);
+  font-size: 1rem; /* Adjusted from var(--font-lg) */
+}
+
+/* Mobile Styles */
+@media (max-width: 768px) {
+  .products-grid {
+    grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); /* Reduced from 140px */
+    gap: var(--spacing-3);
+  }
+
+  .product-card {
+    margin-bottom: var(--spacing-3);
+  }
+
+  .product-image {
+    height: 120px; /* Reduced from 140px */
+  }
+
+  .product-info {
+    padding: var(--spacing-2);
+  }
+
+  .product-info h3 {
+    font-size: 0.8rem;
+    margin-bottom: 0.25rem;
+    line-height: 1.2;
+  }
+
+  .price {
+    font-size: 0.8rem;
+  }
+
+  .product-badge {
+    font-size: 0.65rem;
+    padding: 0.2rem 0.5rem;
+    top: 0.5rem;
+    right: 0.5rem;
+  }
+}
+
+/* Extra small devices */
+@media (max-width: 375px) {
+  .products-grid {
+    grid-template-columns: repeat(auto-fit, minmax(100px, 1fr)); /* Reduced from 120px */
+    gap: var(--spacing-2);
+  }
+
+  .product-image {
+    height: 100px; /* Reduced from 120px */
+  }
+
+  .product-info {
+    padding: var(--spacing-2);
+  }
+
+  .product-info h3 {
+    font-size: 0.75rem;
+  }
+
+  .price {
+    font-size: 0.75rem;
+  }
 }
 
 /* Order Form Section */
@@ -1801,14 +1877,54 @@ body.noscroll {
 
     /* Header */
     .header {
-        position: relative; /* Change from fixed to relative */
-        width: 100%;
-        z-index: 1;
+      position: sticky;
+      top: 0;
+      background: white;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+      z-index: 1000;
+    }
+    
+    /* Ensure header isn't affected by backdrop filter */
+    .header::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: white;
+      z-index: -1;
+    }
+    
+    .header.open + .mobile-controls {
+      position: relative;
+      z-index: 997;
+    }
+    
+    .header__menu {
+      max-height: calc(100vh - 85px);
+      overflow-y: auto;
+      scrollbar-width: none;
+      -ms-overflow-style: none;
+    }
+    
+    .header__menu::-webkit-scrollbar {
+      display: none;
+    }
+    
+    body.noscroll {
+      overflow: hidden;
+      position: fixed;
+      width: 100%;
+    }
+    
+    body.noscroll .mobile-controls {
+      padding-right: 15px;
     }
 
     /* Mobile Controls */
     .mobile-controls {
-        position: sticky;
+        position: relative;
         top: 0;
         left: 0;
         right: 0;
@@ -1817,7 +1933,7 @@ body.noscroll {
         gap: 0.75rem;
         padding: 1rem;
         background: var(--color-bg-white);
-        z-index: 50;
+        z-index: 998;
         box-shadow: var(--shadow-md);
     }
 

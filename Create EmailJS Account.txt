@@ -1,0 +1,89 @@
+Create EmailJS Account
+
+Go to https://www.emailjs.com/
+Click "Sign Up Free"
+Create account with your main business email
+Verify your email address
+
+
+Connect Email Service
+
+Log in to EmailJS dashboard
+Click "Email Services" in left sidebar
+Click "Add New Service"
+Choose "Gmail" as your service
+Connect with your business Gmail account
+Once connected, copy the new "Service ID" (will look like "service_xxxxxx")
+
+
+Create Email Templates
+
+Click "Email Templates" in left sidebar
+Click "Create New Template"
+Create two templates:
+
+Quick Inquiry Template:
+htmlCopySubject: Quick Inquiry: {{productType}} - {{name}}
+
+<h2>Quick Product Inquiry</h2>
+<p><strong>Customer Name:</strong> {{name}}</p>
+<p><strong>Email:</strong> {{email}}</p>
+<p><strong>Phone:</strong> {{phone}}</p>
+<p><strong>Product Type:</strong> {{productType}}</p>
+<p><strong>Specific Product:</strong> {{specificProduct}}</p>
+<p><strong>Question:</strong> {{message}}</p>
+<p><strong>Preferred Contact Method:</strong> {{contactPreference}}</p>
+Full Inquiry Template:
+htmlCopySubject: Full Inquiry: Custom Order - {{firstName}} {{lastName}}
+
+<h2>Full Product Inquiry</h2>
+<p><strong>Customer Name:</strong> {{firstName}} {{lastName}}</p>
+<p><strong>Email:</strong> {{email}}</p>
+<p><strong>Phone:</strong> {{phone}}</p>
+<p><strong>Products of Interest:</strong> {{productInterest}}</p>
+<p><strong>Specific Products:</strong> {{specificProducts}}</p>
+<p><strong>Custom Request Details:</strong> {{customRequest}}</p>
+<p><strong>Preferred Contact Method:</strong> {{contactPreference}}</p>
+
+Save each template and copy their Template IDs (will look like "template_xxxxxx")
+
+
+Get API Keys
+
+Click "Account" in left sidebar
+Find the "API Keys" section
+Copy your Public Key
+
+
+Update Your Code
+
+Replace the EMAIL_CONFIG object with your new credentials:
+
+javascriptCopyconst EMAIL_CONFIG = {
+    PUBLIC_KEY: 'your_new_public_key',
+    SERVICE_ID: 'your_new_service_id',
+    TEMPLATES: {
+        QUICK: 'your_new_quick_template_id',
+        FULL: 'your_new_full_template_id'
+    }
+};
+
+Test the Setup
+
+Submit a test form submission on your site
+Check your business email for the test message
+Verify all form fields are coming through correctly
+
+
+Set Usage Limits (Optional)
+
+Go to "Account" → "Usage & Billing"
+Set monthly email limits
+Set up alerts for when you approach limits
+
+
+Security Recommendations
+
+Set up 2-factor authentication on your EmailJS account
+Keep your API keys secure
+Consider setting up domain restrictions in EmailJS

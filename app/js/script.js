@@ -10,61 +10,64 @@ const EMAIL_CONFIG = {
 
 // Initialize EmailJS
 function initializeEmailJS() {
-    console.log('Initializing EmailJS with config:', {
-        publicKey: EMAIL_CONFIG.PUBLIC_KEY,
-        keyLength: EMAIL_CONFIG.PUBLIC_KEY.length,
-        serviceId: EMAIL_CONFIG.SERVICE_ID
-    });
-
-    try {
-        // Make sure emailjs is loaded
-        if (typeof emailjs === 'undefined') {
-            throw new Error('EmailJS library not loaded');
+    // Only initialize if we're on index.html or inquire.html
+    const currentPage = window.location.pathname;
+    if (currentPage.includes('index.html') || currentPage.includes('inquire.html')) {
+        console.log('Initializing EmailJS...');
+        try {
+            emailjs.init(EMAIL_CONFIG.PUBLIC_KEY);
+            console.log('EmailJS initialized successfully');
+        } catch (error) {
+            console.error('EmailJS initialization failed:', error);
         }
-
-        // Initialize with user ID
-        emailjs.init(EMAIL_CONFIG.PUBLIC_KEY);
-        console.log('EmailJS initialized successfully');
-
-        // Test if initialization worked
-        if (typeof emailjs.send !== 'function') {
-            throw new Error('EmailJS not properly initialized');
-        }
-    } catch (error) {
-        console.error('EmailJS initialization failed:', error);
-        throw error;
+    } else {
+        console.log('Skipping EmailJS initialization - not needed on this page');
     }
 }
 
 // Send email using EmailJS
 async function sendEmail(formData, formType) {
-    console.log('Starting email send process...');
+    console.log(`Processing ${formType} inquiry submission...`);
     console.log('Form data:', formData);
-    console.log('Form type:', formType);
 
     try {
-        // Ensure EmailJS is initialized
-        if (typeof emailjs.send !== 'function') {
-            console.log('EmailJS not initialized, attempting to initialize...');
-            initializeEmailJS();
+        // Prepare email data based on form type
+        let emailData;
+        if (formType === 'quick') {
+            emailData = {
+                name: formData.name || '',
+                email: formData.email || '',
+                phone: formData.phone || 'Not provided',
+                productType: formData.productType || 'Not selected',
+                specificProduct: formData.specificProduct || 'Not specified',
+                message: formData.message || '',
+                contactPreference: formData.contactPreference || 'email'
+            };
+        } else if (formType === 'full') {
+            const productInterest = Array.isArray(formData.productInterest) 
+                ? formData.productInterest.join(', ') 
+                : (formData.productInterest || 'None selected');
+            
+            const specificProducts = Array.isArray(formData.specificProducts) 
+                ? formData.specificProducts.join(', ') 
+                : (formData.specificProducts || 'None selected');
+
+            emailData = {
+                firstName: formData.firstName || '',
+                lastName: formData.lastName || '',
+                email: formData.email || '',
+                phone: formData.phone || 'Not provided',
+                productInterest: productInterest,
+                specificProducts: specificProducts,
+                customRequest: formData.customRequest || 'No custom request provided',
+                contactPreference: formData.contactPreference || 'email'
+            };
         }
 
+        console.log('Prepared email data:', emailData);
+
+        // Send email using appropriate template
         const templateId = formType === 'quick' ? EMAIL_CONFIG.TEMPLATES.QUICK : EMAIL_CONFIG.TEMPLATES.FULL;
-        
-        // Prepare email data
-        const emailData = {
-            ...formData,
-            to_name: 'Steven',
-            from_name: formData.name || `${formData.firstName} ${formData.lastName}` || 'Website Visitor'
-        };
-
-        console.log('Sending email with:', {
-            serviceId: EMAIL_CONFIG.SERVICE_ID,
-            templateId: templateId,
-            dataKeys: Object.keys(emailData)
-        });
-
-        // Send the email
         const response = await emailjs.send(
             EMAIL_CONFIG.SERVICE_ID,
             templateId,
@@ -74,12 +77,7 @@ async function sendEmail(formData, formType) {
         console.log('Email sent successfully:', response);
         return response;
     } catch (error) {
-        console.error('Email send error:', {
-            error: error,
-            message: error.message,
-            emailjsStatus: typeof emailjs,
-            emailjsSendStatus: typeof emailjs?.send
-        });
+        console.error('Email send failed:', error);
         throw error;
     }
 }
@@ -760,30 +758,47 @@ function initializePhoneValidation() {
     const phoneInputs = document.querySelectorAll('input[type="tel"]');
     
     phoneInputs.forEach(input => {
+        // Add input event listener for validation
         input.addEventListener('input', function(e) {
-            // Allow empty value since it's optional
-            if (!this.value) {
-                this.setCustomValidity('');
-                return;
-            }
-            
-            // Validate phone number
-            if (formatPhoneNumber(this.value)) {
-                this.setCustomValidity('');
-            } else {
-                this.setCustomValidity('Please enter a valid phone number');
-            }
+            validatePhoneNumber(this);
         });
         
-        // Prevent form submission if phone number is invalid
-        input.closest('form')?.addEventListener('submit', function(e) {
-            const phoneInput = this.querySelector('input[type="tel"]');
-            if (phoneInput && phoneInput.value && !formatPhoneNumber(phoneInput.value)) {
-                e.preventDefault();
-                phoneInput.reportValidity();
+        // Add blur event listener for formatting
+        input.addEventListener('blur', function(e) {
+            if (this.value) {
+                const cleaned = this.value.replace(/\D/g, '');
+                const match = cleaned.match(/^(\d{3})(\d{3})(\d{4})$/);
+                if (match) {
+                    this.value = match[1] + '-' + match[2] + '-' + match[3];
+                }
             }
         });
     });
+}
+
+function validatePhoneNumber(input) {
+    const phoneValue = input.value.replace(/\D/g, '');
+    
+    // Check if empty (for optional fields)
+    if (!phoneValue) {
+        input.setCustomValidity('');
+        return true;
+    }
+    
+    // Check length (10 or 11 digits)
+    if (phoneValue.length < 10 || phoneValue.length > 11) {
+        input.setCustomValidity('Please enter a valid phone number');
+        return false;
+    }
+    
+    // If 11 digits, first must be 1
+    if (phoneValue.length === 11 && phoneValue[0] !== '1') {
+        input.setCustomValidity('11-digit numbers must start with 1');
+        return false;
+    }
+    
+    input.setCustomValidity('');
+    return true;
 }
 
 // Sort products function with improved error handling
@@ -1263,20 +1278,6 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
 
-    // Initialize inquiry form if it exists and products container doesn't
-    if (inquiryForm && !productsContainer) {
-        if (debugProductLoading) console.log('Initializing inquiry form');
-        
-        // Initialize form validation
-        initializeFormValidation();
-        
-        // Single initialization of products
-        loadProducts(() => {
-            if (debugProductLoading) console.log('Products loaded for inquiry form');
-            initializeInquiryForm();
-        });
-    }
-
     // Initialize category toggles
     const toggleButtons = document.querySelectorAll('.toggle-subcategories');
     toggleButtons.forEach(button => {
@@ -1487,14 +1488,13 @@ function initializeFormValidation() {
 }
 
 function initializeQuickInquiryForm() {
-    console.log('Starting form initialization...');
-
-    // Form element validation
     const form = document.querySelector('#quick-inquiry form');
     if (!form) {
-        console.error('Critical Error: Quick inquiry form not found');
+        console.log('Quick inquiry form not found - might be on a different page');
         return;
     }
+
+    console.log('Initializing quick inquiry form...');
     console.log('Form element found:', {
         id: form.id,
         action: form.action,
@@ -1678,6 +1678,75 @@ function initializeQuickInquiryForm() {
     });
 
     console.log('Form initialization completed');
+}
+
+// Full Inquiry Form Handler (inquire.html)
+function initializeFullInquiryForm() {
+    const form = document.getElementById('inquiryForm');
+    if (!form) {
+        console.log('Full inquiry form not found - might be on a different page');
+        return;
+    }
+
+    console.log('Initializing full inquiry form...');
+
+    // Handle form submission
+    form.addEventListener('submit', async function(e) {
+        e.preventDefault();
+        
+        const submitButton = this.querySelector('button[type="submit"]');
+        if (!submitButton) return;
+        
+        const originalText = submitButton.textContent;
+
+        try {
+            // Show loading state
+            submitButton.disabled = true;
+            submitButton.textContent = 'Sending...';
+
+            // Gather all form data
+            const formData = new FormData(this);
+            
+            // Handle checkbox groups and multiple selects
+            const productInterest = Array.from(
+                this.querySelectorAll('input[name="productInterest"]:checked')
+            ).map(cb => cb.value);
+            
+            const specificProducts = Array.from(
+                this.querySelector('#specificProducts').selectedOptions
+            ).map(option => option.value);
+
+            // Create the final form data object
+            const emailData = {
+                ...Object.fromEntries(formData),
+                productInterest,
+                specificProducts
+            };
+
+            // Send the email
+            await sendEmail(emailData, 'full');
+
+            // Show success message
+            notifications.success(
+                'Inquiry Sent!',
+                'Thank you for your inquiry. We\'ll get back to you soon!'
+            );
+
+            // Reset form
+            this.reset();
+
+        } catch (error) {
+            console.error('Form submission error:', error);
+            notifications.error(
+                'Error',
+                'There was a problem sending your inquiry. Please try again.'
+            );
+        } finally {
+            // Restore button state
+            submitButton.disabled = false;
+            submitButton.textContent = originalText;
+        }
+    });
 }
 
 function initializeMobileView() {
