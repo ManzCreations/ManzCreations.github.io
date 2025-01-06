@@ -1287,10 +1287,10 @@ document.addEventListener('DOMContentLoaded', function() {
         const subcategoryList = categoryGroup.querySelector('.subcategory-list');
         const isHidden = subcategoryList.classList.contains('hidden');
         
-        // Toggle button text
-        button.textContent = isHidden ? 'âˆ’' : '+';
+        // Toggle expanded state
+        categoryGroup.classList.toggle('expanded');
         
-        // Toggle subcategory list
+        // Toggle visibility
         subcategoryList.classList.toggle('hidden');
         });
     });
