@@ -6,39 +6,18 @@
     <link href="https://fonts.googleapis.com/css2?family=Public+Sans:wght@300;400;600&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="/dist/style.css">
     <title>Upcoming Events | Crafted 4 You</title>
-    <style>
-        .coming-soon {
-            min-height: calc(100vh - 300px); /* Adjust based on header/footer height */
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            text-align: center;
-            padding: 4rem 2rem;
-        }
-        
-        .coming-soon h1 {
-            font-size: 2.5rem;
-            margin-bottom: 1rem;
-            background: linear-gradient(to right, var(--color-primary), var(--color-accent-1));
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-        }
-        
-        .coming-soon p {
-            color: var(--color-text-secondary);
-            max-width: 600px;
-            margin: 0 auto;
-        }
-    </style>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 </head>
 <body>
+    <div id="notification-container"></div>
+    
     <!-- Header -->
     <header class="header">
         <div class="overlay has-fade"></div>
+        
         <nav class="container flex flex-jc-sb flex-ai-c">
             <a href="/" class="header__logo flex flex-ai-c">
-                <img src="/images/backgrounds/logo-noletters.png" alt="Crafted 4 You Logo" class="logo__image">
+                <img src="/images/backgrounds/logo-noletters.png" alt="Crafted 4 You Logo" class="logo__image" />
                 <h1 class="gradient-text">Crafted 4 You</h1>
             </a>
 
@@ -48,46 +27,212 @@
                 <span></span>
             </a>
 
+            <!-- Desktop Navigation -->
             <div class="header__links hide-for-mobile">
-                <a href="/pages/collections.html">Collections</a>
-                <a href="/pages/products.html">Products</a>
-                <a href="/pages/events.html">Upcoming Events</a>
-                <a href="/pages/about.html">About</a>
+                <a href="products.html">Products</a>
+                <a href="events.html">Upcoming Events</a>
+                <a href="about.html">About</a>
                 <div class="dropdown">
                     <a href="#" class="dropdown__toggle">More</a>
                     <div class="dropdown__menu">
-                        <a href="/pages/gallery.html">Gallery</a>
-                        <a href="/pages/process.html">Our Process</a>
-                        <a href="/pages/care.html">Care Guide</a>
+                        <a href="gallery.html">Gallery</a>
+                        <a href="process.html">Our Process</a>
+                        <a href="care.html">Care Guide</a>
                     </div>
                 </div>
-                <a href="/pages/inquire.html" class="header__cta">Get in Touch</a>
+                <a href="inquire.html" class="button header__cta">Get in Touch</a>
+            </div>
+
+            <!-- Mobile Menu -->
+            <div class="header__menu has-fade">
+                <a href="products.html">Products</a>
+                <a href="events.html">Upcoming Events</a>
+                <a href="about.html">About</a>
+                <a href="gallery.html">Gallery</a>
+                <a href="process.html">Our Process</a>
+                <a href="care.html">Care Guide</a>
+                <a href="inquire.html">Get in Touch</a>
             </div>
         </nav>
-
-        <div class="header__menu has-fade">
-            <a href="/pages/collections.html">Collections</a>
-            <a href="/pages/products.html">Products</a>
-            <a href="/pages/events.html">Upcoming Events</a>
-            <a href="/pages/about.html">About</a>
-            <a href="/pages/gallery.html">Gallery</a>
-            <a href="/pages/process.html">Our Process</a>
-            <a href="/pages/care.html">Care Guide</a>
-            <a href="/pages/inquire.html">Get in Touch</a>
-        </div>
     </header>
+    
+    <!-- Construction Overlay - REMOVE WHEN READY -->
+    <div class="construction-overlay">
+        <div class="construction-message">
+            <i class="fas fa-hard-hat"></i>
+            <h2>Page Under Construction</h2>
+            <p>We're working on bringing you our upcoming events. Check back soon!</p>
+        </div>
+    </div>
 
-    <!-- Main Content -->
-    <main>
-        <section class="coming-soon">
-            <h1>Upcoming Events</h1>
-            <p>We're working hard to bring you amazing content. Check back soon!</p>
-        </section>
+    <!-- Main Events Content -->
+    <main class="events-page">
+        <div class="container">
+            <h1 class="gradient-text text-center">Upcoming Events</h1>
+            <p class="subtitle text-center">Find us at these upcoming fairs and festivals! Come say hello and shop our products in person.</p>
+
+            <!-- Featured Event -->
+            <section class="featured-event">
+                <div class="event-card featured">
+                    <div class="event-image">
+                        <img src="/api/placeholder/800/400" alt="Spring Craft Fair 2024">
+                        <span class="event-badge">Featured</span>
+                    </div>
+                    <div class="event-content">
+                        <h2>Spring Craft Fair 2024</h2>
+                        <div class="event-details">
+                            <p><i class="fas fa-calendar"></i> April 13-14, 2024</p>
+                            <p><i class="fas fa-clock"></i> 10:00 AM - 6:00 PM</p>
+                            <p><i class="fas fa-map-marker-alt"></i> City Convention Center, Downtown</p>
+                        </div>
+                        <p class="event-description">Join us at the largest spring craft fair in the region! We'll have our full collection available, including new spring designs and special event-only discounts.</p>
+                        <a href="#" class="button">Add to Calendar</a>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Upcoming Events Grid -->
+            <section class="upcoming-events">
+                <h2>More Upcoming Events</h2>
+                
+                <div class="events-grid">
+                    <!-- Event 1 -->
+                    <div class="event-card">
+                        <div class="event-image">
+                            <img src="/api/placeholder/400/300" alt="Summer Market Days">
+                        </div>
+                        <div class="event-content">
+                            <h3>Summer Market Days</h3>
+                            <div class="event-details">
+                                <p><i class="fas fa-calendar"></i> May 25, 2024</p>
+                                <p><i class="fas fa-clock"></i> 9:00 AM - 4:00 PM</p>
+                                <p><i class="fas fa-map-marker-alt"></i> City Park</p>
+                            </div>
+                            <p class="event-description">A delightful outdoor market featuring local artisans. Perfect for finding unique summer gifts!</p>
+                            <a href="#" class="button button--secondary">More Info</a>
+                        </div>
+                    </div>
+
+                    <!-- Event 2 -->
+                    <div class="event-card">
+                        <div class="event-image">
+                            <img src="/api/placeholder/400/300" alt="Artisan Weekend">
+                        </div>
+                        <div class="event-content">
+                            <h3>Artisan Weekend</h3>
+                            <div class="event-details">
+                                <p><i class="fas fa-calendar"></i> June 8-9, 2024</p>
+                                <p><i class="fas fa-clock"></i> 10:00 AM - 5:00 PM</p>
+                                <p><i class="fas fa-map-marker-alt"></i> Community Center</p>
+                            </div>
+                            <p class="event-description">Two days of handcrafted goods, demonstrations, and special releases. Don't miss our new summer collection!</p>
+                            <a href="#" class="button button--secondary">More Info</a>
+                        </div>
+                    </div>
+
+                    <!-- Event 3 -->
+                    <div class="event-card">
+                        <div class="event-image">
+                            <img src="/api/placeholder/400/300" alt="Independence Day Festival">
+                            <span class="event-badge">Special Event</span>
+                        </div>
+                        <div class="event-content">
+                            <h3>Independence Day Festival</h3>
+                            <div class="event-details">
+                                <p><i class="fas fa-calendar"></i> July 4, 2024</p>
+                                <p><i class="fas fa-clock"></i> 2:00 PM - 9:00 PM</p>
+                                <p><i class="fas fa-map-marker-alt"></i> Memorial Park</p>
+                            </div>
+                            <p class="event-description">Celebrate with us! Special patriotic designs and festival-exclusive items available only at this event.</p>
+                            <a href="#" class="button button--secondary">More Info</a>
+                        </div>
+                    </div>
+
+                    <!-- Event 4 -->
+                    <div class="event-card">
+                        <div class="event-image">
+                            <img src="/api/placeholder/400/300" alt="Back to School Bazaar">
+                        </div>
+                        <div class="event-content">
+                            <h3>Back to School Bazaar</h3>
+                            <div class="event-details">
+                                <p><i class="fas fa-calendar"></i> August 3, 2024</p>
+                                <p><i class="fas fa-clock"></i> 11:00 AM - 7:00 PM</p>
+                                <p><i class="fas fa-map-marker-alt"></i> Shopping Mall Plaza</p>
+                            </div>
+                            <p class="event-description">Get ready for school with our custom designs! Special discounts on all kids' items.</p>
+                            <a href="#" class="button button--secondary">More Info</a>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Event Calendar -->
+            <section class="event-calendar">
+                <h2>Calendar View</h2>
+                <div class="calendar-notice">
+                    <i class="fas fa-calendar-alt"></i>
+                    <p>Want to stay updated? Subscribe to our calendar to never miss an event!</p>
+                    <a href="#" class="button">Subscribe to Calendar</a>
+                </div>
+            </section>
+        </div>
     </main>
 
     <!-- Footer -->
     <footer class="footer bg-dark">
-        <!-- Footer content same as index.html -->
+        <div class="container">
+            <div class="footer__grid">
+            <div class="footer__branding">
+                <h2 class="gradient-text">Crafted 4 You</h2>
+                <p class="text-light">Handmade with love and care</p>
+                <a href="/inquire" class="button footer__cta">Get in Touch</a>
+            </div>
+            
+            <div class="footer__links">
+                <h3 class="text-light">Shop</h3>
+                <a href="/collections">Collections</a>
+                <a href="/products">Products</a>
+                <a href="/gallery">Gallery</a>
+            </div>
+        
+            <div class="footer__info">
+                <h3 class="text-light">Company</h3>
+                <a href="/about">About Us</a>
+                <a href="/events">Upcoming Events</a>
+                <a href="/process">Our Process</a>
+                <a href="/care">Care Guide</a>
+            </div>
+        
+            <div class="footer__support">
+                <h3 class="text-light">Support</h3>
+                <a href="/shipping">Shipping Info</a>
+                <a href="/faq">FAQs</a>
+                <a href="/contact">Contact Us</a>
+                <div class="footer__social">
+                <a href="#" aria-label="Facebook">
+                    <img src="../images/icons/icon-facebook.svg" alt="Facebook"/>
+                </a>
+                <a href="#" aria-label="YouTube">
+                    <img src="../images/icons/icon-youtube.svg" alt="YouTube"/>
+                </a>
+                <a href="#" aria-label="Twitter">
+                    <img src="../images/icons/icon-twitter.svg" alt="Twitter"/>
+                </a>
+                <a href="#" aria-label="Pinterest">
+                    <img src="../images/icons/icon-pinterest.svg" alt="Pinterest"/>
+                </a>
+                <a href="#" aria-label="Instagram">
+                    <img src="../images/icons/icon-instagram.svg" alt="Instagram"/>
+                </a>
+                </div>
+            </div>
+            </div>
+            
+            <div class="footer__bottom">
+            <p class="text-light">&copy; 2024 Crafted 4 You. All Rights Reserved.</p>
+            </div>
+        </div>
     </footer>
 
     <script src="/app/js/script.js"></script>

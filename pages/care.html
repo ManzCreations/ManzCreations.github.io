@@ -5,40 +5,19 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link href="https://fonts.googleapis.com/css2?family=Public+Sans:wght@300;400;600&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="/dist/style.css">
-    <title>Care Guide | Crafted 4 You</title>
-    <style>
-        .coming-soon {
-            min-height: calc(100vh - 300px); /* Adjust based on header/footer height */
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            text-align: center;
-            padding: 4rem 2rem;
-        }
-        
-        .coming-soon h1 {
-            font-size: 2.5rem;
-            margin-bottom: 1rem;
-            background: linear-gradient(to right, var(--color-primary), var(--color-accent-1));
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-        }
-        
-        .coming-soon p {
-            color: var(--color-text-secondary);
-            max-width: 600px;
-            margin: 0 auto;
-        }
-    </style>
+    <title>Product Care Guide | Crafted 4 You</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 </head>
 <body>
+    <div id="notification-container"></div>
+    
     <!-- Header -->
     <header class="header">
         <div class="overlay has-fade"></div>
+        
         <nav class="container flex flex-jc-sb flex-ai-c">
             <a href="/" class="header__logo flex flex-ai-c">
-                <img src="/images/backgrounds/logo-noletters.png" alt="Crafted 4 You Logo" class="logo__image">
+                <img src="/images/backgrounds/logo-noletters.png" alt="Crafted 4 You Logo" class="logo__image" />
                 <h1 class="gradient-text">Crafted 4 You</h1>
             </a>
 
@@ -48,48 +27,360 @@
                 <span></span>
             </a>
 
+            <!-- Desktop Navigation -->
             <div class="header__links hide-for-mobile">
-                <a href="/pages/collections.html">Collections</a>
-                <a href="/pages/products.html">Products</a>
-                <a href="/pages/events.html">Upcoming Events</a>
-                <a href="/pages/about.html">About</a>
+                <a href="products.html">Products</a>
+                <a href="events.html">Upcoming Events</a>
+                <a href="about.html">About</a>
                 <div class="dropdown">
                     <a href="#" class="dropdown__toggle">More</a>
                     <div class="dropdown__menu">
-                        <a href="/pages/gallery.html">Gallery</a>
-                        <a href="/pages/process.html">Our Process</a>
-                        <a href="/pages/care.html">Care Guide</a>
+                        <a href="gallery.html">Gallery</a>
+                        <a href="process.html">Our Process</a>
+                        <a href="care.html">Care Guide</a>
                     </div>
                 </div>
-                <a href="/pages/inquire.html" class="header__cta">Get in Touch</a>
+                <a href="inquire.html" class="button header__cta">Get in Touch</a>
+            </div>
+
+            <!-- Mobile Menu -->
+            <div class="header__menu has-fade">
+                <a href="products.html">Products</a>
+                <a href="events.html">Upcoming Events</a>
+                <a href="about.html">About</a>
+                <a href="gallery.html">Gallery</a>
+                <a href="process.html">Our Process</a>
+                <a href="care.html">Care Guide</a>
+                <a href="inquire.html">Get in Touch</a>
             </div>
         </nav>
-
-        <div class="header__menu has-fade">
-            <a href="/pages/collections.html">Collections</a>
-            <a href="/pages/products.html">Products</a>
-            <a href="/pages/events.html">Upcoming Events</a>
-            <a href="/pages/about.html">About</a>
-            <a href="/pages/gallery.html">Gallery</a>
-            <a href="/pages/process.html">Our Process</a>
-            <a href="/pages/care.html">Care Guide</a>
-            <a href="/pages/inquire.html">Get in Touch</a>
-        </div>
     </header>
 
-    <!-- Main Content -->
-    <main>
-        <section class="coming-soon">
-            <h1>Care Guide</h1>
-            <p>We're working hard to bring you amazing content. Check back soon!</p>
-        </section>
+    <!-- Main Care Guide Content -->
+    <main class="care-guide">
+        <!-- Jump to top button -->
+        <button id="jumpToTop" class="jump-to-top">
+            <i class="fas fa-arrow-up"></i>
+        </button>
+
+        <div class="container">
+            <div class="care-guide__layout">
+                <!-- Side Navigation -->
+                <aside class="care-guide__nav">
+                    <div class="nav-container">
+                        <div class="search-bar">
+                            <input type="text" id="productSearch" placeholder="Search products...">
+                            <i class="fas fa-search"></i>
+                        </div>
+                        <nav class="product-nav">
+                            <ul>
+                                <li><a href="#freshies" class="nav-link">Freshies & Car Fresheners</a></li>
+                                <li><a href="#cups" class="nav-link">Cups & Tumblers</a></li>
+                                <li><a href="#photo-slates" class="nav-link">Photo Slates</a></li>
+                                <li><a href="#cutting-boards" class="nav-link">Cutting Boards</a></li>
+                                <li><a href="#wind-spinners" class="nav-link">Wind Spinners</a></li>
+                                <li><a href="#car-charms" class="nav-link">Beaded Car Charms</a></li>
+                                <li><a href="#coasters" class="nav-link">Coasters</a></li>
+                                <li><a href="#license-plates" class="nav-link">License Plates</a></li>
+                                <li><a href="#holders" class="nav-link">Holders</a></li>
+                                <li><a href="#keychains" class="nav-link">Keychains</a></li>
+                            </ul>
+                        </nav>
+                    </div>
+                </aside>
+
+                <!-- Main Content Area -->
+                <div class="care-guide__content">
+                    <h1 class="gradient-text">Product Care Guide</h1>
+                    <p class="subtitle">Learn how to properly care for your Crafted 4 You products to ensure their longevity and maintain their beauty.</p>
+
+                    <!-- Freshies Section -->
+                    <section id="freshies" class="care-section">
+                        <h2><i class="fas fa-air-freshener"></i> Freshies & Car Fresheners</h2>
+                        <div class="care-card">
+                            <h3>Essential Care Instructions</h3>
+                            <ul>
+                                <li><strong>Immediate Use:</strong> Hang freshies immediately after receiving or store in a cool, dry place.</li>
+                                <li><strong>Temperature Sensitivity:</strong> Keep away from extreme heat and direct sunlight to prevent melting.</li>
+                                <li><strong>Positioning:</strong> During hot days, move freshie to gear shift or store in an open bag.</li>
+                                <li><strong>Safety:</strong> Keep away from children and pets - contents are not consumable.</li>
+                            </ul>
+
+                            <div class="warning-box">
+                                <h4>⚠️ Important Warnings</h4>
+                                <ul>
+                                    <li>Oils may cause staining on fabrics and surfaces</li>
+                                    <li>Do not use in wax warmers</li>
+                                    <li>White freshies may discolor over time with certain scents</li>
+                                    <li>Avoid trapping between sun shade and windshield</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </section>
+
+                    <!-- Cups Section -->
+                    <section id="cups" class="care-section">
+                        <h2><i class="fas fa-glass-water"></i> Cups & Tumblers</h2>
+                        <div class="care-card">
+                            <h3>Care Instructions</h3>
+                            <ul>
+                                <li><strong>Washing:</strong> Hand wash only with mild soap and warm water</li>
+                                <li><strong>Avoid:</strong> Do not put in dishwasher - this can damage the design and insulation</li>
+                                <li><strong>Cleaning Tips:</strong> Use soft cloths or sponges - avoid abrasive materials</li>
+                                <li><strong>Drying:</strong> Dry thoroughly immediately after washing</li>
+                            </ul>
+                            <div class="maintenance-tips">
+                                <h4>Maintenance Tips</h4>
+                                <ul>
+                                    <li>Regular cleaning prevents buildup and maintains appearance</li>
+                                    <li>Avoid soaking the tumbler</li>
+                                    <li>Keep away from extreme temperatures</li>
+                                    <li>Store upright when not in use</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </section>
+
+                    <!-- Photo Slates Section -->
+                    <section id="photo-slates" class="care-section">
+                        <h2><i class="fas fa-image"></i> Photo Slates</h2>
+                        <div class="care-card">
+                            <h3>Care Instructions</h3>
+                            <ul>
+                                <li><strong>Cleaning:</strong> Dust with a soft, dry microfiber cloth</li>
+                                <li><strong>Display:</strong> Keep away from direct sunlight to prevent fading</li>
+                                <li><strong>Handling:</strong> Hold by edges to avoid fingerprints on the image</li>
+                                <li><strong>Storage:</strong> Store upright in a cool, dry place</li>
+                            </ul>
+                            <div class="maintenance-tips">
+                                <h4>Additional Care</h4>
+                                <ul>
+                                    <li>Avoid harsh cleaning products</li>
+                                    <li>Do not expose to moisture</li>
+                                    <li>Handle with clean, dry hands</li>
+                                    <li>Use proper hanging hardware for wall display</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </section>
+
+                    <!-- Cutting Boards Section -->
+                    <section id="cutting-boards" class="care-section">
+                        <h2><i class="fas fa-utensils"></i> Glass Cutting Boards</h2>
+                        <div class="care-card">
+                            <h3>Care Instructions</h3>
+                            <ul>
+                                <li><strong>Cleaning:</strong> Wash with warm, soapy water after each use</li>
+                                <li><strong>Drying:</strong> Dry immediately to prevent water spots</li>
+                                <li><strong>Storage:</strong> Store in a vertical position when possible</li>
+                                <li><strong>Usage:</strong> Use on a stable, flat surface</li>
+                            </ul>
+                            <div class="maintenance-tips">
+                                <h4>Important Notes</h4>
+                                <ul>
+                                    <li>Avoid dropping or impact to prevent cracking</li>
+                                    <li>Do not use abrasive cleaners</li>
+                                    <li>Safe for food contact</li>
+                                    <li>Dishwasher safe, but hand washing recommended</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </section>
+
+                    <!-- Wind Spinners Section -->
+                    <section id="wind-spinners" class="care-section">
+                        <h2><i class="fas fa-wind"></i> Wind Spinners</h2>
+                        <div class="care-card">
+                            <h3>Care & Maintenance</h3>
+                            <ul>
+                                <li><strong>Installation:</strong> Secure firmly in an appropriate location</li>
+                                <li><strong>Cleaning:</strong> Regular cleaning with mild soap and water</li>
+                                <li><strong>Protection:</strong> Apply UV protectant coating annually</li>
+                                <li><strong>Weather:</strong> Consider bringing indoors during severe weather</li>
+                            </ul>
+                            <div class="maintenance-tips">
+                                <h4>Regular Maintenance</h4>
+                                <ul>
+                                    <li>Check hardware connections monthly</li>
+                                    <li>Lubricate moving parts as needed</li>
+                                    <li>Inspect for signs of wear or damage</li>
+                                    <li>Clean debris from spinning mechanisms</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </section>
+
+                    <!-- Car Charms Section -->
+                    <section id="car-charms" class="care-section">
+                        <h2><i class="fas fa-car"></i> Beaded Car Charms</h2>
+                        <div class="care-card">
+                            <h3>Care Instructions</h3>
+                            <ul>
+                                <li><strong>Handling:</strong> Handle gently to prevent bead separation</li>
+                                <li><strong>Cleaning:</strong> Wipe with a soft, dry cloth</li>
+                                <li><strong>Storage:</strong> Store in a cool, dry place when not in use</li>
+                                <li><strong>Protection:</strong> Avoid prolonged sun exposure</li>
+                            </ul>
+                            <div class="maintenance-tips">
+                                <h4>Additional Tips</h4>
+                                <ul>
+                                    <li>Check attachments regularly</li>
+                                    <li>Keep away from direct heat</li>
+                                    <li>Avoid pulling or stretching</li>
+                                    <li>Remove during car washing</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </section>
+
+                    <!-- Additional Sections with Placeholder Content -->
+                    <section id="coasters" class="care-section">
+                        <h2><i class="fas fa-coffee"></i> Coasters</h2>
+                        <div class="care-card">
+                            <h3>Care Instructions</h3>
+                            <div class="coming-soon">
+                                <p>Care instructions for this product are being updated. Check back soon!</p>
+                            </div>
+                        </div>
+                    </section>
+
+                    <section id="license-plates" class="care-section">
+                        <h2><i class="fas fa-car"></i> License Plates</h2>
+                        <div class="care-card">
+                            <h3>Care Instructions</h3>
+                            <ul>
+                                <li><strong>Cleaning:</strong> Use mild soap and water</li>
+                                <li><strong>Protection:</strong> Apply automotive wax to protect finish</li>
+                                <li><strong>Installation:</strong> Use proper mounting hardware</li>
+                                <li><strong>Maintenance:</strong> Regular cleaning to prevent buildup</li>
+                            </ul>
+                        </div>
+                    </section>
+
+                    <section id="holders" class="care-section">
+                        <h2><i class="fas fa-pump-soap"></i> Lipstick & Sanitizer Holders</h2>
+                        <div class="care-card">
+                            <h3>Care Instructions</h3>
+                            <div class="coming-soon">
+                                <p>Care instructions for this product are being updated. Check back soon!</p>
+                            </div>
+                        </div>
+                    </section>
+
+                    <section id="keychains" class="care-section">
+                        <h2><i class="fas fa-key"></i> Keychains</h2>
+                        <div class="care-card">
+                            <h3>Care Instructions</h3>
+                            <div class="coming-soon">
+                                <p>Care instructions for this product are being updated. Check back soon!</p>
+                            </div>
+                        </div>
+                    </section>
+                </div>
+            </div>
+        </div>
     </main>
 
     <!-- Footer -->
     <footer class="footer bg-dark">
-        <!-- Footer content same as index.html -->
+        <div class="container">
+            <div class="footer__grid">
+            <div class="footer__branding">
+                <h2 class="gradient-text">Crafted 4 You</h2>
+                <p class="text-light">Handmade with love and care</p>
+                <a href="/inquire" class="button footer__cta">Get in Touch</a>
+            </div>
+            
+            <div class="footer__links">
+                <h3 class="text-light">Shop</h3>
+                <a href="/collections">Collections</a>
+                <a href="/products">Products</a>
+                <a href="/gallery">Gallery</a>
+            </div>
+        
+            <div class="footer__info">
+                <h3 class="text-light">Company</h3>
+                <a href="/about">About Us</a>
+                <a href="/events">Upcoming Events</a>
+                <a href="/process">Our Process</a>
+                <a href="/care">Care Guide</a>
+            </div>
+        
+            <div class="footer__support">
+                <h3 class="text-light">Support</h3>
+                <a href="/shipping">Shipping Info</a>
+                <a href="/faq">FAQs</a>
+                <a href="/contact">Contact Us</a>
+                <div class="footer__social">
+                <a href="#" aria-label="Facebook">
+                    <img src="../images/icons/icon-facebook.svg" alt="Facebook"/>
+                </a>
+                <a href="#" aria-label="YouTube">
+                    <img src="../images/icons/icon-youtube.svg" alt="YouTube"/>
+                </a>
+                <a href="#" aria-label="Twitter">
+                    <img src="../images/icons/icon-twitter.svg" alt="Twitter"/>
+                </a>
+                <a href="#" aria-label="Pinterest">
+                    <img src="../images/icons/icon-pinterest.svg" alt="Pinterest"/>
+                </a>
+                <a href="#" aria-label="Instagram">
+                    <img src="../images/icons/icon-instagram.svg" alt="Instagram"/>
+                </a>
+                </div>
+            </div>
+            </div>
+            
+            <div class="footer__bottom">
+            <p class="text-light">&copy; 2024 Crafted 4 You. All Rights Reserved.</p>
+            </div>
+        </div>
     </footer>
 
     <script src="/app/js/script.js"></script>
+    <script>
+        // Smooth scrolling for navigation links
+        document.querySelectorAll('.nav-link').forEach(link => {
+            link.addEventListener('click', e => {
+                e.preventDefault();
+                const targetId = link.getAttribute('href');
+                const targetSection = document.querySelector(targetId);
+                targetSection.scrollIntoView({ behavior: 'smooth' });
+            });
+        });
+
+        // Jump to top button functionality
+        const jumpToTopBtn = document.getElementById('jumpToTop');
+        window.onscroll = function() {
+            if (document.body.scrollTop > 20 || document.documentElement.scrollTop > 20) {
+                jumpToTopBtn.style.display = "block";
+            } else {
+                jumpToTopBtn.style.display = "none";
+            }
+        };
+
+        jumpToTopBtn.addEventListener('click', () => {
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        });
+
+        // Product search functionality
+        const searchInput = document.getElementById('productSearch');
+        const sections = document.querySelectorAll('.care-section');
+
+        searchInput.addEventListener('input', () => {
+            const searchTerm = searchInput.value.toLowerCase();
+            
+            sections.forEach(section => {
+                const title = section.querySelector('h2').textContent.toLowerCase();
+                const content = section.textContent.toLowerCase();
+                
+                if (title.includes(searchTerm) || content.includes(searchTerm)) {
+                    section.style.display = 'block';
+                } else {
+                    section.style.display = 'none';
+                }
+            });
+        });
+    </script>
 </body>
 </html>

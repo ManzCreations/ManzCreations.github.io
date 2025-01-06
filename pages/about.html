@@ -5,40 +5,19 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link href="https://fonts.googleapis.com/css2?family=Public+Sans:wght@300;400;600&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="/dist/style.css">
-    <title>About | Crafted 4 You</title>
-    <style>
-        .coming-soon {
-            min-height: calc(100vh - 300px); /* Adjust based on header/footer height */
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            text-align: center;
-            padding: 4rem 2rem;
-        }
-        
-        .coming-soon h1 {
-            font-size: 2.5rem;
-            margin-bottom: 1rem;
-            background: linear-gradient(to right, var(--color-primary), var(--color-accent-1));
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-        }
-        
-        .coming-soon p {
-            color: var(--color-text-secondary);
-            max-width: 600px;
-            margin: 0 auto;
-        }
-    </style>
+    <title>About Us | Crafted 4 You</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 </head>
 <body>
+    <div id="notification-container"></div>
+    
     <!-- Header -->
     <header class="header">
         <div class="overlay has-fade"></div>
+        
         <nav class="container flex flex-jc-sb flex-ai-c">
             <a href="/" class="header__logo flex flex-ai-c">
-                <img src="/images/backgrounds/logo-noletters.png" alt="Crafted 4 You Logo" class="logo__image">
+                <img src="/images/backgrounds/logo-noletters.png" alt="Crafted 4 You Logo" class="logo__image" />
                 <h1 class="gradient-text">Crafted 4 You</h1>
             </a>
 
@@ -48,46 +27,164 @@
                 <span></span>
             </a>
 
+            <!-- Desktop Navigation -->
             <div class="header__links hide-for-mobile">
-                <a href="/pages/collections.html">Collections</a>
-                <a href="/pages/products.html">Products</a>
-                <a href="/pages/events.html">Upcoming Events</a>
-                <a href="/pages/about.html">About</a>
+                <a href="products.html">Products</a>
+                <a href="events.html">Upcoming Events</a>
+                <a href="about.html">About</a>
                 <div class="dropdown">
                     <a href="#" class="dropdown__toggle">More</a>
                     <div class="dropdown__menu">
-                        <a href="/pages/gallery.html">Gallery</a>
-                        <a href="/pages/process.html">Our Process</a>
-                        <a href="/pages/care.html">Care Guide</a>
+                        <a href="gallery.html">Gallery</a>
+                        <a href="process.html">Our Process</a>
+                        <a href="care.html">Care Guide</a>
                     </div>
                 </div>
-                <a href="/pages/inquire.html" class="header__cta">Get in Touch</a>
+                <a href="inquire.html" class="button header__cta">Get in Touch</a>
+            </div>
+
+            <!-- Mobile Menu -->
+            <div class="header__menu has-fade">
+                <a href="products.html">Products</a>
+                <a href="events.html">Upcoming Events</a>
+                <a href="about.html">About</a>
+                <a href="gallery.html">Gallery</a>
+                <a href="process.html">Our Process</a>
+                <a href="care.html">Care Guide</a>
+                <a href="inquire.html">Get in Touch</a>
             </div>
         </nav>
-
-        <div class="header__menu has-fade">
-            <a href="/pages/collections.html">Collections</a>
-            <a href="/pages/products.html">Products</a>
-            <a href="/pages/events.html">Upcoming Events</a>
-            <a href="/pages/about.html">About</a>
-            <a href="/pages/gallery.html">Gallery</a>
-            <a href="/pages/process.html">Our Process</a>
-            <a href="/pages/care.html">Care Guide</a>
-            <a href="/pages/inquire.html">Get in Touch</a>
-        </div>
     </header>
 
-    <!-- Main Content -->
-    <main>
-        <section class="coming-soon">
-            <h1>About</h1>
-            <p>We're working hard to bring you amazing content. Check back soon!</p>
-        </section>
+    <!-- Construction Overlay - REMOVE WHEN READY -->
+    <div class="construction-overlay">
+        <div class="construction-message">
+            <i class="fas fa-hard-hat"></i>
+            <h2>Page Under Construction</h2>
+            <p>We're working on bringing you our upcoming events. Check back soon!</p>
+        </div>
+    </div>
+
+    <!-- Main About Content -->
+    <main class="about-page">
+        <!-- Hero Section -->
+        <div class="about-hero">
+            <div class="container">
+                <h1 class="gradient-text">Our Story</h1>
+                <p class="subtitle">Crafting memories, one piece at a time</p>
+            </div>
+        </div>
+
+        <div class="container">
+            <!-- Personal Story Section -->
+            <section class="about-section">
+                <div class="about-grid">
+                    <div class="about-content">
+                        <h2>Meet the Artist</h2>
+                        <div class="divider"></div>
+                        <p>Hello! I'm Sarah, the creative force behind Crafted 4 You. My journey into crafting began in my home kitchen, where I discovered the joy of creating personalized gifts for family and friends. What started as a hobby quickly blossomed into a passion for bringing smiles to people's faces through custom-made treasures.</p>
+                        <p>With a background in graphic design and a love for all things creative, I found my true calling in crafting personalized items that tell your unique stories. Each piece I create is infused with care, attention to detail, and a touch of magic.</p>
+                        <div class="artist-quote">
+                            <i class="fas fa-quote-left"></i>
+                            <blockquote>"Every item tells a story, and I love being part of your special moments."</blockquote>
+                        </div>
+                    </div>
+                    <div class="about-image">
+                        <img src="/api/placeholder/400/500" alt="Sarah in her workshop">
+                        <div class="image-caption">Creating magic in the workshop</div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Business Story Section -->
+            <section class="about-section">
+                <div class="about-grid reverse">
+                    <div class="about-content">
+                        <h2>Our Business Journey</h2>
+                        <div class="divider"></div>
+                        <p>Crafted 4 You was born from a simple desire: to create meaningful, personalized items that bring joy to everyday life. Since our founding in 2020, we've grown from a small home-based operation to a thriving business that serves customers nationwide.</p>
+                        <p>Our commitment to quality and customer satisfaction has never wavered. We carefully select the finest materials and use state-of-the-art techniques to ensure each piece meets our high standards. Whether it's a custom tumbler for your morning coffee or a freshie to brighten your day, every item is crafted with love and attention to detail.</p>
+                        <div class="business-highlights">
+                            <div class="highlight">
+                                <i class="fas fa-heart"></i>
+                                <h3>Handcrafted</h3>
+                                <p>Each item made with care and attention</p>
+                            </div>
+                            <div class="highlight">
+                                <i class="fas fa-star"></i>
+                                <h3>Quality</h3>
+                                <p>Premium materials and lasting designs</p>
+                            </div>
+                            <div class="highlight">
+                                <i class="fas fa-users"></i>
+                                <h3>Community</h3>
+                                <p>Building relationships through crafts</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="about-image">
+                        <img src="/api/placeholder/400/500" alt="Crafted 4 You Workshop">
+                        <div class="image-caption">Where the magic happens</div>
+                    </div>
+                </div>
+            </section>
+        </div>
     </main>
 
     <!-- Footer -->
     <footer class="footer bg-dark">
-        <!-- Footer content same as index.html -->
+        <div class="container">
+            <div class="footer__grid">
+            <div class="footer__branding">
+                <h2 class="gradient-text">Crafted 4 You</h2>
+                <p class="text-light">Handmade with love and care</p>
+                <a href="/inquire" class="button footer__cta">Get in Touch</a>
+            </div>
+            
+            <div class="footer__links">
+                <h3 class="text-light">Shop</h3>
+                <a href="/collections">Collections</a>
+                <a href="/products">Products</a>
+                <a href="/gallery">Gallery</a>
+            </div>
+        
+            <div class="footer__info">
+                <h3 class="text-light">Company</h3>
+                <a href="/about">About Us</a>
+                <a href="/events">Upcoming Events</a>
+                <a href="/process">Our Process</a>
+                <a href="/care">Care Guide</a>
+            </div>
+        
+            <div class="footer__support">
+                <h3 class="text-light">Support</h3>
+                <a href="/shipping">Shipping Info</a>
+                <a href="/faq">FAQs</a>
+                <a href="/contact">Contact Us</a>
+                <div class="footer__social">
+                <a href="#" aria-label="Facebook">
+                    <img src="../images/icons/icon-facebook.svg" alt="Facebook"/>
+                </a>
+                <a href="#" aria-label="YouTube">
+                    <img src="../images/icons/icon-youtube.svg" alt="YouTube"/>
+                </a>
+                <a href="#" aria-label="Twitter">
+                    <img src="../images/icons/icon-twitter.svg" alt="Twitter"/>
+                </a>
+                <a href="#" aria-label="Pinterest">
+                    <img src="../images/icons/icon-pinterest.svg" alt="Pinterest"/>
+                </a>
+                <a href="#" aria-label="Instagram">
+                    <img src="../images/icons/icon-instagram.svg" alt="Instagram"/>
+                </a>
+                </div>
+            </div>
+            </div>
+            
+            <div class="footer__bottom">
+            <p class="text-light">&copy; 2024 Crafted 4 You. All Rights Reserved.</p>
+            </div>
+        </div>
     </footer>
 
     <script src="/app/js/script.js"></script>
