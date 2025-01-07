@@ -1,22 +1,16 @@
-// EmailJS Configuration
-const EMAIL_CONFIG = {
-    PUBLIC_KEY: 'DD2qYtcM8ubvw2VLB',
-    SERVICE_ID: 'service_rojg3ef',
-    TEMPLATES: {
-        QUICK: 'template_562otjh',
-        FULL: 'template_9wcbbkd'
-    }
-};
-
 // Initialize EmailJS
 function initializeEmailJS() {
     console.log('Starting EmailJS initialization...');
-    console.log('Current config:', EMAIL_CONFIG);
     
     const currentPage = window.location.pathname;
     if (currentPage.includes('index.html') || currentPage.includes('inquire.html') || currentPage === '/' || currentPage === '') {
         try {
-            emailjs.init(EMAIL_CONFIG.PUBLIC_KEY);
+            // Check if config exists
+            if (typeof config === 'undefined' || !config.EMAIL) {
+                throw new Error('Email configuration not found. Make sure config.js is properly included.');
+            }
+
+            emailjs.init(config.EMAIL.PUBLIC_KEY);
             
             // Verify initialization
             console.log('EmailJS initialized. Testing configuration...');
@@ -24,12 +18,11 @@ function initializeEmailJS() {
                 throw new Error('EmailJS not properly initialized');
             }
             
-            // Log success
             console.log('EmailJS initialization successful');
             
         } catch (error) {
             console.error('EmailJS initialization failed:', error);
-            throw error; // Re-throw to handle it in the calling code
+            throw error;
         }
     } else {
         console.log('Skipping EmailJS init - not on index or inquire page');
@@ -45,7 +38,7 @@ async function sendEmail(formData, formType) {
         // Verify EmailJS is initialized
         if (!emailjs.init) {
             console.log('EmailJS not initialized, reinitializing...');
-            emailjs.init(EMAIL_CONFIG.PUBLIC_KEY);
+            emailjs.init(config.EMAIL.PUBLIC_KEY);
         }
 
         // Prepare email data based on form type
@@ -83,18 +76,19 @@ async function sendEmail(formData, formType) {
 
         console.log('Prepared email data:', emailData);
 
-        // Send email using appropriate template
-        const templateId = formType === 'quick' ? EMAIL_CONFIG.TEMPLATES.QUICK : EMAIL_CONFIG.TEMPLATES.FULL;
+        // Get template ID based on form type
+        const templateId = formType === 'quick' 
+            ? config.EMAIL.TEMPLATES.QUICK 
+            : config.EMAIL.TEMPLATES.FULL;
         
-        // Log the actual values being used
         console.log('Sending email with:', {
-            serviceId: EMAIL_CONFIG.SERVICE_ID,
+            serviceId: config.EMAIL.SERVICE_ID,
             templateId: templateId,
-            publicKey: EMAIL_CONFIG.PUBLIC_KEY
+            publicKey: config.EMAIL.PUBLIC_KEY
         });
 
         const response = await emailjs.send(
-            EMAIL_CONFIG.SERVICE_ID,
+            config.EMAIL.SERVICE_ID,
             templateId,
             emailData
         );
@@ -144,9 +138,9 @@ class NotificationSystem {
         const notification = document.createElement('div');
         notification.className = `notification ${type}`;
         
-        const icon = type === 'error' ? 'âŒ' : 
-                    type === 'warning' ? 'âš ï¸' : 
-                    'âœ…';
+        const icon = type === 'error' ? '<i class="fas fa-times-circle"></i>' : 
+                    type === 'warning' ? '<i class="fas fa-exclamation-triangle"></i>' : 
+                    '<i class="fas fa-check-circle"></i>';
 
         notification.innerHTML = `
             <span class="notification__icon">${icon}</span>
@@ -154,7 +148,7 @@ class NotificationSystem {
                 <div class="notification__title">${title}</div>
                 <div class="notification__message">${message}</div>
             </div>
-            <button class="notification__close">Ã—</button>
+            <button class="notification__close"><i class="fas fa-times"></i></button>
         `;
 
         this.container.appendChild(notification);

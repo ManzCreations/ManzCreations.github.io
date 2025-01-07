@@ -9,6 +9,7 @@
     <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
     <script src="https://smtpjs.com/v3/smtp.js"></script>
     <script type="text/javascript" src="https://cdn.emailjs.com/sdk/latest/email.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <meta http-equiv="Cross-Origin-Opener-Policy" content="same-origin-allow-popups">
     <meta http-equiv="Cross-Origin-Embedder-Policy" content="require-corp">
     <title>Crafted 4 You</title>
@@ -57,17 +58,39 @@
       </div>
     </header>
 
-    <!-- Disclaimer Section --> 
-    <section class="disclaimer">
-      <div class="container">
-        <p>
-          The artwork designs used in our products are not owned by us. We only own the materials used to create the products but do not hold any rights to the designs themselves.
-        </p>
+    <!-- Promotions Section -->
+    <section class="promotions">
+      <div class="promotions__bg-container">
+          <div class="container container--pall">
+              <div class="promotions__content">
+                  <div class="promotions__main">
+                      <h2>Personalized Products</h2>
+                      <div class="promotions__categories">
+                          <div class="category-row">
+                              <span>Freshies</span>
+                              <span class="dot">•</span>
+                              <span>Car Charms</span>
+                              <span class="dot">•</span>
+                              <span>Custom Cups</span>
+                              <span class="dot">•</span>
+                              <span>Photo Slates</span>
+                          </div>
+                          <div class="category-row">
+                              <span>Coasters</span>
+                              <span class="dot">•</span>
+                              <span>Cutting Boards</span>
+                              <span class="dot">•</span>
+                              <span>Wind Spinners</span>
+                          </div>
+                      </div>
+                      <a href="pages/products.html" class="button promotions__cta">Browse All Products</a>
+                  </div>
+              </div>
+          </div>
       </div>
     </section>
 
-    <!-- Promotions Section -->
-    <section class="promotions gradient-bg">
+    <!-- <section class="promotions gradient-bg">
       <div class="container container--pall">
         <div class="promotions__grid">
           <a href="pages/products.html" class="promotions__item">
@@ -90,7 +113,7 @@
           </a>
         </div>
       </div>
-    </section>
+    </section> -->
 
     <!-- New Releases Section -->
     <section id="new-releases" class="new-releases bg-light">
@@ -338,6 +361,17 @@
               </div>
 
               <div class="faq__item">
+                  <div class="faq__question">
+                      <h3>What is your return policy?</h3>
+                      <button class="faq__toggle">+</button>
+                  </div>
+                  <div class="faq__answer">
+                      <p>Due to the custom and personalized nature of our products, we do not accept returns. Each item is handcrafted specifically for you. We encourage you to carefully review product details and reach out with any questions before placing your order. We take great pride in our craftsmanship and will work with you before creation to ensure your complete satisfaction.</p>
+                  </div>
+                  <hr class="faq__divider">
+              </div>
+
+              <div class="faq__item">
                 <div class="faq__question">
                     <h3>What are freshies?</h3>
                     <button class="faq__toggle">+</button>
@@ -475,54 +509,62 @@
     <footer class="footer bg-dark">
       <div class="container">
         <div class="footer__grid">
+          <!-- Branding Section -->
           <div class="footer__branding">
             <h2 class="gradient-text">Crafted 4 You</h2>
             <p class="text-light">Handmade with love and care</p>
-            <a href="/inquire" class="button footer__cta">Get in Touch</a>
+            <a href="/pages/inquire.html" class="button footer__cta">Get in Touch</a>
           </div>
           
+          <!-- Shop Section -->
           <div class="footer__links">
             <h3 class="text-light">Shop</h3>
-            <a href="/collections">Collections</a>
-            <a href="/products">Products</a>
-            <a href="/gallery">Gallery</a>
+            <a href="/pages/products.html?filter=collections">Collections</a>
+            <a href="/pages/products.html">Products</a>
+            <a href="/pages/gallery.html">Gallery</a>
           </div>
     
+          <!-- Company Section -->
           <div class="footer__info">
             <h3 class="text-light">Company</h3>
-            <a href="/about">About Us</a>
-            <a href="/events">Upcoming Events</a>
-            <a href="/process">Our Process</a>
-            <a href="/care">Care Guide</a>
+            <a href="/pages/about.html">About Us</a>
+            <a href="/pages/events.html">Upcoming Events</a>
+            <a href="/pages/care.html">Care Guide</a>
           </div>
     
+          <!-- Support Section -->
           <div class="footer__support">
             <h3 class="text-light">Support</h3>
-            <a href="/shipping">Shipping Info</a>
-            <a href="/faq">FAQs</a>
-            <a href="/contact">Contact Us</a>
+            <a href="/#faq">FAQs</a>
+            <a href="/pages/return-policy.html">Return Policy</a>
+            <a href="/pages/inquire.html">Contact Us</a>
             <div class="footer__social">
-              <a href="#" aria-label="Facebook">
-                <img src="images/icons/icon-facebook.svg" alt="Facebook"/>
+              <a href="https://www.facebook.com/profile.php?id=61571686768401" target="_blank" rel="noopener noreferrer" aria-label="Facebook">
+                <img src="/images/icons/icon-facebook.svg" alt="Facebook"/>
               </a>
-              <a href="#" aria-label="YouTube">
-                <img src="images/icons/icon-youtube.svg" alt="YouTube"/>
+              <a href="https://www.youtube.com" target="_blank" rel="noopener noreferrer" aria-label="YouTube">
+                <img src="/images/icons/icon-youtube.svg" alt="YouTube"/>
               </a>
-              <a href="#" aria-label="Twitter">
-                <img src="images/icons/icon-twitter.svg" alt="Twitter"/>
+              <a href="https://www.twitter.com" target="_blank" rel="noopener noreferrer" aria-label="Twitter">
+                <img src="/images/icons/icon-twitter.svg" alt="Twitter"/>
               </a>
-              <a href="#" aria-label="Pinterest">
-                <img src="images/icons/icon-pinterest.svg" alt="Pinterest"/>
+              <a href="https://www.pinterest.com" target="_blank" rel="noopener noreferrer" aria-label="Pinterest">
+                <img src="/images/icons/icon-pinterest.svg" alt="Pinterest"/>
               </a>
-              <a href="#" aria-label="Instagram">
-                <img src="images/icons/icon-instagram.svg" alt="Instagram"/>
+              <a href="https://www.instagram.com" target="_blank" rel="noopener noreferrer" aria-label="Instagram">
+                <img src="/images/icons/icon-instagram.svg" alt="Instagram"/>
               </a>
             </div>
           </div>
         </div>
         
+        <!-- Footer Bottom with Disclaimer -->
         <div class="footer__bottom">
-          <p class="text-light">&copy; 2024 Crafted 4 You. All Rights Reserved.</p>
+          <div class="footer__disclaimer">
+            <p class="text-light">All artwork and designs featured on our products are the property of their respective copyright holders. 
+            <span class="footer__disclaimer-details">Crafted 4 You creates handcrafted items using licensed materials, focusing solely on quality craftsmanship. Any copyrighted content is used under appropriate guidelines or licensing agreements.</span></p>
+          </div>
+          <p class="text-light copyright">&copy; 2024 Crafted 4 You. All Rights Reserved.</p>
         </div>
       </div>
     </footer>
