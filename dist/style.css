@@ -3191,15 +3191,98 @@ body.noscroll {
 
 .about-image {
   position: relative;
-  border-radius: var(--radius-lg);
-  overflow: hidden;
-  box-shadow: 0 4px 12px rgba(84, 213, 118, 0.2);
+  padding: 2rem;
+  height: 800px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
 .about-image img {
   width: 100%;
   height: 100%;
   object-fit: cover;
+}
+
+.about-image .image-grid {
+  position: relative;
+  width: 100%;
+  height: 100%;
+}
+
+.about-image .image-grid img {
+  position: absolute;
+  width: 300px;
+  height: 400px;
+  object-fit: cover;
+  border-radius: var(--radius-lg);
+  box-shadow: 0 4px 12px rgba(84, 213, 118, 0.2);
+  transition: transform 0.3s ease;
+}
+
+/* Position each image */
+.about-image .image-grid img:nth-child(1) {
+  right: 0;
+  top: -120px;  /* moved up from 0 */
+  z-index: 3;
+}
+
+.about-image .image-grid img:nth-child(2) {
+  right: 240px;
+  top: 60px;
+  z-index: 2;
+}
+
+.about-image .image-grid img:nth-child(3) {
+  right: 120px;
+  top: 360px;  /* moved down from 120px */
+  z-index: 1;
+}
+
+/* Hover effects */
+.about-image .image-grid img:hover {
+  transform: translateY(-10px) scale(1.02);
+  box-shadow: 0 8px 24px rgba(84, 213, 118, 0.3);
+  z-index: 4;
+}
+
+.about-image .image-grid img:nth-child(2):hover {
+  transform: translateY(-10px) scale(1.02) rotate(-5deg);
+}
+
+.about-image .image-grid img:nth-child(3):hover {
+  transform: translateY(-10px) scale(1.02) rotate(5deg);
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .about-image {
+    height: 600px;
+    padding: 1rem;
+  }
+
+  .about-image .image-grid img {
+    width: 250px;
+    height: 330px;
+  }
+
+  .about-image .image-grid img:nth-child(1) {
+    right: 0;
+    top: -60px;  /* Adjusted for smaller container */
+    z-index: 3;
+  }
+
+  .about-image .image-grid img:nth-child(2) {
+    right: 180px;
+    top: 40px;
+    z-index: 2;
+  }
+
+  .about-image .image-grid img:nth-child(3) {
+    right: 90px;
+    top: 240px;  /* Adjusted to maintain similar spacing ratio */
+    z-index: 1;
+  }
 }
 
 .image-caption {
