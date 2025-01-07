@@ -1165,7 +1165,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 });
                 
                 answer.classList.toggle('active');
-                toggle.textContent = answer.classList.contains('active') ? 'âˆ’' : '+';
+                toggle.textContent = answer.classList.contains('active') ? '-' : '+';
             });
         });
     }
