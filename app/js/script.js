@@ -1,6 +1,6 @@
 // EmailJS Configuration
 const EMAIL_CONFIG = {
-    PUBLIC_KEY: 'efItYR0lBt25vHKZ-',
+    PUBLIC_KEY: 'DD2qYtcM8ubvw2VLB',
     SERVICE_ID: 'service_rojg3ef',
     TEMPLATES: {
         QUICK: 'template_562otjh',
@@ -10,18 +10,29 @@ const EMAIL_CONFIG = {
 
 // Initialize EmailJS
 function initializeEmailJS() {
-    // Only initialize if we're on index.html or inquire.html
+    console.log('Starting EmailJS initialization...');
+    console.log('Current config:', EMAIL_CONFIG);
+    
     const currentPage = window.location.pathname;
-    if (currentPage.includes('index.html') || currentPage.includes('inquire.html')) {
-        console.log('Initializing EmailJS...');
+    if (currentPage.includes('index.html') || currentPage.includes('inquire.html') || currentPage === '/' || currentPage === '') {
         try {
             emailjs.init(EMAIL_CONFIG.PUBLIC_KEY);
-            console.log('EmailJS initialized successfully');
+            
+            // Verify initialization
+            console.log('EmailJS initialized. Testing configuration...');
+            if (!emailjs.init) {
+                throw new Error('EmailJS not properly initialized');
+            }
+            
+            // Log success
+            console.log('EmailJS initialization successful');
+            
         } catch (error) {
             console.error('EmailJS initialization failed:', error);
+            throw error; // Re-throw to handle it in the calling code
         }
     } else {
-        console.log('Skipping EmailJS initialization - not needed on this page');
+        console.log('Skipping EmailJS init - not on index or inquire page');
     }
 }
 
@@ -31,6 +42,12 @@ async function sendEmail(formData, formType) {
     console.log('Form data:', formData);
 
     try {
+        // Verify EmailJS is initialized
+        if (!emailjs.init) {
+            console.log('EmailJS not initialized, reinitializing...');
+            emailjs.init(EMAIL_CONFIG.PUBLIC_KEY);
+        }
+
         // Prepare email data based on form type
         let emailData;
         if (formType === 'quick') {
@@ -68,6 +85,14 @@ async function sendEmail(formData, formType) {
 
         // Send email using appropriate template
         const templateId = formType === 'quick' ? EMAIL_CONFIG.TEMPLATES.QUICK : EMAIL_CONFIG.TEMPLATES.FULL;
+        
+        // Log the actual values being used
+        console.log('Sending email with:', {
+            serviceId: EMAIL_CONFIG.SERVICE_ID,
+            templateId: templateId,
+            publicKey: EMAIL_CONFIG.PUBLIC_KEY
+        });
+
         const response = await emailjs.send(
             EMAIL_CONFIG.SERVICE_ID,
             templateId,
@@ -1039,6 +1064,12 @@ document.addEventListener('DOMContentLoaded', function() {
     try {
         console.log('DOM loaded, initializing EmailJS...');
         initializeEmailJS();
+
+        // Verify initialization worked
+        console.log('EmailJS initialization status:', {
+            initialized: !!emailjs.init,
+            publicKey: EMAIL_CONFIG.PUBLIC_KEY
+        });
     } catch (error) {
         console.error('Failed to initialize EmailJS on load:', error);
     }
@@ -1230,16 +1261,13 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     // Initialize inquiry form if it exists
-    const inquiryForm = document.getElementById('inquiryForm');
-    if (inquiryForm) {
-        if (debugProductLoading) console.log('Found inquiry form, initializing');
+    const fullInquiryForm = document.getElementById('inquiryForm');
+    if (fullInquiryForm) {
+        console.log('Found full inquiry form, initializing');
         
         loadProducts(() => {
-            if (debugProductLoading) {
-                console.log('Products loaded for inquiry form');
-                console.log('Products available:', allProducts.length);
-            }
-            initializeInquiryForm();
+            console.log('Products loaded for full inquiry form');
+            initializeFullInquiryForm(fullInquiryForm);  // Pass the form directly
         }).catch(error => {
             console.error('Error loading products:', error);
             notifications.error(
@@ -1256,7 +1284,7 @@ document.addEventListener('DOMContentLoaded', function() {
         
         loadProducts(() => {
             if (debugProductLoading) console.log('Products loaded for quick inquiry form');
-            initializeQuickInquiryForm();
+            initializeQuickInquiryForm(quickInquiryForm);
         }).catch(error => {
             console.error('Error loading products:', error);
             notifications.error(
@@ -1329,74 +1357,6 @@ function initializeInquiryForm() {
 
     // Initial population of products list
     updateProductsList();
-
-    // Handle form submission
-    form.addEventListener('submit', async function(e) {
-        e.preventDefault();
-
-        if (debugProductLoading) console.log('Form submitted');
-
-        // Gather form data
-        const formData = new FormData(form);
-        const data = {
-            firstName: formData.get('firstName'),
-            lastName: formData.get('lastName'),
-            email: formData.get('email'),
-            phone: formData.get('phone'),
-            productInterest: formData.getAll('productInterest'),
-            specificProducts: formData.getAll('specificProducts'),
-            customRequest: formData.get('customRequest'),
-            contactPreference: formData.get('contactPreference')
-        };
-
-        // Add event listeners to product interest checkboxes
-        const productInterestCheckboxes = form.querySelectorAll('input[name="productInterest"]');
-        if (debugProductLoading) {
-            console.log('Found checkboxes:', productInterestCheckboxes.length);
-        }
-        
-        productInterestCheckboxes.forEach(checkbox => {
-            checkbox.addEventListener('change', () => {
-                if (debugProductLoading) {
-                    console.log('Checkbox changed:', checkbox.value, 'Checked:', checkbox.checked);
-                }
-                updateProductsList();
-            });
-        });
-
-        if (debugProductLoading) console.log('Form data:', data);
-
-        try {
-            // Show loading state
-            const submitButton = form.querySelector('button[type="submit"]');
-            const originalText = submitButton.textContent;
-            submitButton.disabled = true;
-            submitButton.textContent = 'Sending...';
-
-            // Send email
-            await sendEmail(data, 'full');
-
-            // Show success notification
-            notifications.success(
-                'Inquiry Sent!',
-                'We\'ll get back to you as soon as possible.'
-            );
-            
-            // Reset form
-            form.reset();
-            updateProductsList();
-        } catch (error) {
-            console.error('Error sending email:', error);
-            notifications.error(
-                'Error',
-                'There was a problem sending your inquiry. Please try again.'
-            );
-        } finally {
-            // Restore button state
-            submitButton.disabled = false;
-            submitButton.textContent = originalText;
-        }
-    });
 
     // Add event listeners to product interest checkboxes
     const productInterestCheckboxes = form.querySelectorAll('input[name="productInterest"]');
@@ -1475,49 +1435,26 @@ function initializeFormValidation() {
     });
 }
 
-function initializeQuickInquiryForm() {
-    const form = document.querySelector('#quick-inquiry form');
-    if (!form) {
-        console.log('Quick inquiry form not found - might be on a different page');
-        return;
-    }
-
+// Quick Inquiry Form Handler (index.html)
+function initializeQuickInquiryForm(form) {
     console.log('Initializing quick inquiry form...');
-    console.log('Form element found:', {
-        id: form.id,
-        action: form.action,
-        method: form.method
-    });
 
-    // Form components validation
     const elements = {
-        productTypeSelect: document.getElementById('productType'),
-        specificProductSelect: document.getElementById('specificProduct'),
-        contactPreferenceSelect: document.getElementById('contactPreference'),
-        phoneInput: document.querySelector('.phone-input'),
+        productTypeSelect: form.querySelector('#productType'),
+        specificProductSelect: form.querySelector('#specificProduct'),
+        contactPreferenceSelect: form.querySelector('#contactPreference'),
+        phoneInput: form.querySelector('.phone-input'),
         submitButton: form.querySelector('button[type="submit"]')
     };
 
-    // Log form elements status
-    Object.entries(elements).forEach(([name, element]) => {
-        console.log(`Form element "${name}" status:`, {
-            found: !!element,
-            id: element?.id,
-            type: element?.type,
-            value: element?.value
-        });
-    });
+    // Verify form elements
+    if (!elements.productTypeSelect || !elements.specificProductSelect) {
+        console.error('Required form elements not found');
+        return;
+    }
 
-    // Verify EmailJS configuration
-    console.log('EmailJS Configuration:', {
-        publicKeyExists: !!EMAIL_CONFIG?.PUBLIC_KEY,
-        publicKeyLength: EMAIL_CONFIG?.PUBLIC_KEY?.length,
-        serviceIdExists: !!EMAIL_CONFIG?.SERVICE_ID,
-        templateExists: !!EMAIL_CONFIG?.TEMPLATES?.QUICK
-    });
-
-    // Handle product type changes with error handling
-    elements.productTypeSelect?.addEventListener('change', function() {
+    // Handle product type changes
+    elements.productTypeSelect.addEventListener('change', function() {
         try {
             console.log('Product type changed:', this.value);
             const selectedCategory = this.value;
@@ -1557,7 +1494,7 @@ function initializeQuickInquiryForm() {
         }
     });
 
-    // Handle contact preference changes with validation
+    // Handle contact preference changes
     elements.contactPreferenceSelect?.addEventListener('change', function() {
         try {
             const phoneRequired = this.value === 'phone';
@@ -1567,57 +1504,53 @@ function initializeQuickInquiryForm() {
             });
 
             elements.phoneInput.style.display = phoneRequired ? 'block' : 'none';
-            const phoneInputElement = document.getElementById('phone');
+            const phoneInputElement = form.querySelector('#phone');
             if (phoneInputElement) {
                 phoneInputElement.required = phoneRequired;
-                console.log('Phone input updated:', {
-                    display: elements.phoneInput.style.display,
-                    required: phoneInputElement.required
-                });
             }
         } catch (error) {
             console.error('Error handling contact preference change:', error);
         }
     });
 
-    // Handle form submission with detailed error tracking
+    // Form submission
     form.addEventListener('submit', async function(e) {
         e.preventDefault();
-        console.log('Form submission started');
+        console.log('Quick inquiry form submission started');
 
-        // Validate required form elements
-        if (!elements.submitButton) {
-            console.error('Submit button not found in form');
+        const submitButton = form.querySelector('button[type="submit"]');
+        if (!submitButton) {
+            console.error('Submit button not found');
             return;
         }
 
-        const originalText = elements.submitButton.textContent;
-        let formData = null;
+        const originalText = submitButton.textContent;
 
         try {
-            // Show loading state
-            elements.submitButton.disabled = true;
-            elements.submitButton.textContent = 'Sending...';
+            submitButton.disabled = true;
+            submitButton.textContent = 'Sending...';
 
-            // Prepare and validate form data
-            formData = Object.fromEntries(new FormData(this));
-            console.log('Form data collected:', {
-                fields: Object.keys(formData),
-                values: Object.fromEntries(
-                    Object.entries(formData).map(([key, value]) => [
-                        key,
-                        key.toLowerCase().includes('password') ? '[REDACTED]' : value
-                    ])
-                )
+            // Collect form data
+            const formData = {
+                name: form.querySelector('#name').value,
+                email: form.querySelector('#email').value,
+                phone: form.querySelector('#phone').value,
+                productType: elements.productTypeSelect.value,
+                specificProduct: elements.specificProductSelect.value,
+                message: form.querySelector('#message').value,
+                contactPreference: elements.contactPreferenceSelect.value
+            };
+
+            console.log('Collected form data:', formData);
+
+            // Verify EmailJS configuration
+            console.log('EmailJS Configuration:', {
+                publicKey: EMAIL_CONFIG.PUBLIC_KEY,
+                serviceId: EMAIL_CONFIG.SERVICE_ID,
+                template: EMAIL_CONFIG.TEMPLATES.QUICK
             });
 
-            // Verify EmailJS is loaded
-            if (typeof emailjs === 'undefined') {
-                throw new Error('EmailJS not loaded');
-            }
-
-            // Attempt to send email
-            console.log('Attempting to send email...');
+            // Send email
             await sendEmail(formData, 'quick');
             console.log('Email sent successfully');
 
@@ -1628,113 +1561,186 @@ function initializeQuickInquiryForm() {
             );
 
             // Reset form
-            console.log('Resetting form...');
-            this.reset();
-
-            // Reset specific product select
-            if (elements.specificProductSelect) {
-                elements.specificProductSelect.innerHTML = '<option value="">Select a specific product...</option>';
-                elements.specificProductSelect.disabled = true;
-            }
-
-            // Reset phone input
+            form.reset();
+            elements.specificProductSelect.innerHTML = '<option value="">Select a specific product...</option>';
+            elements.specificProductSelect.disabled = true;
             if (elements.phoneInput) {
                 elements.phoneInput.style.display = 'none';
             }
 
         } catch (error) {
-            console.error('Detailed form submission error:', {
-                error: error,
-                message: error.message,
-                stack: error.stack,
-                formData: formData ? Object.keys(formData) : null,
-                emailjsPresent: typeof emailjs !== 'undefined',
-                emailjsSendPresent: typeof emailjs?.send === 'function'
-            });
-
+            console.error('Quick inquiry submission error:', error);
             notifications.error(
                 'Error',
                 'There was a problem sending your message. Please try again.'
             );
         } finally {
-            // Restore button state
-            if (elements.submitButton) {
-                elements.submitButton.disabled = false;
-                elements.submitButton.textContent = originalText;
-            }
+            submitButton.disabled = false;
+            submitButton.textContent = originalText;
         }
     });
 
-    console.log('Form initialization completed');
+    console.log('Quick inquiry form initialization completed');
 }
 
 // Full Inquiry Form Handler (inquire.html)
-function initializeFullInquiryForm() {
-    const form = document.getElementById('inquiryForm');
-    if (!form) {
-        console.log('Full inquiry form not found - might be on a different page');
-        return;
-    }
-
+function initializeFullInquiryForm(form) {
     console.log('Initializing full inquiry form...');
 
-    // Handle form submission
+    // Initialize form validation
+    initializeFormValidation(form);
+
+    // Initial population of products list
+    updateProductsList();
+
+    // Handle form submission - THIS IS THE ONLY SUBMIT HANDLER WE WANT
     form.addEventListener('submit', async function(e) {
         e.preventDefault();
-        
-        const submitButton = this.querySelector('button[type="submit"]');
-        if (!submitButton) return;
-        
-        const originalText = submitButton.textContent;
+        console.log('Full inquiry form submission started');
+
+        const button = form.querySelector('button[type="submit"]');
+        if (!button) {
+            console.error('Submit button not found in full inquiry form');
+            return;
+        }
+
+        const originalText = button.textContent;
 
         try {
-            // Show loading state
-            submitButton.disabled = true;
-            submitButton.textContent = 'Sending...';
+            button.disabled = true;
+            button.textContent = 'Sending...';
 
-            // Gather all form data
-            const formData = new FormData(this);
-            
-            // Handle checkbox groups and multiple selects
+            const formData = new FormData(form);
             const productInterest = Array.from(
-                this.querySelectorAll('input[name="productInterest"]:checked')
+                form.querySelectorAll('input[name="productInterest"]:checked')
             ).map(cb => cb.value);
             
             const specificProducts = Array.from(
-                this.querySelector('#specificProducts').selectedOptions
+                form.querySelector('#specificProducts').selectedOptions
             ).map(option => option.value);
 
-            // Create the final form data object
             const emailData = {
                 ...Object.fromEntries(formData),
                 productInterest,
                 specificProducts
             };
 
-            // Send the email
+            console.log('Sending email with data:', emailData);
             await sendEmail(emailData, 'full');
+            console.log('Email sent successfully');
 
-            // Show success message
             notifications.success(
                 'Inquiry Sent!',
                 'Thank you for your inquiry. We\'ll get back to you soon!'
             );
 
-            // Reset form
-            this.reset();
+            console.log('Resetting form...');
+            form.reset();
+            updateProductsList();
 
         } catch (error) {
-            console.error('Form submission error:', error);
+            console.error('Full inquiry submission error:', error);
             notifications.error(
                 'Error',
                 'There was a problem sending your inquiry. Please try again.'
             );
         } finally {
-            // Restore button state
-            submitButton.disabled = false;
-            submitButton.textContent = originalText;
+            if (button) {
+                button.disabled = false;
+                button.textContent = originalText;
+            }
         }
     });
+
+    // Add event listeners to product interest checkboxes
+    const productInterestCheckboxes = form.querySelectorAll('input[name="productInterest"]');
+    productInterestCheckboxes.forEach(checkbox => {
+        checkbox.addEventListener('change', () => {
+            updateProductsList();
+        });
+    });
+}
+
+// Form submission handlers
+async function handleFullInquirySubmission(form, submitBtn) {
+    console.log('Starting full inquiry submission');
+    // Store button reference locally to ensure it persists
+    const button = submitBtn;
+    const originalText = button.textContent;
+
+    try {
+        button.disabled = true;
+        button.textContent = 'Sending...';
+
+        const formData = new FormData(form);
+        const productInterest = Array.from(
+            form.querySelectorAll('input[name="productInterest"]:checked')
+        ).map(cb => cb.value);
+        
+        const specificProducts = Array.from(
+            form.querySelector('#specificProducts').selectedOptions
+        ).map(option => option.value);
+
+        const emailData = {
+            ...Object.fromEntries(formData),
+            productInterest,
+            specificProducts
+        };
+
+        await sendEmail(emailData, 'full');
+
+        console.log('Email sent, starting form reset operations');
+        console.log('Button state before reset:', {
+            exists: !!button,
+            disabled: button.disabled,
+            text: button.textContent
+        });
+
+        // Store the button element again just before reset
+        const submitButton = form.querySelector('button[type="submit"]');
+        console.log('Button refetched before reset:', !!submitButton);
+
+        form.reset();
+        console.log('Form reset complete');
+        console.log('Button state after reset:', {
+            exists: !!button,
+            disabled: button.disabled,
+            text: button.textContent
+        });
+
+        updateProductsList();
+        console.log('Products list updated');
+
+        notifications.success(
+            'Inquiry Sent!',
+            'Thank you for your inquiry. We\'ll get back to you soon!'
+        );
+
+    } catch (error) {
+        console.error('Full inquiry submission error:', error);
+        notifications.error(
+            'Error',
+            'There was a problem sending your inquiry. Please try again.'
+        );
+    } finally {
+        console.log('Entering finally block');
+        console.log('Button reference check:', {
+            buttonExists: !!button,
+            buttonProperties: button ? {
+                disabled: button.disabled,
+                text: button.textContent
+            } : 'button is null'
+        });
+        
+        // Use the stored button reference
+        if (button) {
+            button.disabled = false;
+            button.textContent = originalText;
+            console.log('Button reset complete');
+        } else {
+            console.error('Button reference lost');
+        }
+    }
 }
 
 function initializeMobileView() {

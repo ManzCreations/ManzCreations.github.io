@@ -5,34 +5,12 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link href="https://fonts.googleapis.com/css2?family=Public+Sans:wght@300;400;600&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="/dist/style.css">
-    <title>Gallery | Crafted 4 You</title>
-    <style>
-        .coming-soon {
-            min-height: calc(100vh - 300px); /* Adjust based on header/footer height */
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            text-align: center;
-            padding: 4rem 2rem;
-        }
-        
-        .coming-soon h1 {
-            font-size: 2.5rem;
-            margin-bottom: 1rem;
-            background: linear-gradient(to right, var(--color-primary), var(--color-accent-1));
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-        }
-        
-        .coming-soon p {
-            color: var(--color-text-secondary);
-            max-width: 600px;
-            margin: 0 auto;
-        }
-    </style>
+    <title>About Us | Crafted 4 You</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 </head>
 <body>
+    <div id="notification-container"></div>
+    
     <!-- Header -->
     <header class="header">
         <div class="overlay has-fade"></div>
@@ -58,7 +36,6 @@
                     <a href="#" class="dropdown__toggle">More</a>
                     <div class="dropdown__menu">
                         <a href="gallery.html">Gallery</a>
-                        <a href="process.html">Our Process</a>
                         <a href="care.html">Care Guide</a>
                     </div>
                 </div>
@@ -71,7 +48,6 @@
                 <a href="events.html">Upcoming Events</a>
                 <a href="about.html">About</a>
                 <a href="gallery.html">Gallery</a>
-                <a href="process.html">Our Process</a>
                 <a href="care.html">Care Guide</a>
                 <a href="inquire.html">Get in Touch</a>
             </div>
@@ -79,25 +55,156 @@
     </header>
 
     <!-- Construction Overlay - REMOVE WHEN READY -->
-    <div class="construction-overlay">
+    <!-- <div class="construction-overlay">
         <div class="construction-message">
             <i class="fas fa-hard-hat"></i>
             <h2>Page Under Construction</h2>
             <p>We're working on bringing you our upcoming events. Check back soon!</p>
         </div>
-    </div>
+    </div> -->
 
-    <!-- Main Content -->
-    <main>
-        <section class="coming-soon">
-            <h1>Gallery</h1>
-            <p>We're working hard to bring you amazing content. Check back soon!</p>
-        </section>
+    <!-- Gallery Page -->
+    <main class="gallery-page">
+        <!-- Hero Section -->
+        <div class="gallery-hero">
+            <div class="container">
+                <h1 class="gradient-text">Our Events Gallery</h1>
+                <p class="subtitle">Join us at our next event and experience our crafts in person</p>
+            </div>
+        </div>
+
+        <div class="container">
+            <!-- Indoor Vendor Show Section -->
+            <section class="gallery-section">
+                <h2 class="section-title">Local Vendor Showcase</h2>
+                <p class="section-description">We were thrilled to participate in this special indoor vendor show supporting small businesses in our community. This intimate setting allowed us to connect with local customers and share our handcrafted pieces in a comfortable environment.</p>
+                <div class="gallery-grid">
+                    <div class="gallery-image">
+                        <img src="../images/backgrounds/store-inside.jpeg" alt="Indoor vendor setup with colorful displays">
+                        <div class="image-overlay">
+                            <p>Our cozy indoor setup featuring our complete product line</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Virginia Festival Section -->
+            <section class="gallery-section">
+                <h2 class="section-title">Virginia Country Festival</h2>
+                <p class="section-description">At this charming country festival, we brought our crafts to a celebration of rural life and farming heritage. Our booth featured designs inspired by farm life, including our popular tractor and cow-themed freshies and custom tumblers.</p>
+                <div class="gallery-grid">
+                    <div class="gallery-image featured">
+                        <img src="../images/backgrounds/store-pink2.jpeg" alt="Full country festival booth setup">
+                        <div class="image-overlay">
+                            <p>Our complete festival setup featuring all our handcrafted items</p>
+                        </div>
+                    </div>
+                    <div class="gallery-image">
+                        <img src="../images/backgrounds/store-pink4.jpeg" alt="Freshies and tumblers display">
+                        <div class="image-overlay">
+                            <p>Our popular freshies and custom tumblers collection</p>
+                        </div>
+                    </div>
+                    <div class="gallery-image">
+                        <img src="../images/backgrounds/accessories2.jpeg" alt="Home accessories display">
+                        <div class="image-overlay">
+                            <p>Handcrafted coasters, cutting boards, and home accessories</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Little Washington Festival Section -->
+            <section class="gallery-section">
+                <h2 class="section-title">Little Washington Waterfront Festival</h2>
+                <p class="section-description">The beautiful waterfront of Little Washington, NC provided the perfect backdrop for our coastal-inspired collection. Our booth featured ocean-themed designs, beach-inspired freshies, and nautical tumblers that captured the spirit of this charming waterfront community.</p>
+                <div class="gallery-grid waterfront">
+                    <div class="gallery-image setup-images">
+                        <img src="../images/backgrounds/store-blue1.jpeg" alt="Waterfront festival booth setup - left side">
+                        <img src="../images/backgrounds/store-blue2.jpeg" alt="Waterfront festival booth setup - right side">
+                        <div class="image-overlay">
+                            <p>Our complete waterfront festival booth setup</p>
+                        </div>
+                    </div>
+                    <div class="gallery-grid products">
+                        <div class="gallery-image">
+                            <img src="../images/backgrounds/freshies.jpeg" alt="Coastal themed freshies">
+                            <div class="image-overlay">
+                                <p>Beach-inspired freshie collection</p>
+                            </div>
+                        </div>
+                        <div class="gallery-image">
+                            <img src="../images/backgrounds/cups.jpeg" alt="Nautical tumblers">
+                            <div class="image-overlay">
+                                <p>Custom nautical tumblers</p>
+                            </div>
+                        </div>
+                        <div class="gallery-image">
+                            <img src="../images/backgrounds/accessories1.jpeg" alt="Coastal accessories">
+                            <div class="image-overlay">
+                                <p>Coastal-themed home accessories</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </div>
     </main>
 
     <!-- Footer -->
     <footer class="footer bg-dark">
-        <!-- Footer content same as index.html -->
+        <div class="container">
+            <div class="footer__grid">
+            <div class="footer__branding">
+                <h2 class="gradient-text">Crafted 4 You</h2>
+                <p class="text-light">Handmade with love and care</p>
+                <a href="/inquire" class="button footer__cta">Get in Touch</a>
+            </div>
+            
+            <div class="footer__links">
+                <h3 class="text-light">Shop</h3>
+                <a href="/collections">Collections</a>
+                <a href="/products">Products</a>
+                <a href="/gallery">Gallery</a>
+            </div>
+        
+            <div class="footer__info">
+                <h3 class="text-light">Company</h3>
+                <a href="/about">About Us</a>
+                <a href="/events">Upcoming Events</a>
+                <a href="/process">Our Process</a>
+                <a href="/care">Care Guide</a>
+            </div>
+        
+            <div class="footer__support">
+                <h3 class="text-light">Support</h3>
+                <a href="/shipping">Shipping Info</a>
+                <a href="/faq">FAQs</a>
+                <a href="/contact">Contact Us</a>
+                <div class="footer__social">
+                <a href="#" aria-label="Facebook">
+                    <img src="../images/icons/icon-facebook.svg" alt="Facebook"/>
+                </a>
+                <a href="#" aria-label="YouTube">
+                    <img src="../images/icons/icon-youtube.svg" alt="YouTube"/>
+                </a>
+                <a href="#" aria-label="Twitter">
+                    <img src="../images/icons/icon-twitter.svg" alt="Twitter"/>
+                </a>
+                <a href="#" aria-label="Pinterest">
+                    <img src="../images/icons/icon-pinterest.svg" alt="Pinterest"/>
+                </a>
+                <a href="#" aria-label="Instagram">
+                    <img src="../images/icons/icon-instagram.svg" alt="Instagram"/>
+                </a>
+                </div>
+            </div>
+            </div>
+            
+            <div class="footer__bottom">
+            <p class="text-light">&copy; 2024 Crafted 4 You. All Rights Reserved.</p>
+            </div>
+        </div>
     </footer>
 
     <script src="/app/js/script.js"></script>
