@@ -1,17 +1,13 @@
 // Initialize EmailJS
 console.log('Checking config:', typeof config !== 'undefined' ? 'Config exists' : 'Config missing');
 console.log('Checking EMAIL_CONFIG:', typeof EMAIL_CONFIG !== 'undefined' ? 'EMAIL_CONFIG exists' : 'EMAIL_CONFIG missing');
+// Replace all instances of EMAIL_CONFIG with config.EMAIL
 function initializeEmailJS() {
     console.log('Starting EmailJS initialization...');
     
     const currentPage = window.location.pathname;
     if (currentPage.includes('index.html') || currentPage.includes('inquire.html') || currentPage === '/' || currentPage === '') {
         try {
-            // Check if config exists
-            if (typeof config === 'undefined' || !config.EMAIL) {
-                throw new Error('Email configuration not found. Make sure config.js is properly included.');
-            }
-
             emailjs.init(config.EMAIL.PUBLIC_KEY);
             
             // Verify initialization
@@ -26,8 +22,6 @@ function initializeEmailJS() {
             console.error('EmailJS initialization failed:', error);
             throw error;
         }
-    } else {
-        console.log('Skipping EmailJS init - not on index or inquire page');
     }
 }
 
@@ -196,7 +190,7 @@ let debugFeaturedProducts = true;
 
 // Products Functionality
 console.log('Attempting fetch with API key:', config.API_KEY ? 'API key exists' : 'API key missing');
-console.log('Full fetch URL:', `https://sheets.googleapis.com/v4/spreadsheets/${SHEET_ID}/values/products_list?key=${config.API_KEY}`);
+console.log('Full fetch URL:', `https://sheets.googleapis.com/v4/spreadsheets/${config.SHEET_ID}/values/products_list?key=${config.API_KEY}`);
 async function loadProducts(onComplete) {
     if (debugProductLoading) {
         console.log('loadProducts called');
@@ -209,7 +203,7 @@ async function loadProducts(onComplete) {
     }
 
     const API_KEY = config.API_KEY;
-    const SHEET_ID = '13W8dMCMOwq5jhl2SnEwwb4rJNfD77UrdDWlAVyji6Ik';
+    const SHEET_ID = config.SHEET_ID;
     const SHEETS_URL = `https://sheets.googleapis.com/v4/spreadsheets/${SHEET_ID}/values/products_list?key=${API_KEY}`;
 
     try {
