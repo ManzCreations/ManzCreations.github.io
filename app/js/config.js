@@ -1,4 +1,5 @@
 // config.js
+console.log('Config file loaded');
 const config = {
     // Google Sheets API Key
     API_KEY: 'AIzaSyDy6KZcSASsTBMNd_PLc_bOW7WJNWZYtp8',

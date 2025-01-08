@@ -1,4 +1,6 @@
 // Initialize EmailJS
+console.log('Checking config:', typeof config !== 'undefined' ? 'Config exists' : 'Config missing');
+console.log('Checking EMAIL_CONFIG:', typeof EMAIL_CONFIG !== 'undefined' ? 'EMAIL_CONFIG exists' : 'EMAIL_CONFIG missing');
 function initializeEmailJS() {
     console.log('Starting EmailJS initialization...');
     
@@ -193,6 +195,8 @@ let debugProductLoading = true;
 let debugFeaturedProducts = true;
 
 // Products Functionality
+console.log('Attempting fetch with API key:', config.API_KEY ? 'API key exists' : 'API key missing');
+console.log('Full fetch URL:', `https://sheets.googleapis.com/v4/spreadsheets/${SHEET_ID}/values/products_list?key=${config.API_KEY}`);
 async function loadProducts(onComplete) {
     if (debugProductLoading) {
         console.log('loadProducts called');
