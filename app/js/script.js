@@ -1,14 +1,25 @@
+// EmailJS Configuration
+const EMAIL_CONFIG = {
+    PUBLIC_KEY: 'DD2qYtcM8ubvw2VLB',
+    SERVICE_ID: 'service_rojg3ef',
+    TEMPLATES: {
+        QUICK: 'template_562otjh',
+        FULL: 'template_9wcbbkd'
+    }
+};
+
+// Google Sheets Configuration
+const SHEET_ID = '13W8dMCMOwq5jhl2SnEwwb4rJNfD77UrdDWlAVyji6Ik';
+const API_KEY = 'AIzaSyDy6KZcSASsTBMNd_PLc_bOW7WJNWZYtp8';
+
 // Initialize EmailJS
-console.log('Checking config:', typeof config !== 'undefined' ? 'Config exists' : 'Config missing');
-console.log('Checking EMAIL_CONFIG:', typeof EMAIL_CONFIG !== 'undefined' ? 'EMAIL_CONFIG exists' : 'EMAIL_CONFIG missing');
-// Replace all instances of EMAIL_CONFIG with config.EMAIL
 function initializeEmailJS() {
     console.log('Starting EmailJS initialization...');
     
     const currentPage = window.location.pathname;
     if (currentPage.includes('index.html') || currentPage.includes('inquire.html') || currentPage === '/' || currentPage === '') {
         try {
-            emailjs.init(config.EMAIL.PUBLIC_KEY);
+            emailjs.init(EMAIL_CONFIG.PUBLIC_KEY);
             
             // Verify initialization
             console.log('EmailJS initialized. Testing configuration...');
@@ -34,7 +45,7 @@ async function sendEmail(formData, formType) {
         // Verify EmailJS is initialized
         if (!emailjs.init) {
             console.log('EmailJS not initialized, reinitializing...');
-            emailjs.init(config.EMAIL.PUBLIC_KEY);
+            emailjs.init(EMAIL_CONFIG.PUBLIC_KEY);
         }
 
         // Prepare email data based on form type
@@ -74,17 +85,17 @@ async function sendEmail(formData, formType) {
 
         // Get template ID based on form type
         const templateId = formType === 'quick' 
-            ? config.EMAIL.TEMPLATES.QUICK 
-            : config.EMAIL.TEMPLATES.FULL;
+            ? EMAIL_CONFIG.TEMPLATES.QUICK 
+            : EMAIL_CONFIG.TEMPLATES.FULL;
         
         console.log('Sending email with:', {
-            serviceId: config.EMAIL.SERVICE_ID,
+            serviceId: EMAIL_CONFIG.SERVICE_ID,
             templateId: templateId,
-            publicKey: config.EMAIL.PUBLIC_KEY
+            publicKey: EMAIL_CONFIG.PUBLIC_KEY
         });
 
         const response = await emailjs.send(
-            config.EMAIL.SERVICE_ID,
+            EMAIL_CONFIG.SERVICE_ID,
             templateId,
             emailData
         );
@@ -189,21 +200,12 @@ let debugProductLoading = true;
 let debugFeaturedProducts = true;
 
 // Products Functionality
-console.log('Attempting fetch with API key:', config.API_KEY ? 'API key exists' : 'API key missing');
-console.log('Full fetch URL:', `https://sheets.googleapis.com/v4/spreadsheets/${config.SHEET_ID}/values/products_list?key=${config.API_KEY}`);
 async function loadProducts(onComplete) {
     if (debugProductLoading) {
         console.log('loadProducts called');
         console.log('Attempting to fetch from Google Sheets...');
     }
 
-    if (typeof config === 'undefined') {
-        console.error('Config not found. Make sure config.js is included in your HTML.');
-        return;
-    }
-
-    const API_KEY = config.API_KEY;
-    const SHEET_ID = config.SHEET_ID;
     const SHEETS_URL = `https://sheets.googleapis.com/v4/spreadsheets/${SHEET_ID}/values/products_list?key=${API_KEY}`;
 
     try {
