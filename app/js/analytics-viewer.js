@@ -25,12 +25,86 @@ const AnalyticsDashboard = () => {
     const [data, setData] = React.useState(null);
     const [timeRange, setTimeRange] = React.useState('all');
     const [loading, setLoading] = React.useState(true);
+    const trafficChartRef = React.useRef(null);
+    const deviceChartRef = React.useRef(null);
+    const trafficCanvasRef = React.useRef(null);
+    const deviceCanvasRef = React.useRef(null);
+
+    const destroyCharts = () => {
+        if (trafficChartRef.current) {
+            trafficChartRef.current.destroy();
+            trafficChartRef.current = null;
+        }
+        if (deviceChartRef.current) {
+            deviceChartRef.current.destroy();
+            deviceChartRef.current = null;
+        }
+    };
+
+    const createCharts = (timelineData, deviceData) => {
+        if (trafficCanvasRef.current && !trafficChartRef.current) {
+            trafficChartRef.current = new Chart(trafficCanvasRef.current, {
+                type: 'line',
+                data: {
+                    labels: timelineData.map(d => d.date),
+                    datasets: [{
+                        label: 'Page Views',
+                        data: timelineData.map(d => d.views),
+                        borderColor: '#0088FE',
+                        tension: 0.1
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false
+                }
+            });
+        }
+
+        if (deviceCanvasRef.current && !deviceChartRef.current) {
+            deviceChartRef.current = new Chart(deviceCanvasRef.current, {
+                type: 'pie',
+                data: {
+                    labels: deviceData.map(d => d.name),
+                    datasets: [{
+                        data: deviceData.map(d => d.value),
+                        backgroundColor: COLORS
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false
+                }
+            });
+        }
+    };
 
     React.useEffect(() => {
         loadAnalytics();
         const interval = setInterval(loadAnalytics, 300000); // Refresh every 5 minutes
-        return () => clearInterval(interval);
+        return () => {
+            clearInterval(interval);
+            destroyCharts();
+        };
     }, []);
+
+    React.useEffect(() => {
+        if (data) {
+            // Prepare chart data
+            const timelineData = Object.entries(data.dailyStats || {}).map(([date, stats]) => ({
+                date,
+                views: stats.views || 0
+            })).sort((a, b) => new Date(a.date) - new Date(b.date));
+
+            const deviceData = Object.entries(data.deviceTypes || {}).map(([device, count]) => ({
+                name: device,
+                value: count
+            }));
+
+            destroyCharts();
+            createCharts(timelineData, deviceData);
+        }
+    }, [data]);
 
     const loadAnalytics = async () => {
         try {
@@ -199,27 +273,8 @@ const AnalyticsDashboard = () => {
                     key: 'traffic-chart'
                 },
                     React.createElement('canvas', { 
-                        id: 'trafficChart',
-                        ref: (el) => {
-                            if (el) {
-                                new Chart(el, {
-                                    type: 'line',
-                                    data: {
-                                        labels: timelineData.map(d => d.date),
-                                        datasets: [{
-                                            label: 'Page Views',
-                                            data: timelineData.map(d => d.views),
-                                            borderColor: '#0088FE',
-                                            tension: 0.1
-                                        }]
-                                    },
-                                    options: {
-                                        responsive: true,
-                                        maintainAspectRatio: false
-                                    }
-                                });
-                            }
-                        }
+                        ref: trafficCanvasRef,
+                        id: 'trafficChart'
                     })
                 ),
 
@@ -229,25 +284,8 @@ const AnalyticsDashboard = () => {
                     key: 'device-chart'
                 },
                     React.createElement('canvas', { 
-                        id: 'deviceChart',
-                        ref: (el) => {
-                            if (el) {
-                                new Chart(el, {
-                                    type: 'pie',
-                                    data: {
-                                        labels: deviceData.map(d => d.name),
-                                        datasets: [{
-                                            data: deviceData.map(d => d.value),
-                                            backgroundColor: COLORS
-                                        }]
-                                    },
-                                    options: {
-                                        responsive: true,
-                                        maintainAspectRatio: false
-                                    }
-                                });
-                            }
-                        }
+                        ref: deviceCanvasRef,
+                        id: 'deviceChart'
                     })
                 )
             ),
