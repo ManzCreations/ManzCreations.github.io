@@ -1858,7 +1858,3 @@ function initializeMobileView() {
         });
     }
 }
-
-generateAnalyticsReport()
-    .then(report => console.log('Analytics Report:', report))
-    .catch(error => console.error('Error generating report:', error));

@@ -83,39 +83,27 @@ const storageHelper = {
     }
 };
 
-// Expose storage helper to window
 window.fs = storageHelper;
 
 // Function to track a page view
 async function trackPageView() {
     try {
-        // Load existing analytics
         const currentData = JSON.parse(await loadAnalytics());
+        const deviceType = getDeviceType(); // This will trigger our debug logs
         
-        // Update total views
         currentData.totalViews = (currentData.totalViews || 0) + 1;
         
-        // Track page-specific views
         const page = window.location.pathname || '/';
         currentData.pageViews = currentData.pageViews || {};
         currentData.pageViews[page] = (currentData.pageViews[page] || 0) + 1;
         
-        // Track region
         const region = Intl.DateTimeFormat().resolvedOptions().timeZone;
         currentData.regions = currentData.regions || {};
         currentData.regions[region] = (currentData.regions[region] || 0) + 1;
         
-        // Track device type
-        const deviceType = getDeviceType();
         currentData.deviceTypes = currentData.deviceTypes || {};
         currentData.deviceTypes[deviceType] = (currentData.deviceTypes[deviceType] || 0) + 1;
         
-        // Track browser info
-        const browserInfo = getBrowserInfo();
-        currentData.browserInfo = currentData.browserInfo || {};
-        currentData.browserInfo[browserInfo.browser] = (currentData.browserInfo[browserInfo.browser] || 0) + 1;
-        
-        // Track referrer with domain extraction
         let referrer = 'direct';
         if (document.referrer) {
             try {
@@ -127,36 +115,10 @@ async function trackPageView() {
         currentData.referrers = currentData.referrers || {};
         currentData.referrers[referrer] = (currentData.referrers[referrer] || 0) + 1;
         
-        // Add timestamp
         currentData.timestamps = currentData.timestamps || [];
         currentData.timestamps.push(new Date().toISOString());
         currentData.lastUpdate = new Date().toISOString();
 
-        // Track daily stats
-        const today = new Date().toISOString().split('T')[0];
-        currentData.dailyStats = currentData.dailyStats || {};
-        currentData.dailyStats[today] = currentData.dailyStats[today] || {
-            views: 0,
-            pageViews: {},
-            deviceTypes: {}
-        };
-        currentData.dailyStats[today].views++;
-        currentData.dailyStats[today].pageViews[page] = 
-            (currentData.dailyStats[today].pageViews[page] || 0) + 1;
-        currentData.dailyStats[today].deviceTypes[deviceType] = 
-            (currentData.dailyStats[today].deviceTypes[deviceType] || 0) + 1;
-
-        // Track interactions
-        currentData.interactions = currentData.interactions || {};
-        if (!currentData.interactions[page]) {
-            currentData.interactions[page] = {
-                scrollDepth: [],
-                clickCount: 0,
-                timeOnPage: []
-            };
-        }
-
-        // Save updated analytics
         await saveAnalytics(currentData);
         
     } catch (error) {
@@ -207,6 +169,17 @@ function getDeviceType() {
                     (navigator.msMaxTouchPoints > 0);
     console.log('Has Touch Capability:', hasTouch);
     console.log('Max Touch Points:', navigator.maxTouchPoints);
+
+    // Log screen details
+    console.log('Screen Details:', {
+        width: window.screen.width,
+        height: window.screen.height,
+        availWidth: window.screen.availWidth,
+        availHeight: window.screen.availHeight,
+        innerWidth: window.innerWidth,
+        innerHeight: window.innerHeight,
+        devicePixelRatio: window.devicePixelRatio
+    });
     
     // Define keywords for detection
     const mobileKeywords = [
@@ -265,6 +238,13 @@ function getDeviceType() {
             console.groupEnd();
             return 'tablet';
         }
+    }
+
+    // Modified screen width check for non-touch devices
+    if (screenWidth <= 768) {
+        console.log('✓ Detected as mobile based on screen width <= 768px');
+        console.groupEnd();
+        return 'mobile';
     }
     
     console.log('✓ Detected as desktop (no mobile/tablet indicators found)');
