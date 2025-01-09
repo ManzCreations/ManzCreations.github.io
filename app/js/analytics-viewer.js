@@ -273,8 +273,27 @@ const AnalyticsDashboard = () => {
                     key: 'traffic-chart'
                 },
                     React.createElement('canvas', { 
-                        ref: trafficCanvasRef,
-                        id: 'trafficChart'
+                        id: 'trafficChart',
+                        ref: (el) => {
+                            if (el) {
+                                new Chart(el, {
+                                    type: 'line',
+                                    data: {
+                                        labels: timelineData.map(d => d.date),
+                                        datasets: [{
+                                            label: 'Page Views',
+                                            data: timelineData.map(d => d.views),
+                                            borderColor: '#0088FE',
+                                            tension: 0.1
+                                        }]
+                                    },
+                                    options: {
+                                        responsive: true,
+                                        maintainAspectRatio: false
+                                    }
+                                });
+                            }
+                        }
                     })
                 ),
 
@@ -284,13 +303,99 @@ const AnalyticsDashboard = () => {
                     key: 'device-chart'
                 },
                     React.createElement('canvas', { 
-                        ref: deviceCanvasRef,
-                        id: 'deviceChart'
+                        id: 'deviceChart',
+                        ref: (el) => {
+                            if (el) {
+                                new Chart(el, {
+                                    type: 'pie',
+                                    data: {
+                                        labels: deviceData.map(d => d.name),
+                                        datasets: [{
+                                            data: deviceData.map(d => d.value),
+                                            backgroundColor: COLORS
+                                        }]
+                                    },
+                                    options: {
+                                        responsive: true,
+                                        maintainAspectRatio: false
+                                    }
+                                });
+                            }
+                        }
                     })
                 )
             ),
 
-            // Email Inquiries Section
+            // ADD NEW PAGE VIEWS BAR CHART HERE
+            React.createElement('div', { 
+                className: 'grid grid-cols-1 gap-6 mb-8' 
+            },
+                // Page Views Bar Chart
+                React.createElement(ChartCard, { 
+                    title: 'Page Views Distribution',
+                    key: 'pageviews-chart'
+                },
+                    React.createElement('canvas', { 
+                        id: 'pageViewsChart',
+                        ref: (el) => {
+                            if (el) {
+                                // Prepare the data
+                                const pageViewsData = Object.entries(data.pageViews || {})
+                                    .sort(([, a], [, b]) => b - a) // Sort by views
+                                    .slice(0, 10); // Take top 10 pages
+
+                                new Chart(el, {
+                                    type: 'bar',
+                                    data: {
+                                        labels: pageViewsData.map(([page]) => page === '' ? '/' : page),
+                                        datasets: [{
+                                            label: 'Page Views',
+                                            data: pageViewsData.map(([, views]) => views),
+                                            backgroundColor: '#0088FE',
+                                            borderColor: '#0066BB',
+                                            borderWidth: 1
+                                        }]
+                                    },
+                                    options: {
+                                        responsive: true,
+                                        maintainAspectRatio: false,
+                                        plugins: {
+                                            title: {
+                                                display: true,
+                                                text: 'Top 10 Pages by Views'
+                                            },
+                                            legend: {
+                                                display: false
+                                            }
+                                        },
+                                        scales: {
+                                            y: {
+                                                beginAtZero: true,
+                                                title: {
+                                                    display: true,
+                                                    text: 'Number of Views'
+                                                }
+                                            },
+                                            x: {
+                                                title: {
+                                                    display: true,
+                                                    text: 'Pages'
+                                                },
+                                                ticks: {
+                                                    maxRotation: 45,
+                                                    minRotation: 45
+                                                }
+                                            }
+                                        }
+                                    }
+                                });
+                            }
+                        }
+                    })
+                )
+            ),
+
+            // Email Inquiries Section (keep this and everything after)
             data.emailInquiries && React.createElement('div', { className: 'mb-8' },
                 React.createElement('h2', { 
                     className: 'text-2xl font-bold text-gray-800 mb-6' 
