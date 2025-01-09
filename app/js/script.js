@@ -196,8 +196,8 @@ const notifications = new NotificationSystem();
 let allProducts = [];
 
 // Add debug flag
-let debugProductLoading = true;
-let debugFeaturedProducts = true;
+let debugProductLoading = false;
+let debugFeaturedProducts = false;
 
 // Products Functionality
 async function loadProducts(onComplete) {

@@ -190,15 +190,102 @@ function getBrowserInfo() {
 
 // Helper function to determine device type
 function getDeviceType() {
-    const ua = navigator.userAgent;
-    if (/(tablet|ipad|playbook|silk)|(android(?!.*mobi))/i.test(ua)) {
+    console.group('Device Type Detection');
+    
+    // Get user agent and screen info
+    const userAgent = navigator.userAgent.toLowerCase();
+    console.log('User Agent:', userAgent);
+    
+    const screenWidth = window.innerWidth || 
+                       document.documentElement.clientWidth || 
+                       document.body.clientWidth;
+    console.log('Screen Width:', screenWidth);
+    
+    // Check touch capability
+    const hasTouch = ('ontouchstart' in window) || 
+                    (navigator.maxTouchPoints > 0) || 
+                    (navigator.msMaxTouchPoints > 0);
+    console.log('Has Touch Capability:', hasTouch);
+    console.log('Max Touch Points:', navigator.maxTouchPoints);
+    
+    // Define keywords for detection
+    const mobileKeywords = [
+        'mobile', 'iphone', 'ipod', 'android', 'webos', 'blackberry', 
+        'windows phone', 'opera mini', 'mobi'
+    ];
+    const tabletKeywords = ['ipad', 'tablet', 'kindle'];
+    
+    // Check for tablet keywords
+    const foundTabletKeywords = tabletKeywords.filter(keyword => userAgent.includes(keyword));
+    console.log('Found Tablet Keywords:', foundTabletKeywords);
+    if (foundTabletKeywords.length > 0) {
+        console.log('✓ Detected as tablet due to keywords:', foundTabletKeywords);
+        console.groupEnd();
         return 'tablet';
     }
-    if (/Mobile|Android|iP(hone|od)|IEMobile|BlackBerry|Kindle|Silk-Accelerated|(hpw|web)OS|Opera M(obi|ini)/.test(ua)) {
+    
+    // Check for mobile keywords
+    const foundMobileKeywords = mobileKeywords.filter(keyword => userAgent.includes(keyword));
+    console.log('Found Mobile Keywords:', foundMobileKeywords);
+    if (foundMobileKeywords.length > 0) {
+        console.log('✓ Detected as mobile due to keywords:', foundMobileKeywords);
+        console.groupEnd();
         return 'mobile';
     }
+    
+    // Check iOS specific detection
+    const isIOS = /iPad|iPhone|iPod/.test(navigator.platform) || 
+                 (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
+    console.log('iOS Detection:', {
+        platform: navigator.platform,
+        isIOS: isIOS
+    });
+    
+    if (isIOS) {
+        if (screenWidth <= 768) {
+            console.log('✓ Detected as mobile iOS device (width <= 768px)');
+            console.groupEnd();
+            return 'mobile';
+        }
+        console.log('✓ Detected as tablet iOS device');
+        console.groupEnd();
+        return 'tablet';
+    }
+    
+    // Screen size and touch-based detection
+    if (hasTouch) {
+        console.log('Touch-based device detected, checking screen size...');
+        if (screenWidth <= 768) {
+            console.log('✓ Detected as mobile based on touch + screen width <= 768px');
+            console.groupEnd();
+            return 'mobile';
+        }
+        if (screenWidth <= 1024) {
+            console.log('✓ Detected as tablet based on touch + screen width <= 1024px');
+            console.groupEnd();
+            return 'tablet';
+        }
+    }
+    
+    console.log('✓ Detected as desktop (no mobile/tablet indicators found)');
+    console.groupEnd();
     return 'desktop';
 }
+
+// Add this helper to detect if the device is in portrait or landscape
+function getOrientation() {
+    const orientation = window.innerHeight > window.innerWidth ? 'portrait' : 'landscape';
+    console.log('Current Orientation:', orientation);
+    return orientation;
+}
+
+// Track both initial load and orientation changes
+window.addEventListener('orientationchange', async () => {
+    console.log('Orientation change detected');
+    // Wait for the orientation change to complete
+    await new Promise(resolve => setTimeout(resolve, 100));
+    trackPageView();
+});
 
 // Track time spent on page
 function trackTimeOnPage(page) {
