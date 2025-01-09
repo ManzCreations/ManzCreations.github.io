@@ -1161,6 +1161,9 @@ document.addEventListener('DOMContentLoaded', function() {
         console.log('Current URL:', window.location.href);
     }
 
+    // Add this line to initialize analytics
+    trackPageView().catch(error => console.error('Analytics error:', error));
+
     try {
         console.log('DOM loaded, initializing EmailJS...');
         initializeEmailJS();
@@ -1603,6 +1606,9 @@ function initializeQuickInquiryForm(form) {
             await sendEmail(formData, 'quick');
             console.log('Email sent successfully');
 
+            // Track the email inquiry
+            await window.analyticsTracker.trackEmailInquiry('quick', formData);
+
             // Show success message
             notifications.success(
                 'Message Sent!',
@@ -1677,6 +1683,9 @@ function initializeFullInquiryForm(form) {
             console.log('Sending email with data:', emailData);
             await sendEmail(emailData, 'full');
             console.log('Email sent successfully');
+
+            // Track the email inquiry
+            await window.analyticsTracker.trackEmailInquiry('full', emailData);
 
             notifications.success(
                 'Inquiry Sent!',
@@ -1849,3 +1858,7 @@ function initializeMobileView() {
         });
     }
 }
+
+generateAnalyticsReport()
+    .then(report => console.log('Analytics Report:', report))
+    .catch(error => console.error('Error generating report:', error));

@@ -32,6 +32,7 @@
     <meta http-equiv="Cross-Origin-Opener-Policy" content="same-origin-allow-popups">
     <meta http-equiv="Cross-Origin-Embedder-Policy" content="require-corp">
     <title>Crafted 4 You</title>
+    <script src="/app/js/analytics.js"></script>
   </head>
   <body class="home-page">
     <div id="notification-container"></div>
@@ -591,6 +592,10 @@
       </div>
     </footer>
 
+    <script type="module">
+      import { trackPageView } from '/app/js/analytics.js';
+      document.addEventListener('DOMContentLoaded', trackPageView);
+    </script>
     <script src="/app/js/script.js"></script>
   </body>
 </html>
