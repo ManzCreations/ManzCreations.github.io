@@ -33,7 +33,7 @@
     <meta http-equiv="Cross-Origin-Embedder-Policy" content="require-corp">
     <title>Crafted 4 You</title>
   </head>
-  <body>
+  <body class="home-page">
     <div id="notification-container"></div>
 
     <header class="header">
@@ -41,8 +41,11 @@
       
       <nav class="container flex flex-jc-sb flex-ai-c">
         <a href="/" class="header__logo flex flex-ai-c">
-          <img src="/images/backgrounds/logo-noletters.png" alt="Crafted 4 You Logo" class="logo__image" />
-          <h1 class="gradient-text">Crafted 4 You</h1>
+            <div class="logo-container">
+                <img src="/images/backgrounds/logo-noletters-white.png" alt="Crafted 4 You Logo" class="logo__image logo-white" />
+                <img src="/images/backgrounds/logo-noletters.png" alt="Crafted 4 You Logo" class="logo__image logo-default" />
+            </div>
+            <h1 class="gradient-text">Crafted 4 You</h1>
         </a>
 
         <a id="btnHamburger" href="#" class="header__toggle hide-for-desktop">

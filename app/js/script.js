@@ -1066,14 +1066,30 @@ function initializeHeader() {
         document.body.classList.add('home-page');
     }
 
-    // Header scroll function
+    // Header scroll function with smooth transitions
     function updateHeader() {
         if (isHomePage) {
             const scrollPosition = window.scrollY;
-            if (scrollPosition > 50) {
+            const scrollThreshold = 50;
+            const logoThreshold = 30; // Earlier threshold for logo switch
+            
+            // Add or remove scrolled class based on scroll position
+            if (scrollPosition > scrollThreshold) {
                 header.classList.add('scrolled');
             } else {
                 header.classList.remove('scrolled');
+            }
+            
+            // Calculate opacity for background
+            const opacity = Math.min(scrollPosition / scrollThreshold, 1);
+            header.style.backgroundColor = `rgba(255, 255, 255, ${opacity})`;
+            
+            // Calculate shadow opacity
+            const shadowOpacity = Math.min((scrollPosition - scrollThreshold/2) / scrollThreshold, 0.1);
+            if (shadowOpacity > 0) {
+                header.style.boxShadow = `0 2px 8px rgba(84, 213, 118, ${shadowOpacity})`;
+            } else {
+                header.style.boxShadow = 'none';
             }
         }
     }
@@ -1208,11 +1224,6 @@ document.addEventListener('DOMContentLoaded', function() {
     }
     
     initializeHeader();
-
-    // Menu item click handlers
-    document.querySelectorAll('.header__menu a').forEach(link => {
-        link.addEventListener('click', closeMenu);
-    });
 
     // FAQ Functionality
     const faqQuestions = document.querySelectorAll('.faq__question');
