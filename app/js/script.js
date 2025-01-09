@@ -1124,6 +1124,21 @@ document.addEventListener('DOMContentLoaded', function() {
     const overlay = document.querySelector('.overlay');
     const fadeElems = document.querySelectorAll('.has-fade');
     const mobileMenu = document.querySelector('.header__menu');
+    const promotionsSection = document.querySelector('.promotions');
+
+    function updateHeader() {
+        const rect = promotionsSection.getBoundingClientRect();
+        const scrollPosition = window.scrollY;
+        
+        if (scrollPosition > 50) {
+            header.classList.add('scrolled');
+        } else {
+            header.classList.remove('scrolled');
+        }
+    }
+    
+    window.addEventListener('scroll', updateHeader);
+    updateHeader(); // Initial check
 
     // Header Functions
     function closeMenu() {
