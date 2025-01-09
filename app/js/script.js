@@ -1048,6 +1048,96 @@ function restoreFilterState() {
     });
 }
 
+// Header initialization function
+function initializeHeader() {
+    const btnHamburger = document.querySelector('#btnHamburger');
+    const body = document.querySelector('body');
+    const header = document.querySelector('.header');
+    const overlay = document.querySelector('.overlay');
+    const fadeElems = document.querySelectorAll('.has-fade');
+    const mobileMenu = document.querySelector('.header__menu');
+    
+    // Check if we're on the home page
+    const isHomePage = window.location.pathname === '/' || 
+                      window.location.pathname === '/index.html';
+    
+    // Add home-page class if on home page
+    if (isHomePage) {
+        document.body.classList.add('home-page');
+    }
+
+    // Header scroll function
+    function updateHeader() {
+        if (isHomePage) {
+            const scrollPosition = window.scrollY;
+            if (scrollPosition > 50) {
+                header.classList.add('scrolled');
+            } else {
+                header.classList.remove('scrolled');
+            }
+        }
+    }
+
+    // Menu functions
+    function closeMenu() {
+        if (!body || !header || !fadeElems) return;
+        
+        body.classList.remove('noscroll');
+        header.classList.remove('open');
+        fadeElems.forEach(function(element) {
+            element.classList.remove('fade-in');
+            element.classList.add('fade-out');
+        });
+    }
+
+    function openMenu() {
+        if (!body || !header || !fadeElems) return;
+        
+        body.classList.add('noscroll');
+        header.classList.add('open');
+        fadeElems.forEach(function(element) {
+            element.classList.remove('fade-out');
+            element.classList.add('fade-in');
+        });
+    }
+
+    // Event listeners
+    if (btnHamburger && header && mobileMenu) {
+        btnHamburger.addEventListener('click', function(e) {
+            e.preventDefault();
+            e.stopPropagation();
+            
+            if (header.classList.contains('open')) {
+                closeMenu();
+            } else {
+                openMenu();
+            }
+        });
+
+        // Close menu when clicking outside
+        document.addEventListener('click', function(e) {
+            if (header.classList.contains('open') && 
+                !mobileMenu.contains(e.target) && 
+                !btnHamburger.contains(e.target)) {
+                closeMenu();
+            }
+        });
+
+        // Close menu when clicking menu items
+        const menuItems = mobileMenu.querySelectorAll('a');
+        menuItems.forEach(item => {
+            item.addEventListener('click', closeMenu);
+        });
+    }
+
+    // Add scroll listener only on home page
+    if (isHomePage) {
+        window.addEventListener('scroll', updateHeader);
+        // Initial header state
+        updateHeader();
+    }
+}
+
 // DOM Content Loaded Event Handler
 document.addEventListener('DOMContentLoaded', function() {
     if (debugProductLoading) {
@@ -1117,68 +1207,7 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
     
-    // Header Elements with null checks
-    const btnHamburger = document.querySelector('#btnHamburger');
-    const body = document.querySelector('body');
-    const header = document.querySelector('.header');
-    const overlay = document.querySelector('.overlay');
-    const fadeElems = document.querySelectorAll('.has-fade');
-    const mobileMenu = document.querySelector('.header__menu');
-    const promotionsSection = document.querySelector('.promotions');
-
-    function updateHeader() {
-        const rect = promotionsSection.getBoundingClientRect();
-        const scrollPosition = window.scrollY;
-        
-        if (scrollPosition > 50) {
-            header.classList.add('scrolled');
-        } else {
-            header.classList.remove('scrolled');
-        }
-    }
-    
-    window.addEventListener('scroll', updateHeader);
-    updateHeader(); // Initial check
-
-    // Header Functions
-    function closeMenu() {
-        if (!body || !header || !fadeElems) return;
-        
-        body.classList.remove('noscroll');
-        header.classList.remove('open');
-        fadeElems.forEach(function(element) {
-            element.classList.remove('fade-in');
-            element.classList.add('fade-out');
-        });
-    }
-
-    function openMenu() {
-        if (!body || !header || !fadeElems) return;
-        
-        body.classList.add('noscroll');
-        header.classList.add('open');
-        fadeElems.forEach(function(element) {
-            element.classList.remove('fade-out');
-            element.classList.add('fade-in');
-        });
-    }
-
-    // Header Event Listeners
-    if (btnHamburger && header && mobileMenu) {
-        btnHamburger.addEventListener('click', function(e) {
-            e.stopPropagation();
-            header.classList.contains('open') ? closeMenu() : openMenu();
-        });
-
-        // Outside click handler
-        document.addEventListener('click', function(e) {
-            if (header.classList.contains('open') && 
-                !mobileMenu.contains(e.target) && 
-                !btnHamburger.contains(e.target)) {
-                closeMenu();
-            }
-        });
-    }
+    initializeHeader();
 
     // Menu item click handlers
     document.querySelectorAll('.header__menu a').forEach(link => {

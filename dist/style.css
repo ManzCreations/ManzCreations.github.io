@@ -203,12 +203,7 @@ a {
 /* -------------------------------- */
 .header {
   position: relative;
-  z-index: 10;
-  background-color: transparent;
-  transition: background-color 0.3s ease;
-}
-
-.header.scrolled {
+  z-index: 1000;
   background-color: white;
   box-shadow: 0 2px 8px rgba(84, 213, 118, 0.1);
 }
@@ -216,6 +211,20 @@ a {
 .header nav {
   position: relative;
   padding: var(--spacing-4);
+}
+
+.home-page .header {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  background-color: transparent;
+  box-shadow: none;
+}
+
+.home-page .header.scrolled {
+  background-color: white;
+  box-shadow: 0 2px 8px rgba(84, 213, 118, 0.1);
 }
 
 /* Logo */
@@ -229,9 +238,30 @@ a {
   object-fit: contain;
 }
 
-.header__logo h1 {
-  font-size: 1.8rem;
-  font-weight: 600;
+/* Home page specific logo and text styles */
+.home-page .header:not(.scrolled) .header__logo .logo__image {
+  content: url('/images/backgrounds/logo-noletters-white.png');
+}
+
+.home-page .header:not(.scrolled) .header__logo h1 {
+  color: white;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+.home-page .header:not(.scrolled) .header__links a {
+  color: white;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+.home-page .header:not(.scrolled) .header__links a:hover {
+  color: rgba(255, 255, 255, 0.9);
+}
+
+/* Preserve button styles in transparent header */
+.home-page .header:not(.scrolled) .header__links .button {
+  background: linear-gradient(to right, var(--color-primary), var(--color-accent-1));
+  color: white;
+  text-shadow: none;
 }
 
 /* Hamburger Menu */
@@ -2504,6 +2534,10 @@ body.noscroll {
       overflow-y: auto;
       scrollbar-width: none;
       -ms-overflow-style: none;
+    }
+
+    .home-page .header:not(.scrolled) .header__toggle > span {
+        background-color: white;
     }
     
     .header__menu::-webkit-scrollbar {
