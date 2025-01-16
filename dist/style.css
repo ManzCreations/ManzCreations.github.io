@@ -4501,6 +4501,7 @@ html {
   }
 }
 
+/* Event tentative status styles */
 .tentative-banner {
   position: absolute;
   top: 50%;
@@ -4517,6 +4518,8 @@ html {
   text-transform: uppercase;
   letter-spacing: 1px;
   text-align: center;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
 
 .event-image {
@@ -4548,10 +4551,4 @@ html {
   width: 200%;
   padding: 12px 0;
   font-size: 1.5rem;
-}
-
-/* Ensure banner text remains crisp */
-.tentative-banner {
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
 }
