@@ -4500,3 +4500,58 @@ html {
       padding: var(--spacing-3);
   }
 }
+
+.tentative-banner {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  background: rgba(220, 53, 69, 0.9);
+  color: white;
+  padding: 8px 0;
+  width: 150%;
+  transform: translate(-50%, -50%) rotate(-35deg);
+  font-size: 1.25rem;
+  font-weight: 600;
+  z-index: 2;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  text-align: center;
+}
+
+.event-image {
+  overflow: hidden !important;
+  position: relative;
+}
+
+.tentative-notice {
+  background: rgba(220, 53, 69, 0.1);
+  border-left: 4px solid rgb(220, 53, 69);
+  padding: 1rem;
+  margin: 2rem 0;
+  border-radius: 0.5rem;
+}
+
+.tentative-notice i {
+  color: rgb(220, 53, 69);
+  margin-right: 0.5rem;
+}
+
+.tentative-notice p {
+  margin: 0;
+  color: #842029;
+  line-height: 1.6;
+}
+
+/* Adjust the banner size for the featured event which is typically larger */
+.featured .tentative-banner {
+  width: 200%;
+  padding: 12px 0;
+  font-size: 1.5rem;
+}
+
+/* Ensure banner text remains crisp */
+.tentative-banner {
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
