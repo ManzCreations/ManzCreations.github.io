@@ -4601,3 +4601,56 @@ html {
 .product-detail-image:hover img {
   transform: scale(1.2);
 }
+
+
+/* Cart Icon Styles */
+.cart-icon {
+  position: relative;
+  font-size: 1.25rem;
+  margin-right: 1.5rem;
+  color: var(--color-text-secondary);
+  transition: color var(--transition-base);
+}
+
+.cart-icon:hover {
+  color: var(--color-primary);
+}
+
+.cart-badge {
+  position: absolute;
+  top: -8px;
+  right: -12px;
+  background-color: var(--color-primary);
+  color: white;
+  font-size: 0.75rem;
+  font-weight: bold;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.cart-badge.hidden {
+  display: none;
+}
+
+.mobile-badge {
+  position: relative;
+  top: -1px;
+  right: auto;
+  display: inline-flex;
+  margin-left: 5px;
+}
+
+/* Home page specific styles */
+.home-page .header:not(.scrolled) .cart-icon {
+  color: white;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+.home-page .header:not(.scrolled) .cart-badge {
+  background-color: white;
+  color: var(--color-primary);
+}

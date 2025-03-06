@@ -1964,12 +1964,66 @@ function initializeQuickInquiryForm(form) {
 function initializeFullInquiryForm(form) {
     console.log('Initializing full inquiry form...');
 
-    // Check if there's a product in the URL and pre-select it
+    // Check for URL parameters that might contain product information
     const urlParams = new URLSearchParams(window.location.search);
     const productParam = urlParams.get('product');
+    const productsParam = urlParams.get('products');
     
-    if (productParam) {
-        // Find the product category first
+    // Handle multiple products from cart
+    if (productsParam) {
+        // Decode the product titles from the URL parameter
+        const productTitles = productsParam.split(',').map(title => decodeURIComponent(title));
+        console.log('Products from cart:', productTitles);
+        
+        // Find the unique product categories to check the corresponding category checkboxes
+        const productCategories = new Set();
+        
+        productTitles.forEach(title => {
+            const product = window.allProducts.find(p => p.title === title);
+            if (product) {
+                productCategories.add(product.category);
+            }
+        });
+        
+        // Check all the category checkboxes for the products in the cart
+        productCategories.forEach(category => {
+            const categoryCheckbox = form.querySelector(`input[name="productInterest"][value="${category}"]`);
+            if (categoryCheckbox) {
+                categoryCheckbox.checked = true;
+            }
+        });
+        
+        // Trigger an update to the products dropdown list based on selected categories
+        updateProductsList();
+        
+        // After a short delay to let the list populate, select the product options
+        setTimeout(() => {
+            const productSelect = form.querySelector('#specificProducts');
+            if (productSelect) {
+                // Enable multiple selection if not already enabled
+                productSelect.multiple = true;
+                
+                // Select each product from the cart in the dropdown
+                productTitles.forEach(title => {
+                    const option = Array.from(productSelect.options).find(opt => opt.value === title);
+                    if (option) {
+                        option.selected = true;
+                    } else {
+                        console.log(`Option not found for: ${title}`);
+                    }
+                });
+            }
+            
+            // Add a default message to the custom request field for cart inquiries
+            const customRequestField = form.querySelector('#customRequest');
+            if (customRequestField) {
+                customRequestField.value = "I'm interested in these items that I added to my selections. Please provide more information about availability, customization options, and pricing.";
+            }
+        }, 500); // Give the dropdown time to populate
+    }
+    // Handle single product inquiry from product detail page
+    else if (productParam) {
+        // Find the product in our database
         const product = window.allProducts.find(p => p.title === productParam);
         
         if (product) {
@@ -1990,18 +2044,24 @@ function initializeFullInquiryForm(form) {
                             option.selected = true;
                         }
                     }
+                    
+                    // Add a default message for single product inquiry
+                    const customRequestField = form.querySelector('#customRequest');
+                    if (customRequestField) {
+                        customRequestField.value = `I'm interested in the "${product.title}" and would like more information about availability, customization options, and pricing.`;
+                    }
                 }, 300);
             }
         }
     }
 
-    // Initialize form validation
+    // Initialize form validation to provide feedback on required fields
     initializeFormValidation(form);
 
-    // Initial population of products list
+    // Make sure the products list is populated with initial values
     updateProductsList();
 
-    // Handle form submission - THIS IS THE ONLY SUBMIT HANDLER WE WANT
+    // Handle form submission
     form.addEventListener('submit', async function(e) {
         e.preventDefault();
         console.log('Full inquiry form submission started');
@@ -2015,18 +2075,24 @@ function initializeFullInquiryForm(form) {
         const originalText = button.textContent;
 
         try {
+            // Disable the button and show loading state
             button.disabled = true;
             button.textContent = 'Sending...';
 
+            // Collect form data
             const formData = new FormData(form);
+            
+            // Get selected product categories (checkboxes)
             const productInterest = Array.from(
                 form.querySelectorAll('input[name="productInterest"]:checked')
             ).map(cb => cb.value);
             
+            // Get selected specific products (dropdown)
             const specificProducts = Array.from(
                 form.querySelector('#specificProducts').selectedOptions
             ).map(option => option.value);
 
+            // Create email data object
             const emailData = {
                 ...Object.fromEntries(formData),
                 productInterest,
@@ -2034,19 +2100,34 @@ function initializeFullInquiryForm(form) {
             };
 
             console.log('Sending email with data:', emailData);
+            
+            // Send the email using EmailJS
             await sendEmail(emailData, 'full');
             console.log('Email sent successfully');
 
-            // Track the email inquiry
-            await window.analyticsTracker.trackEmailInquiry('full', emailData);
+            // Track the email inquiry in analytics
+            if (window.analyticsTracker && 
+                typeof window.analyticsTracker.trackEmailInquiry === 'function') {
+                await window.analyticsTracker.trackEmailInquiry('full', emailData);
+            }
 
+            // Show success message
             notifications.success(
                 'Inquiry Sent!',
                 'Thank you for your inquiry. We\'ll get back to you soon!'
             );
 
             console.log('Resetting form...');
+            
+            // Clear the cart if the inquiry came from there
+            if (productsParam && window.cart) {
+                window.cart.clearCart();
+            }
+            
+            // Reset the form to clear all fields
             form.reset();
+            
+            // Update the products list to reflect the reset form state
             updateProductsList();
 
         } catch (error) {
@@ -2056,6 +2137,7 @@ function initializeFullInquiryForm(form) {
                 'There was a problem sending your inquiry. Please try again.'
             );
         } finally {
+            // Restore the button to its original state
             if (button) {
                 button.disabled = false;
                 button.textContent = originalText;
@@ -2063,13 +2145,33 @@ function initializeFullInquiryForm(form) {
         }
     });
 
-    // Add event listeners to product interest checkboxes
+    // Add event listeners to product interest checkboxes to update the products list
     const productInterestCheckboxes = form.querySelectorAll('input[name="productInterest"]');
     productInterestCheckboxes.forEach(checkbox => {
         checkbox.addEventListener('change', () => {
             updateProductsList();
         });
     });
+    
+    // Add helper methods for form interaction if needed
+    const contactPreferenceRadios = form.querySelectorAll('input[name="contactPreference"]');
+    if (contactPreferenceRadios.length > 0) {
+        contactPreferenceRadios.forEach(radio => {
+            radio.addEventListener('change', function() {
+                // Get phone field
+                const phoneField = form.querySelector('#phone');
+                if (phoneField) {
+                    // Make phone required only if phone contact is selected
+                    phoneField.required = this.value === 'phone';
+                    
+                    // Update validation message if needed
+                    if (phoneField.classList.contains('touched')) {
+                        phoneField.dispatchEvent(new Event('input'));
+                    }
+                }
+            });
+        });
+    }
 }
 
 // Form submission handlers

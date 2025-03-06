@@ -300,6 +300,34 @@
         .product-detail-image {
             cursor: zoom-in;
         }
+
+        /* Cart Button Styles */
+        #addToCartBtn {
+            background: var(--color-primary);
+            transition: all 0.3s ease;
+            border: none;
+            cursor: pointer;
+            width: 100%;
+            text-align: center;
+        }
+
+        #addToCartBtn:hover {
+            background: var(--color-accent-2);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(84, 213, 118, 0.2);
+        }
+
+        #addToCartBtn.in-cart {
+            background: #f97316; /* Orange color for remove */
+        }
+
+        #addToCartBtn.in-cart:hover {
+            background: #ea580c; /* Darker orange on hover */
+        }
+
+        .button i {
+            margin-right: 8px;
+        }
     </style>
 </head>
 <body class="products-page">
@@ -333,6 +361,10 @@
                         <a href="care.html">Care Guide</a>
                     </div>
                 </div>
+                <a href="cart.html" class="cart-icon">
+                    <i class="fas fa-shopping-cart"></i>
+                    <span class="cart-badge">0</span>
+                </a>
                 <a href="inquire.html" class="button header__cta">Get in Touch</a>
             </div>
 
@@ -343,6 +375,7 @@
                 <a href="about.html">About</a>
                 <a href="gallery.html">Gallery</a>
                 <a href="care.html">Care Guide</a>
+                <a href="cart.html">Cart <span class="cart-badge mobile-badge">0</span></a>
                 <a href="inquire.html">Get in Touch</a>
             </div>
         </nav>
@@ -408,9 +441,9 @@
                     </div>
                     
                     <div class="product-actions">
-                        <a href="inquire.html" class="button">
-                            <i class="fas fa-envelope"></i> Inquire About This Product
-                        </a>
+                        <button id="addToCartBtn" class="button">
+                            <i class="fas fa-cart-plus"></i> Add to Cart
+                        </button>
                         <a href="#" id="backToProducts" class="button button--secondary">
                             <i class="fas fa-arrow-left"></i> Back to Products
                         </a>
@@ -516,6 +549,7 @@
     
     <!-- Product Detail Page Scripts -->
     <script src="/app/js/script.js"></script>
+    <script src="/app/js/cart.js"></script>
     <script>
         // Enable debug mode
         const DEBUG = true;

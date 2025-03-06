@@ -1,0 +1,525 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <!-- Favicon -->
+    <link rel="icon" type="image/png" href="/images/icons/favicon-96x96.png" sizes="96x96" />
+    <link rel="icon" type="image/png" href="/images/icons/favicon-32x32.png" sizes="32x32" />
+    <link rel="icon" type="image/png" href="/images/icons/favicon-16x16.png" sizes="16x16" />
+    <link rel="icon" type="image/svg+xml" href="/images/icons/favicon.svg" />
+    <link rel="shortcut icon" href="/images/icons/favicon.ico" />
+    <link rel="apple-touch-icon" sizes="180x180" href="/images/icons/apple-touch-icon.png" />
+    <meta name="apple-mobile-web-app-title" content="Crafted 4 You" />
+    <link rel="manifest" href="/images/icons/site.webmanifest" />
+    <meta name="theme-color" content="#54d576"/>
+
+    <!-- Schema.org markup for Google -->
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "Organization",
+        "name": "Crafted 4 You",
+        "url": "https://crafted-4-you.com",
+        "logo": "https://crafted-4-you.com/images/icons/favicon-96x96.png",
+        "sameAs": [
+          "https://www.facebook.com/profile.php?id=61571686768401"
+        ]
+      }
+    </script>
+    
+    <!-- Social Sharing Meta Tags -->
+    <meta property="og:title" content="Your Selected Items | Crafted 4 You">
+    <meta property="og:description" content="View and inquire about your selected items at Crafted 4 You.">
+    <meta property="og:image" content="/images/backgrounds/logo-noletters.png">
+    <meta property="og:url" content="https://crafted-4-you.com/pages/cart.html">
+    <meta property="og:type" content="website">
+    
+    <!-- Twitter Card Tags -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Your Selected Items | Crafted 4 You">
+    <meta name="twitter:description" content="View and inquire about your selected items at Crafted 4 You.">
+    <meta name="twitter:image" content="/images/backgrounds/logo-noletters.png">
+
+    <link href="https://fonts.googleapis.com/css2?family=Public+Sans:wght@300;400;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/dist/style.css">
+    <title>Selected Items | Crafted 4 You</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <script src="/app/js/analytics.js"></script>
+    
+    <style>
+        /* Cart Page Specific Styles */
+        .cart-page {
+            background-color: var(--color-bg-light);
+            min-height: calc(100vh - 100px);
+            padding: 2rem 0;
+        }
+        
+        .cart-title {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+        
+        .cart-container {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 2rem;
+        }
+        
+        @media (max-width: 768px) {
+            .cart-container {
+                grid-template-columns: 1fr;
+            }
+        }
+        
+        .cart-items {
+            background: white;
+            border-radius: var(--radius-lg);
+            padding: 1.5rem;
+            box-shadow: 0 2px 8px rgba(84, 213, 118, 0.1);
+        }
+        
+        .cart-summary {
+            background: white;
+            border-radius: var(--radius-lg);
+            padding: 1.5rem;
+            box-shadow: 0 2px 8px rgba(84, 213, 118, 0.1);
+            height: fit-content;
+        }
+        
+        .cart-item {
+            display: grid;
+            grid-template-columns: 80px 1fr auto;
+            gap: 1.5rem;
+            padding: 1rem 0;
+            border-bottom: 1px solid var(--color-bg-light);
+            align-items: center;
+        }
+        
+        .cart-item:last-child {
+            border-bottom: none;
+        }
+        
+        .cart-item-image {
+            width: 80px;
+            height: 80px;
+            border-radius: var(--radius-md);
+            overflow: hidden;
+        }
+        
+        .cart-item-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        
+        .cart-item-details h3 {
+            margin: 0 0 0.5rem;
+            font-size: 1.1rem;
+        }
+        
+        .cart-item-price {
+            color: var(--color-primary);
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+        }
+        
+        .cart-item-actions {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .quantity-input {
+            width: 50px;
+            padding: 0.5rem;
+            text-align: center;
+            border: 1px solid var(--color-bg-light);
+            border-radius: var(--radius-md);
+        }
+        
+        .remove-item {
+            background: none;
+            border: none;
+            color: #ef4444;
+            cursor: pointer;
+            font-size: 1.2rem;
+            margin-left: 0.5rem;
+        }
+        
+        .cart-summary h3 {
+            margin-top: 0;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid var(--color-bg-light);
+        }
+        
+        .summary-row {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 0.75rem;
+            color: var(--color-text-secondary);
+        }
+        
+        .summary-total {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 1rem;
+            padding-top: 1rem;
+            border-top: 2px solid var(--color-bg-light);
+            font-weight: 600;
+            font-size: 1.1rem;
+            color: var(--color-text-primary);
+        }
+        
+        .checkout-btn {
+            display: block;
+            width: 100%;
+            margin-top: 1.5rem;
+            padding: 1rem;
+            background: var(--color-primary);
+            color: white;
+            border: none;
+            border-radius: var(--radius-md);
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-align: center;
+        }
+
+        .checkout-btn:hover {
+            background: var(--color-accent-2);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(84, 213, 118, 0.2);
+        }
+
+        /* Add icon to inquire button */
+        #inquireBtn::before {
+            content: "\f0e0"; /* Envelope icon */
+            font-family: "Font Awesome 5 Free";
+            font-weight: 900;
+            margin-right: 8px;
+        }
+        
+        .clear-cart {
+            display: block;
+            width: 100%;
+            margin-top: 0.75rem;
+            padding: 0.75rem;
+            background: none;
+            color: var(--color-text-secondary);
+            border: 1px solid var(--color-bg-light);
+            border-radius: var(--radius-md);
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-align: center;
+        }
+        
+        .clear-cart:hover {
+            background: var(--color-bg-light);
+            color: var(--color-text-primary);
+        }
+        
+        .empty-cart {
+            text-align: center;
+            padding: 3rem 0;
+        }
+        
+        .empty-cart i {
+            font-size: 3rem;
+            color: var(--color-text-secondary);
+            margin-bottom: 1rem;
+            opacity: 0.5;
+        }
+        
+        .empty-cart p {
+            margin-bottom: 2rem;
+            color: var(--color-text-secondary);
+        }
+    </style>
+</head>
+<body class="products-page">
+    <div id="notification-container"></div>
+    
+    <header class="header">
+        <div class="overlay has-fade"></div>
+        
+        <nav class="container flex flex-jc-sb flex-ai-c">
+            <a href="/" class="header__logo flex flex-ai-c">
+                <img src="/images/backgrounds/logo-noletters.png" alt="Crafted 4 You Logo" class="logo__image" />
+                <h1 class="gradient-text">Crafted 4 You</h1>
+            </a>
+
+            <a id="btnHamburger" href="#" class="header__toggle hide-for-desktop">
+                <span></span>
+                <span></span>
+                <span></span>
+            </a>
+
+            <!-- Desktop Navigation -->
+            <div class="header__links hide-for-mobile">
+                <a href="products.html">Products</a>
+                <a href="events.html">Upcoming Events</a>
+                <a href="about.html">About</a>
+                <div class="dropdown">
+                    <a href="#" class="dropdown__toggle">More</a>
+                    <div class="dropdown__menu">
+                        <a href="gallery.html">Gallery</a>
+                        <a href="care.html">Care Guide</a>
+                    </div>
+                </div>
+                <a href="cart.html" class="cart-icon">
+                    <i class="fas fa-shopping-cart"></i>
+                    <span class="cart-badge">0</span>
+                </a>
+                <a href="inquire.html" class="button header__cta">Get in Touch</a>
+            </div>
+
+            <!-- Mobile Menu -->
+            <div class="header__menu has-fade">
+                <a href="products.html">Products</a>
+                <a href="events.html">Upcoming Events</a>
+                <a href="about.html">About</a>
+                <a href="gallery.html">Gallery</a>
+                <a href="care.html">Care Guide</a>
+                <a href="cart.html">Cart <span class="cart-badge mobile-badge">0</span></a>
+                <a href="inquire.html">Get in Touch</a>
+            </div>
+        </nav>
+    </header>
+
+    <!-- Disclaimer Section --> 
+    <section class="disclaimer">
+      <div class="container">
+        <p>
+          The artwork designs used in our products are not owned by us. We only own the materials used to create the products but do not hold any rights to the designs themselves.
+        </p>
+      </div>
+    </section>
+
+    <!-- Cart Section -->
+    <section class="cart-page">
+        <div class="container">
+            <h1 class="cart-title gradient-text">Your Selected Items</h1>
+            
+            <div id="cartContent">
+                <!-- Cart will be populated by JavaScript -->
+                <div class="empty-cart">
+                    <i class="fas fa-shopping-cart"></i>
+                    <p>Your cart is empty</p>
+                    <a href="products.html" class="button">Continue Shopping</a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer bg-dark">
+        <div class="container">
+          <div class="footer__grid">
+            <!-- Branding Section -->
+            <div class="footer__branding">
+              <h2 class="gradient-text">Crafted 4 You</h2>
+              <p class="text-light">Handmade with love and care</p>
+              <a href="inquire.html" class="button footer__cta">Get in Touch</a>
+            </div>
+            
+            <!-- Shop Section -->
+            <div class="footer__links">
+              <h3 class="text-light">Shop</h3>
+              <a href="products.html?filter=collections">Collections</a>
+              <a href="products.html">Products</a>
+              <a href="gallery.html">Gallery</a>
+            </div>
+      
+            <!-- Company Section -->
+            <div class="footer__info">
+              <h3 class="text-light">Company</h3>
+              <a href="about.html">About Us</a>
+              <a href="events.html">Upcoming Events</a>
+              <a href="care.html">Care Guide</a>
+            </div>
+      
+            <!-- Support Section -->
+            <div class="footer__support">
+              <h3 class="text-light">Support</h3>
+              <a href="/#faq">FAQs</a>
+              <a href="return-policy.html">Return Policy</a>
+              <a href="inquire.html">Contact Us</a>
+              <div class="footer__social">
+                <a href="https://www.facebook.com/profile.php?id=61571686768401" target="_blank" rel="noopener noreferrer" aria-label="Facebook">
+                  <img src="../images/icons/icon-facebook.svg" alt="Facebook"/>
+                </a>
+                <a href="https://www.youtube.com" target="_blank" rel="noopener noreferrer" aria-label="YouTube">
+                  <img src="../images/icons/icon-youtube.svg" alt="YouTube"/>
+                </a>
+                <a href="https://www.twitter.com" target="_blank" rel="noopener noreferrer" aria-label="Twitter">
+                  <img src="../images/icons/icon-twitter.svg" alt="Twitter"/>
+                </a>
+                <a href="https://www.pinterest.com" target="_blank" rel="noopener noreferrer" aria-label="Pinterest">
+                  <img src="../images/icons/icon-pinterest.svg" alt="Pinterest"/>
+                </a>
+                <a href="https://www.instagram.com" target="_blank" rel="noopener noreferrer" aria-label="Instagram">
+                  <img src="../images/icons/icon-instagram.svg" alt="Instagram"/>
+                </a>
+              </div>
+            </div>
+          </div>
+          
+          <!-- Footer Bottom with Disclaimer -->
+          <div class="footer__bottom">
+            <div class="footer__disclaimer">
+              <p class="text-light">All artwork and designs featured on our products are the property of their respective copyright holders. 
+              <span class="footer__disclaimer-details">Crafted 4 You creates handcrafted items using licensed materials, focusing solely on quality craftsmanship. Any copyrighted content is used under appropriate guidelines or licensing agreements.</span></p>
+            </div>
+            <p class="text-light copyright">&copy; 2024 Crafted 4 You. All Rights Reserved.</p>
+          </div>
+        </div>
+    </footer>
+    
+    <!-- Scripts -->
+    <script src="/app/js/script.js"></script>
+    <script src="/app/js/cart.js"></script>
+    <script>
+        // Cart Page JavaScript
+        document.addEventListener('DOMContentLoaded', function() {
+            // Initialize header
+            initializeHeader();
+            
+            // Render the cart
+            renderCart();
+            
+            // Function to render cart contents
+            function renderCart() {
+                const cartItems = cart.getItems();
+                const cartContent = document.getElementById('cartContent');
+                
+                if (cartItems.length === 0) {
+                    // Show empty cart message
+                    cartContent.innerHTML = `
+                        <div class="empty-cart">
+                            <i class="fas fa-shopping-cart"></i>
+                            <p>Your cart is empty</p>
+                            <a href="products.html" class="button">Continue Shopping</a>
+                        </div>
+                    `;
+                    return;
+                }
+                
+                // Calculate cart total value
+                const subtotal = cartItems.reduce((total, item) => total + (item.price * item.quantity), 0);
+                
+                // Create cart HTML
+                cartContent.innerHTML = `
+                    <div class="cart-container">
+                        <div class="cart-items">
+                            ${cartItems.map(item => `
+                                <div class="cart-item" data-product-id="${item.id}">
+                                    <div class="cart-item-image">
+                                        <img src="${item.imagePath || '/images/placeholder.jpg'}" alt="${item.title}">
+                                    </div>
+                                    <div class="cart-item-details">
+                                        <h3>${item.title}</h3>
+                                        <p class="cart-item-price">$${(item.price * item.quantity).toFixed(2)}</p>
+                                    </div>
+                                    <div class="cart-item-actions">
+                                        <input type="number" class="quantity-input" value="${item.quantity}" min="1" max="99">
+                                        <button class="remove-item" aria-label="Remove item"><i class="fas fa-trash-alt"></i></button>
+                                    </div>
+                                </div>
+                            `).join('')}
+                        </div>
+                        <div class="cart-summary">
+                            <h3>Selected Items</h3>
+                            <div class="summary-row">
+                                <span>Items</span>
+                                <span>${cartItems.length}</span>
+                            </div>
+                            <div class="summary-row">
+                                <span>Total Items</span>
+                                <span>${cartItems.reduce((total, item) => total + item.quantity, 0)}</span>
+                            </div>
+                            <div class="summary-total">
+                                <span>Estimated Value</span>
+                                <span>$${subtotal.toFixed(2)}</span>
+                            </div>
+                            <a href="inquire.html" id="inquireBtn" class="checkout-btn">Inquire About These Items</a>
+                            <button id="clearCartBtn" class="clear-cart">Clear Cart</button>
+                        </div>
+                    </div>
+                `;
+                
+                // Add event listeners for cart interactions
+                setupCartInteractions();
+            }
+            
+            // Add event listeners for cart item interactions
+            function setupCartInteractions() {
+                // Handle quantity changes
+                const quantityInputs = document.querySelectorAll('.quantity-input');
+                quantityInputs.forEach(input => {
+                    input.addEventListener('change', function() {
+                        const cartItem = this.closest('.cart-item');
+                        const productId = cartItem.dataset.productId;
+                        const quantity = parseInt(this.value);
+                        
+                        if (isNaN(quantity) || quantity < 1) {
+                            this.value = 1;
+                            cart.updateQuantity(productId, 1);
+                        } else {
+                            cart.updateQuantity(productId, quantity);
+                        }
+                        
+                        // Update display
+                        renderCart();
+                    });
+                });
+                
+                // Handle remove item buttons
+                const removeButtons = document.querySelectorAll('.remove-item');
+                removeButtons.forEach(button => {
+                    button.addEventListener('click', function() {
+                        const cartItem = this.closest('.cart-item');
+                        const productId = cartItem.dataset.productId;
+                        
+                        const message = cart.removeItem(productId);
+                        notifications.success('Cart Updated', message);
+                        
+                        // Update display
+                        renderCart();
+                    });
+                });
+
+                // Handle inquire button
+                const inquireBtn = document.getElementById('inquireBtn');
+                if (inquireBtn) {
+                    inquireBtn.addEventListener('click', function(e) {
+                        e.preventDefault();
+                        
+                        // Get cart items
+                        const cartItems = cart.getItems();
+                        
+                        // Create parameters for inquire page
+                        const productTitles = cartItems.map(item => encodeURIComponent(item.title)).join(',');
+                        
+                        // Redirect to inquire page with cart items as parameters
+                        window.location.href = `inquire.html?products=${productTitles}`;
+                    });
+                }
+                
+                // Handle clear cart button
+                const clearCartBtn = document.getElementById('clearCartBtn');
+                if (clearCartBtn) {
+                    clearCartBtn.addEventListener('click', function() {
+                        if (confirm('Are you sure you want to clear your cart?')) {
+                            const message = cart.clearCart();
+                            notifications.success('Cart Cleared', message);
+                            renderCart();
+                        }
+                    });
+                }
+            }
+        });
+    </script>
+</body>
+</html>
