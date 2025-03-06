@@ -387,3 +387,26 @@ window.analyticsTracker = {
     resetAnalytics,
     trackEmailInquiry
 };
+
+// Track product view
+window.analyticsTracker.trackProductView = function(productData) {
+    try {
+        // Log the product view
+        console.log('Product view tracked:', productData);
+        
+        // Implement your actual analytics call here
+        // For example, with Google Analytics:
+        if (window.gtag) {
+            gtag('event', 'view_item', {
+                items: [{
+                    item_id: productData.id,
+                    item_name: productData.name,
+                    item_category: productData.category,
+                    price: productData.price
+                }]
+            });
+        }
+    } catch (error) {
+        console.error('Error tracking product view:', error);
+    }
+};

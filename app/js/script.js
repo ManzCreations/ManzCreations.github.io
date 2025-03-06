@@ -19,6 +19,12 @@ function initializeEmailJS() {
     const currentPage = window.location.pathname;
     if (currentPage.includes('index.html') || currentPage.includes('inquire.html') || currentPage === '/' || currentPage === '') {
         try {
+            // Check if emailjs library is loaded
+            if (typeof emailjs === 'undefined') {
+                console.warn('EmailJS library not found. Some functionality may be limited.');
+                return; // Exit gracefully
+            }
+            
             emailjs.init(EMAIL_CONFIG.PUBLIC_KEY);
             
             // Verify initialization
@@ -31,7 +37,7 @@ function initializeEmailJS() {
             
         } catch (error) {
             console.error('EmailJS initialization failed:', error);
-            throw error;
+            // Don't throw the error - handle it gracefully
         }
     }
 }
@@ -242,16 +248,34 @@ async function loadProducts(onComplete) {
             return product;
         });
 
-        allProducts = products.map(product => ({
-            ...product,
-            tags: product.tags ? product.tags.split('|') : [],
-            price: parseFloat(product.price) || 0,
-            isNew: product.isNew === 'TRUE',
-            isFeatured: product.isFeatured === 'TRUE'
-        }));
+        allProducts = products.map(product => {
+            // Ensure each product has an ID
+            if (!product.id) {
+                product.id = generateProductId(product);
+            }
+            
+            return {
+                ...product,
+                tags: product.tags ? product.tags.split('|') : [],
+                price: parseFloat(product.price) || 0,
+                isNew: product.isNew === 'TRUE',
+                isFeatured: product.isFeatured === 'TRUE'
+            };
+        });
 
         if (debugProductLoading) {
             console.log('Processed products:', allProducts);
+        }
+
+        // Make allProducts available globally
+        window.allProducts = allProducts;
+        
+        // Store in local storage for access from product detail page
+        try {
+            localStorage.setItem('allProducts', JSON.stringify(allProducts));
+            console.log('Products saved to local storage:', allProducts.length);
+        } catch (error) {
+            console.error('Error saving to local storage:', error);
         }
 
         if (onComplete && typeof onComplete === 'function') {
@@ -516,26 +540,177 @@ function updateProductsDisplay(products) {
     if (!productsContainer) return;
 
     productsContainer.innerHTML = products.map(product => `
-        <div class="product-card" data-category="${product.category}" data-subcategory="${product.subcategory}">
-        <div class="product-image">
-            <img src="${product.imagePath || '/api/placeholder/300/300'}" alt="${product.title}">
-            ${product.isNew ? '<div class="product-badge new">New</div>' : ''}
-        </div>
-        <div class="product-info">
-            <h3>${product.title}</h3>
-            <p class="price">From $${parseFloat(product.price).toFixed(2)}</p>
-            <p class="product-description">${product.description || ''}</p>
-            <ul class="product-tags">
-            ${(product.tags || []).map(tag => `<li>${tag}</li>`).join('')}
-            </ul>
-        </div>
+        <div class="product-card" data-product-id="${product.id || generateProductId(product)}" 
+             data-category="${product.category}" data-subcategory="${product.subcategory}">
+            <div class="product-image">
+                <img src="${product.imagePath || '/api/placeholder/300/300'}" alt="${product.title}">
+                ${product.isNew ? '<div class="product-badge new">New</div>' : ''}
+            </div>
+            <div class="product-info">
+                <h3>${product.title}</h3>
+                <p class="price">From $${parseFloat(product.price).toFixed(2)}</p>
+                <p class="product-description">${product.description || ''}</p>
+                <ul class="product-tags">
+                ${(product.tags || []).map(tag => `<li>${tag}</li>`).join('')}
+                </ul>
+            </div>
         </div>
     `).join('');
+
+    // Add click handlers to product cards
+    const productCards = productsContainer.querySelectorAll('.product-card');
+    productCards.forEach(card => {
+        card.addEventListener('click', function() {
+            const productId = this.getAttribute('data-product-id');
+            if (productId) {
+                // Save current filter state before navigating
+                saveFilterStateToSession();
+                
+                window.location.href = `product-detail.html?id=${productId}`;
+            }
+        });
+    });
+
+    // Helper function to save filter state
+    function saveFilterStateToSession() {
+        try {
+            // Get all selected filters
+            const filterState = {
+                search: document.getElementById('productSearch')?.value || '',
+                categories: Array.from(document.querySelectorAll('input[data-category-type="main"]:checked')).map(cb => cb.value),
+                subcategories: Array.from(document.querySelectorAll('input[data-category-type="sub"]:checked')).map(cb => cb.value),
+                tags: Array.from(document.querySelectorAll('input[data-filter-type="tag"]:checked')).map(cb => cb.value),
+                collections: Array.from(document.querySelectorAll('input[data-filter-type="collection"]:checked')).map(cb => cb.value),
+                view: document.querySelector('.view-btn.active')?.dataset?.view || 'grid',
+                sort: document.getElementById('sortProducts')?.value || 'featured'
+            };
+            
+            // Save to sessionStorage (this persists only for the current browser session)
+            sessionStorage.setItem('productFilterState', JSON.stringify(filterState));
+            console.log('Filter state saved:', filterState);
+        } catch (error) {
+            console.error('Error saving filter state:', error);
+        }
+    }
 
     // Update view based on current view mode
     const currentView = document.querySelector('.view-btn.active');
     if (currentView) {
         productsContainer.classList.toggle('gallery-view', currentView.dataset.view === 'gallery');
+    }
+}
+
+// Function to generate a unique product ID if none exists
+function generateProductId(product) {
+    // Generate a unique ID based on product properties
+    const idBase = product.title.toLowerCase().replace(/[^a-z0-9]/g, '-');
+    return `${idBase}-${Math.floor(Math.random() * 1000)}`;
+}
+
+// Function to load product data for product detail page
+async function loadProductData(productId) {
+    console.log('Loading product data for ID:', productId);
+    
+    try {
+        // Try to get products from local storage first
+        let products = [];
+        
+        try {
+            const storedProducts = localStorage.getItem('allProducts');
+            if (storedProducts) {
+                products = JSON.parse(storedProducts);
+                console.log('Loaded products from local storage:', products.length);
+            }
+        } catch (storageError) {
+            console.error('Error loading from storage:', storageError);
+        }
+        
+        // If no products in local storage or if it's empty, try to load from server
+        if (!products || products.length === 0) {
+            console.log('No products in storage, loading from server...');
+            
+            // Use the SHEET_ID and API_KEY from the page
+            const SHEETS_URL = `https://sheets.googleapis.com/v4/spreadsheets/${SHEET_ID}/values/products_list?key=${API_KEY}`;
+        
+            const response = await fetch(SHEETS_URL, {
+                method: 'GET',
+                headers: { 'Accept': 'application/json' }
+            });
+
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
+
+            const data = await response.json();
+            
+            if (!data.values || data.values.length < 2) {
+                throw new Error('No data found in sheet');
+            }
+
+            const headers = data.values[0];
+            const rows = data.values.slice(1);
+
+            // Convert to object array
+            products = rows.map(row => {
+                const product = {};
+                headers.forEach((header, index) => {
+                    product[header.trim()] = row[index] || '';
+                });
+                return product;
+            }).map(product => ({
+                ...product,
+                id: product.id || generateProductId(product),
+                tags: product.tags ? product.tags.split('|') : [],
+                price: parseFloat(product.price) || 0,
+                isNew: product.isNew === 'TRUE',
+                isFeatured: product.isFeatured === 'TRUE'
+            }));
+            
+            console.log('Loaded products from server:', products.length);
+            
+            // Save to localStorage for future use
+            try {
+                localStorage.setItem('allProducts', JSON.stringify(products));
+                console.log('Products saved to local storage from product detail page');
+            } catch (storageError) {
+                console.error('Error saving to local storage:', storageError);
+            }
+        }
+        
+        // Find the product by ID
+        console.log('Looking for product with ID:', productId);
+        
+        const product = products.find(p => p.id === productId);
+        console.log('Found product:', product ? product.title : 'Not found');
+        
+        // If product not found by ID, try by title or other properties
+        if (!product && productId) {
+            console.log('Trying alternative product lookup methods...');
+            
+            // Try with decoded ID (in case URL encoding is an issue)
+            const decodedId = decodeURIComponent(productId);
+            const productByDecodedId = products.find(p => p.id === decodedId);
+            
+            if (productByDecodedId) {
+                console.log('Found product by decoded ID');
+                return productByDecodedId;
+            }
+            
+            // Try by title containing the ID (common if IDs are derived from titles)
+            const productByTitleMatch = products.find(p => 
+                p.title && p.title.toLowerCase().includes(productId.toLowerCase().replace(/-/g, ' '))
+            );
+            
+            if (productByTitleMatch) {
+                console.log('Found product by title match');
+                return productByTitleMatch;
+            }
+        }
+        
+        return product;
+    } catch (error) {
+        console.error('Error loading product data:', error);
+        return null;
     }
 }
 
@@ -1154,6 +1329,20 @@ function initializeHeader() {
     }
 }
 
+// Listen for storage events to sync product data
+window.addEventListener('storage', function(e) {
+    if (e.key === 'allProducts') {
+        console.log('Products updated in another tab, syncing...');
+        try {
+            const products = JSON.parse(e.newValue);
+            allProducts = products;
+            window.allProducts = products;
+        } catch (error) {
+            console.error('Error syncing products:', error);
+        }
+    }
+});
+
 // DOM Content Loaded Event Handler
 document.addEventListener('DOMContentLoaded', function() {
     if (debugProductLoading) {
@@ -1181,6 +1370,75 @@ document.addEventListener('DOMContentLoaded', function() {
     if (document.getElementById('productsContainer')) {
         if (debugProductLoading) console.log('Initializing products page');
         
+        // Try to restore filter state from sessionStorage
+        try {
+            const savedFilterState = sessionStorage.getItem('productFilterState');
+            if (savedFilterState) {
+                const filterState = JSON.parse(savedFilterState);
+                console.log('Restoring filter state:', filterState);
+                
+                // Restore search term
+                const searchInputs = [
+                    document.getElementById('productSearch'),
+                    document.getElementById('mobileSearch')
+                ].filter(Boolean);
+                
+                searchInputs.forEach(input => {
+                    if (input && filterState.search) {
+                        input.value = filterState.search;
+                    }
+                });
+                
+                // Restore category selections
+                filterState.categories.forEach(category => {
+                    const checkbox = document.querySelector(`input[data-category-type="main"][value="${category}"]`);
+                    if (checkbox) checkbox.checked = true;
+                });
+                
+                // Restore subcategory selections
+                filterState.subcategories.forEach(subcategory => {
+                    const checkbox = document.querySelector(`input[data-category-type="sub"][value="${subcategory}"]`);
+                    if (checkbox) checkbox.checked = true;
+                });
+                
+                // Restore tag selections
+                filterState.tags.forEach(tag => {
+                    const checkbox = document.querySelector(`input[data-filter-type="tag"][value="${tag}"]`);
+                    if (checkbox) checkbox.checked = true;
+                });
+                
+                // Restore collection selections
+                filterState.collections.forEach(collection => {
+                    const checkbox = document.querySelector(`input[data-filter-type="collection"][value="${collection}"]`);
+                    if (checkbox) checkbox.checked = true;
+                });
+                
+                // Restore view mode
+                if (filterState.view) {
+                    const viewBtn = document.querySelector(`.view-btn[data-view="${filterState.view}"]`);
+                    if (viewBtn) {
+                        document.querySelectorAll('.view-btn').forEach(btn => btn.classList.remove('active'));
+                        viewBtn.classList.add('active');
+                        const productsContainer = document.getElementById('productsContainer');
+                        if (productsContainer) {
+                            productsContainer.classList.toggle('gallery-view', filterState.view === 'gallery');
+                        }
+                    }
+                }
+                
+                // Restore sort selection
+                if (filterState.sort) {
+                    const sortSelect = document.getElementById('sortProducts');
+                    if (sortSelect) sortSelect.value = filterState.sort;
+                }
+                
+                // Clear the saved state to prevent it from applying again on manual refresh
+                sessionStorage.removeItem('productFilterState');
+            }
+        } catch (error) {
+            console.error('Error restoring filter state:', error);
+        }
+        
         initializeMobileControls();
         setupCategoryFilters();
         initializePhoneValidation();
@@ -1193,6 +1451,7 @@ document.addEventListener('DOMContentLoaded', function() {
             console.error('Error loading products:', error);
         });
     }
+
     // Initialize index page if applicable
     else if (document.querySelector('#new-releases') || document.querySelector('.category-section')) {
         if (debugProductLoading) {
@@ -1225,8 +1484,71 @@ document.addEventListener('DOMContentLoaded', function() {
             checkbox.addEventListener('change', updateFilterCount);
         });
     }
+
+    // Initialize product detail page if applicable
+    if (window.location.pathname.includes('product-detail.html')) {
+        console.log('Initializing product detail page');
+        
+        // Get product ID from URL parameter
+        const urlParams = new URLSearchParams(window.location.search);
+        const productId = urlParams.get('id');
+        
+        if (!productId) {
+            showProductDetailError();
+            return;
+        }
+        
+        // Load product data
+        loadProductData(productId)
+            .then(product => {
+                if (!product) {
+                    showProductDetailError();
+                    return;
+                }
+                
+                console.log('Product detail loaded successfully:', product.title);
+                
+                // Call the update function if it exists
+                if (typeof updateProductDetails === 'function') {
+                    updateProductDetails(product);
+                }
+                
+                // Hide loading, show product details
+                const loadingState = document.getElementById('loadingState');
+                const productDetails = document.getElementById('productDetails');
+                
+                if (loadingState) loadingState.style.display = 'none';
+                if (productDetails) productDetails.style.display = 'grid';
+                
+                // Track product view if applicable
+                if (typeof trackProductView === 'function') {
+                    trackProductView(product);
+                }
+            })
+            .catch(error => {
+                console.error('Error loading product:', error);
+                showProductDetailError();
+            });
+    }
+
+    // Helper function for product detail error
+    function showProductDetailError() {
+        const loadingState = document.getElementById('loadingState');
+        const productDetails = document.getElementById('productDetails');
+        const errorState = document.getElementById('errorState');
+        
+        if (loadingState) loadingState.style.display = 'none';
+        if (productDetails) productDetails.style.display = 'none';
+        if (errorState) errorState.style.display = 'block';
+    }
     
     initializeHeader();
+
+    // Make product cards show pointer cursor
+    const productCards = document.querySelectorAll('.product-card');
+    productCards.forEach(card => {
+        card.style.cursor = 'pointer';
+    });
 
     // FAQ Functionality
     const faqQuestions = document.querySelectorAll('.faq__question');
@@ -1641,6 +1963,37 @@ function initializeQuickInquiryForm(form) {
 // Full Inquiry Form Handler (inquire.html)
 function initializeFullInquiryForm(form) {
     console.log('Initializing full inquiry form...');
+
+    // Check if there's a product in the URL and pre-select it
+    const urlParams = new URLSearchParams(window.location.search);
+    const productParam = urlParams.get('product');
+    
+    if (productParam) {
+        // Find the product category first
+        const product = window.allProducts.find(p => p.title === productParam);
+        
+        if (product) {
+            // Pre-select the category
+            const categoryCheckbox = form.querySelector(`input[name="productInterest"][value="${product.category}"]`);
+            if (categoryCheckbox) {
+                categoryCheckbox.checked = true;
+                
+                // Trigger an update to the products list
+                updateProductsList();
+                
+                // After a short delay to let the list populate, select the product
+                setTimeout(() => {
+                    const productSelect = form.querySelector('#specificProducts');
+                    if (productSelect) {
+                        const option = Array.from(productSelect.options).find(opt => opt.value === product.title);
+                        if (option) {
+                            option.selected = true;
+                        }
+                    }
+                }, 300);
+            }
+        }
+    }
 
     // Initialize form validation
     initializeFormValidation(form);

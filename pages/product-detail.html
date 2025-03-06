@@ -1,0 +1,1169 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <!-- Favicon -->
+    <link rel="icon" type="image/png" href="/images/icons/favicon-96x96.png" sizes="96x96" />
+    <link rel="icon" type="image/png" href="/images/icons/favicon-32x32.png" sizes="32x32" />
+    <link rel="icon" type="image/png" href="/images/icons/favicon-16x16.png" sizes="16x16" />
+    <link rel="icon" type="image/svg+xml" href="/images/icons/favicon.svg" />
+    <link rel="shortcut icon" href="/images/icons/favicon.ico" />
+    <link rel="apple-touch-icon" sizes="180x180" href="/images/icons/apple-touch-icon.png" />
+    <meta name="apple-mobile-web-app-title" content="Crafted 4 You" />
+    <link rel="manifest" href="/images/icons/site.webmanifest" />
+    <meta name="theme-color" content="#54d576"/>
+
+    <!-- Product Schema Markup (will be populated by JavaScript) -->
+    <script type="application/ld+json" id="productSchema">
+        {
+            "@context": "https://schema.org/",
+            "@type": "Product",
+            "name": "Product Name",
+            "image": "",
+            "description": "Product description",
+            "brand": {
+            "@type": "Brand",
+            "name": "Crafted 4 You"
+            },
+            "offers": {
+            "@type": "Offer",
+            "url": "",
+            "priceCurrency": "USD",
+            "price": "0.00",
+            "availability": "https://schema.org/InStock"
+            }
+        }
+    </script>
+    
+    <!-- Dynamic meta tags will be updated via JavaScript -->
+    <meta property="og:title" content="Product | Crafted 4 You">
+    <meta property="og:description" content="Handcrafted personalized products from Crafted 4 You.">
+    <meta property="og:image" content="/images/backgrounds/logo-noletters.png">
+    <meta property="og:url" content="https://crafted-4-you.com/pages/product-detail.html">
+    <meta property="og:type" content="product">
+    
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Product | Crafted 4 You">
+    <meta name="twitter:description" content="Handcrafted personalized products from Crafted 4 You.">
+    <meta name="twitter:image" content="/images/backgrounds/logo-noletters.png">
+
+    <link href="https://fonts.googleapis.com/css2?family=Public+Sans:wght@300;400;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/dist/style.css">
+    <title>Product | Crafted 4 You</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.3.0/papaparse.min.js"></script>
+    <script type="text/javascript" src="https://cdn.emailjs.com/sdk/latest/email.min.js"></script>
+    <script src="/app/js/analytics.js"></script>
+    
+    <style>
+        /* Product Detail Page Specific Styles */
+        .product-detail {
+            padding: 2rem 0;
+            background-color: var(--color-bg-light);
+        }
+        
+        .product-breadcrumb {
+            margin-bottom: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            color: var(--color-text-secondary);
+            font-size: 0.875rem;
+        }
+        
+        .product-breadcrumb a {
+            color: var(--color-text-secondary);
+            transition: color 0.2s ease;
+        }
+        
+        .product-breadcrumb a:hover {
+            color: var(--color-primary);
+        }
+        
+        .product-detail-container {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 2rem;
+            background: white;
+            border-radius: var(--radius-lg);
+            padding: 2rem;
+            box-shadow: 0 2px 8px rgba(84, 213, 118, 0.1);
+        }
+        
+        .product-detail-image {
+            width: 100%;
+            aspect-ratio: 1;
+            border-radius: var(--radius-md);
+            overflow: hidden;
+            position: relative;
+            box-shadow: 0 4px 12px rgba(84, 213, 118, 0.1);
+        }
+        
+        .product-detail-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.5s ease;
+        }
+        
+        .product-detail-image:hover img {
+            transform: scale(1.05);
+        }
+        
+        .product-detail-info {
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+        }
+        
+        .product-detail-info h1 {
+            color: var(--color-text-primary);
+            font-size: 2rem;
+            margin-bottom: 0.5rem;
+        }
+        
+        .product-price {
+            color: var(--color-primary);
+            font-size: 1.5rem;
+            font-weight: 600;
+        }
+        
+        .product-description {
+            color: var(--color-text-secondary);
+            line-height: 1.8;
+        }
+        
+        .product-meta {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+            margin-top: 1rem;
+            color: var(--color-text-secondary);
+        }
+        
+        .product-meta span {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .product-meta i {
+            color: var(--color-primary);
+            width: 20px;
+        }
+        
+        .product-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+            margin-top: 1.5rem;
+        }
+        
+        .product-tag {
+            background: var(--color-bg-light);
+            color: var(--color-text-secondary);
+            padding: 0.5rem 1rem;
+            border-radius: var(--radius-full);
+            font-size: 0.875rem;
+        }
+        
+        .product-actions {
+            margin-top: 2rem;
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+        
+        .product-actions .button {
+            width: 100%;
+            text-align: center;
+            padding: 1rem;
+        }
+        
+        .product-note {
+            margin-top: 1rem;
+            color: var(--color-text-secondary);
+            font-size: 0.875rem;
+            font-style: italic;
+        }
+        
+        .related-products {
+            margin-top: 4rem;
+        }
+        
+        .related-products h2 {
+            margin-bottom: 1.5rem;
+            color: var(--color-text-primary);
+        }
+        
+        .related-products-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 2rem;
+        }
+        
+        /* Responsive adjustments */
+        @media (max-width: 768px) {
+            .product-detail-container {
+                grid-template-columns: 1fr;
+            }
+            
+            .product-detail-image {
+                max-width: 100%;
+                margin: 0 auto;
+            }
+            
+            .related-products-grid {
+                grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+                gap: 1rem;
+            }
+        }
+
+        /* Lightbox Styles */
+        .lightbox {
+            display: none;
+            position: fixed;
+            z-index: 2000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(0, 0, 0, 0.85);
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .lightbox.active {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            opacity: 1;
+        }
+
+        .lightbox-content {
+            position: relative;
+            max-width: 90%;
+            max-height: 90%;
+            margin: auto;
+            padding: 0;
+            animation: zoomIn 0.3s ease;
+        }
+
+        @keyframes zoomIn {
+            from {
+                transform: scale(0.95);
+                opacity: 0;
+            }
+            to {
+                transform: scale(1);
+                opacity: 1;
+            }
+        }
+
+        .lightbox-content img {
+            max-width: 100%;
+            max-height: 85vh;
+            display: block;
+            margin: 0 auto;
+            border: 2px solid white;
+            border-radius: 4px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.5);
+        }
+
+        .close-lightbox {
+            position: absolute;
+            top: -40px;
+            right: 0;
+            color: white;
+            font-size: 35px;
+            font-weight: bold;
+            transition: 0.2s;
+            cursor: pointer;
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background-color: rgba(0, 0, 0, 0.4);
+            border-radius: 50%;
+        }
+
+        .close-lightbox:hover {
+            color: var(--color-primary);
+            transform: scale(1.1);
+        }
+
+        /* Make the product image show a pointer cursor to indicate it's clickable */
+        .product-detail-image {
+            cursor: zoom-in;
+        }
+    </style>
+</head>
+<body class="products-page">
+    <div id="notification-container"></div>
+    
+    <!-- Header (Same as your products.html) -->
+    <header class="header">
+        <div class="overlay has-fade"></div>
+        
+        <nav class="container flex flex-jc-sb flex-ai-c">
+            <a href="/" class="header__logo flex flex-ai-c">
+                <img src="/images/backgrounds/logo-noletters.png" alt="Crafted 4 You Logo" class="logo__image" />
+                <h1 class="gradient-text">Crafted 4 You</h1>
+            </a>
+
+            <a id="btnHamburger" href="#" class="header__toggle hide-for-desktop">
+                <span></span>
+                <span></span>
+                <span></span>
+            </a>
+
+            <!-- Desktop Navigation -->
+            <div class="header__links hide-for-mobile">
+                <a href="products.html">Products</a>
+                <a href="events.html">Upcoming Events</a>
+                <a href="about.html">About</a>
+                <div class="dropdown">
+                    <a href="#" class="dropdown__toggle">More</a>
+                    <div class="dropdown__menu">
+                        <a href="gallery.html">Gallery</a>
+                        <a href="care.html">Care Guide</a>
+                    </div>
+                </div>
+                <a href="inquire.html" class="button header__cta">Get in Touch</a>
+            </div>
+
+            <!-- Mobile Menu -->
+            <div class="header__menu has-fade">
+                <a href="products.html">Products</a>
+                <a href="events.html">Upcoming Events</a>
+                <a href="about.html">About</a>
+                <a href="gallery.html">Gallery</a>
+                <a href="care.html">Care Guide</a>
+                <a href="inquire.html">Get in Touch</a>
+            </div>
+        </nav>
+    </header>
+
+    <!-- Disclaimer Section --> 
+    <section class="disclaimer">
+      <div class="container">
+        <p>
+          The artwork designs used in our products are not owned by us. We only own the materials used to create the products but do not hold any rights to the designs themselves.
+        </p>
+      </div>
+    </section>
+
+    <!-- Product Detail Section -->
+    <section class="product-detail">
+        <div class="container">
+            <!-- Breadcrumb Navigation -->
+            <div class="product-breadcrumb">
+                <a href="products.html">Products</a>
+                <i class="fas fa-chevron-right"></i>
+                <span id="categoryBreadcrumb">Category</span>
+                <i class="fas fa-chevron-right"></i>
+                <span id="productBreadcrumb">Product Name</span>
+            </div>
+            
+            <!-- Loading State -->
+            <div id="loadingState" class="text-center" style="padding: 4rem 0;">
+                <i class="fas fa-spinner fa-spin" style="font-size: 2rem; color: var(--color-primary);"></i>
+                <p style="margin-top: 1rem; color: var(--color-text-secondary);">Loading product information...</p>
+            </div>
+            
+            <!-- Product Details Container (hidden initially, shown when loaded) -->
+            <div id="productDetails" class="product-detail-container" style="display: none;">
+                <!-- Product Image -->
+                <div class="product-detail-image">
+                    <img id="productImage" src="/images/placeholder.jpg" alt="Product Image">
+                    <div id="newBadge" class="product-badge new" style="display: none;">New</div>
+                </div>
+                
+                <!-- Product Information -->
+                <div class="product-detail-info">
+                    <div>
+                        <h1 id="productTitle">Product Title</h1>
+                        <p id="productPrice" class="product-price">$0.00</p>
+                    </div>
+                    
+                    <div class="product-description" id="productDescription">
+                        Loading product description...
+                    </div>
+                    
+                    <div class="product-meta" style="display: none;">
+                        <!-- Hidden but kept for potential future use -->
+                        <span><i class="fas fa-tag"></i> Category: <span id="productCategory">Category</span></span>
+                        <span><i class="fas fa-layer-group"></i> Subcategory: <span id="productSubcategory">Subcategory</span></span>
+                        <span id="productCollectionContainer" style="display: none;">
+                            <i class="fas fa-star"></i> Collection: <span id="productCollection">Collection</span>
+                        </span>
+                    </div>
+                    
+                    <div class="product-tags" id="productTags" style="display: none;">
+                        <!-- Tags hidden but kept for potential future use -->
+                    </div>
+                    
+                    <div class="product-actions">
+                        <a href="inquire.html" class="button">
+                            <i class="fas fa-envelope"></i> Inquire About This Product
+                        </a>
+                        <a href="#" id="backToProducts" class="button button--secondary">
+                            <i class="fas fa-arrow-left"></i> Back to Products
+                        </a>
+                    </div>
+                    
+                    <p class="product-note">
+                        All our products are handcrafted with care. Custom options and personalization available on request.
+                    </p>
+                </div>
+            </div>
+            
+            <!-- Error State -->
+            <div id="errorState" class="text-center" style="padding: 4rem 0; display: none;">
+                <i class="fas fa-exclamation-circle" style="font-size: 2rem; color: #ef4444;"></i>
+                <p style="margin-top: 1rem; color: var(--color-text-secondary);">Sorry, we couldn't find this product. Please try again.</p>
+                <a href="products.html" class="button" style="margin-top: 1.5rem;">
+                    <i class="fas fa-arrow-left"></i> Back to Products
+                </a>
+            </div>
+            
+            <!-- Related Products Section -->
+            <div class="related-products">
+                <h2 class="gradient-text">You Might Also Like</h2>
+                <div class="related-products-grid" id="relatedProducts">
+                    <!-- Related products will be populated dynamically -->
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer (Same as your products.html) -->
+    <footer class="footer bg-dark">
+        <!-- Footer content here (same as in your products.html) -->
+        <div class="container">
+          <div class="footer__grid">
+            <!-- Branding Section -->
+            <div class="footer__branding">
+              <h2 class="gradient-text">Crafted 4 You</h2>
+              <p class="text-light">Handmade with love and care</p>
+              <a href="inquire.html" class="button footer__cta">Get in Touch</a>
+            </div>
+            
+            <!-- Shop Section -->
+            <div class="footer__links">
+              <h3 class="text-light">Shop</h3>
+              <a href="products.html?filter=collections">Collections</a>
+              <a href="products.html">Products</a>
+              <a href="gallery.html">Gallery</a>
+            </div>
+      
+            <!-- Company Section -->
+            <div class="footer__info">
+              <h3 class="text-light">Company</h3>
+              <a href="about.html">About Us</a>
+              <a href="events.html">Upcoming Events</a>
+              <a href="care.html">Care Guide</a>
+            </div>
+      
+            <!-- Support Section -->
+            <div class="footer__support">
+              <h3 class="text-light">Support</h3>
+              <a href="/#faq">FAQs</a>
+              <a href="return-policy.html">Return Policy</a>
+              <a href="inquire.html">Contact Us</a>
+              <div class="footer__social">
+                <a href="https://www.facebook.com/profile.php?id=61571686768401" target="_blank" rel="noopener noreferrer" aria-label="Facebook">
+                  <img src="../images/icons/icon-facebook.svg" alt="Facebook"/>
+                </a>
+                <a href="https://www.youtube.com" target="_blank" rel="noopener noreferrer" aria-label="YouTube">
+                  <img src="../images/icons/icon-youtube.svg" alt="YouTube"/>
+                </a>
+                <a href="https://www.twitter.com" target="_blank" rel="noopener noreferrer" aria-label="Twitter">
+                  <img src="../images/icons/icon-twitter.svg" alt="Twitter"/>
+                </a>
+                <a href="https://www.pinterest.com" target="_blank" rel="noopener noreferrer" aria-label="Pinterest">
+                  <img src="../images/icons/icon-pinterest.svg" alt="Pinterest"/>
+                </a>
+                <a href="https://www.instagram.com" target="_blank" rel="noopener noreferrer" aria-label="Instagram">
+                  <img src="../images/icons/icon-instagram.svg" alt="Instagram"/>
+                </a>
+              </div>
+            </div>
+          </div>
+          
+          <!-- Footer Bottom with Disclaimer -->
+          <div class="footer__bottom">
+            <div class="footer__disclaimer">
+              <p class="text-light">All artwork and designs featured on our products are the property of their respective copyright holders. 
+              <span class="footer__disclaimer-details">Crafted 4 You creates handcrafted items using licensed materials, focusing solely on quality craftsmanship. Any copyrighted content is used under appropriate guidelines or licensing agreements.</span></p>
+            </div>
+            <p class="text-light copyright">&copy; 2024 Crafted 4 You. All Rights Reserved.</p>
+          </div>
+        </div>
+    </footer>
+
+    <!-- Image Lightbox -->
+    <div id="imageLightbox" class="lightbox">
+        <div class="lightbox-content">
+            <span class="close-lightbox">&times;</span>
+            <img id="lightboxImage" src="" alt="Product Image (Large View)">
+        </div>
+    </div>
+    
+    <!-- Product Detail Page Scripts -->
+    <script src="/app/js/script.js"></script>
+    <script>
+        // Enable debug mode
+        const DEBUG = true;
+        
+        // Debug helper
+        window.onerror = function(message, source, lineno, colno, error) {
+            console.log('Error occurred:', {
+                message: message,
+                source: source,
+                line: lineno,
+                column: colno,
+                error: error
+            });
+            return false;
+        };
+        
+        document.addEventListener('DOMContentLoaded', function() {
+            // Initialize elements
+            const loadingState = document.getElementById('loadingState');
+            const productDetails = document.getElementById('productDetails');
+            const errorState = document.getElementById('errorState');
+            
+            // Get product ID from URL parameter
+            const urlParams = new URLSearchParams(window.location.search);
+            const productId = urlParams.get('id');
+            
+            if (!productId) {
+                showError();
+                return;
+            }
+            
+            console.log('Loading product with ID:', productId);
+            
+            // Set up back button with improved logic
+            document.getElementById('backToProducts').addEventListener('click', function(e) {
+                e.preventDefault();
+                
+                // Check if we're coming from a product detail page
+                const comingFromProductDetail = sessionStorage.getItem('comingFromProductDetail') === 'true';
+                
+                if (comingFromProductDetail) {
+                    // If we came from another product detail page, clear that marker
+                    sessionStorage.removeItem('comingFromProductDetail');
+                    // Always go to products page in this case
+                    window.location.href = 'products.html';
+                } else {
+                    // Try to use history if we came directly from products page
+                    const referrer = document.referrer;
+                    if (referrer && referrer.includes('products.html')) {
+                        window.history.back();
+                    } else {
+                        // Default to products page if we can't determine the source
+                        window.location.href = 'products.html';
+                    }
+                }
+            });
+            
+            // Function to show error state
+            function showError() {
+                if (loadingState) loadingState.style.display = 'none';
+                if (productDetails) productDetails.style.display = 'none';
+                if (errorState) errorState.style.display = 'block';
+            }
+
+            // Helper function to update product schema
+            function updateProductSchema(product) {
+                const productSchema = {
+                    "@context": "https://schema.org/",
+                    "@type": "Product",
+                    "name": product.title,
+                    "image": product.imagePath || '/images/backgrounds/logo-noletters.png',
+                    "description": product.description || 'Handcrafted personalized product from Crafted 4 You.',
+                    "brand": {
+                        "@type": "Brand",
+                        "name": "Crafted 4 You"
+                    },
+                    "offers": {
+                        "@type": "Offer",
+                        "url": `https://crafted-4-you.com/pages/product-detail.html?id=${product.id}`,
+                        "priceCurrency": "USD",
+                        "price": product.price.toString(),
+                        "availability": "https://schema.org/InStock"
+                    }
+                };
+
+                const schemaScript = document.getElementById('productSchema');
+                if (schemaScript) {
+                    schemaScript.textContent = JSON.stringify(productSchema);
+                }
+            }
+            
+            // Function to load product data
+            async function loadProductData(productId) {
+                console.log('Loading product data for ID:', productId);
+                
+                try {
+                    // Try to get products from local storage first
+                    let products = [];
+                    
+                    try {
+                        const storedProducts = localStorage.getItem('allProducts');
+                        if (storedProducts) {
+                            products = JSON.parse(storedProducts);
+                            console.log('Loaded products from local storage:', products.length);
+                        }
+                    } catch (storageError) {
+                        console.error('Error loading from storage:', storageError);
+                    }
+                    
+                    // If no products in local storage or if it's empty, try to load from server
+                    if (!products || products.length === 0) {
+                        console.log('No products in storage, loading from server...');
+                        
+                        const SHEET_ID = '13W8dMCMOwq5jhl2SnEwwb4rJNfD77UrdDWlAVyji6Ik';
+                        const API_KEY = 'AIzaSyDy6KZcSASsTBMNd_PLc_bOW7WJNWZYtp8';
+                        
+                        const SHEETS_URL = `https://sheets.googleapis.com/v4/spreadsheets/${SHEET_ID}/values/products_list?key=${API_KEY}`;
+                    
+                        const response = await fetch(SHEETS_URL, {
+                            method: 'GET',
+                            headers: { 'Accept': 'application/json' }
+                        });
+        
+                        if (!response.ok) {
+                            throw new Error(`HTTP error! status: ${response.status}`);
+                        }
+        
+                        const data = await response.json();
+                        
+                        if (!data.values || data.values.length < 2) {
+                            throw new Error('No data found in sheet');
+                        }
+        
+                        const headers = data.values[0];
+                        const rows = data.values.slice(1);
+        
+                        // Convert to object array
+                        products = rows.map(row => {
+                            const product = {};
+                            headers.forEach((header, index) => {
+                                product[header.trim()] = row[index] || '';
+                            });
+                            return product;
+                        }).map(product => ({
+                            ...product,
+                            id: product.id || generateProductId(product),
+                            tags: product.tags ? product.tags.split('|') : [],
+                            price: parseFloat(product.price) || 0,
+                            isNew: product.isNew === 'TRUE',
+                            isFeatured: product.isFeatured === 'TRUE'
+                        }));
+                        
+                        console.log('Loaded products from server:', products.length);
+                        
+                        // Save to localStorage for future use
+                        try {
+                            localStorage.setItem('allProducts', JSON.stringify(products));
+                        } catch (e) {
+                            console.error('Error saving products to localStorage:', e);
+                        }
+                    }
+                    
+                    // Find the product by ID
+                    console.log('Looking for product with ID:', productId);
+                    console.log('Available product IDs sample:', products.slice(0, 3).map(p => p.id));
+                    
+                    const product = products.find(p => p.id === productId);
+                    
+                    if (product) {
+                        console.log('Found product:', product.title);
+                        return product;
+                    }
+                    
+                    // If product not found by ID, try by title or other properties
+                    console.log('Product not found by exact ID, trying alternatives...');
+                    
+                    // Try with decoded ID (in case URL encoding is an issue)
+                    const decodedId = decodeURIComponent(productId);
+                    const productByDecodedId = products.find(p => p.id === decodedId);
+                    
+                    if (productByDecodedId) {
+                        console.log('Found product by decoded ID');
+                        return productByDecodedId;
+                    }
+                    
+                    // Try by partial ID match
+                    const productByPartialId = products.find(p => 
+                        p.id && p.id.includes(productId.split('-')[0])
+                    );
+                    
+                    if (productByPartialId) {
+                        console.log('Found product by partial ID match');
+                        return productByPartialId;
+                    }
+                    
+                    // Try by title containing the ID (common if IDs are derived from titles)
+                    const productByTitleMatch = products.find(p => 
+                        p.title && p.title.toLowerCase().includes(productId.split('-')[0].toLowerCase())
+                    );
+                    
+                    if (productByTitleMatch) {
+                        console.log('Found product by title match');
+                        return productByTitleMatch;
+                    }
+                    
+                    // If all else fails, return the first product that matches the category
+                    const categoryFromId = productId.split('-')[0];
+                    const productByCategoryMatch = products.find(p => 
+                        p.category && p.category.toLowerCase().includes(categoryFromId.toLowerCase())
+                    );
+                    
+                    if (productByCategoryMatch) {
+                        console.log('Found first product with matching category');
+                        return productByCategoryMatch;
+                    }
+                    
+                    console.log('No product found with ID or similar matches');
+                    return null;
+                    
+                } catch (error) {
+                    console.error('Error loading product data:', error);
+                    return null;
+                }
+            }
+            
+            function generateProductId(product) {
+                if (!product || !product.title) return 'unknown-product';
+                const idBase = product.title.toLowerCase().replace(/[^a-z0-9]/g, '-');
+                return `${idBase}-${Math.floor(Math.random() * 1000)}`;
+            }
+            
+            // Function to update product details in the DOM
+            function updateProductDetails(product) {
+                // Update page title and meta tags
+                document.title = `${product.title} | Crafted 4 You`;
+                
+                // Update meta tags
+                const metaTags = {
+                    'og:title': `${product.title} | Crafted 4 You`,
+                    'og:description': product.description || 'Handcrafted personalized product from Crafted 4 You.',
+                    'og:image': product.imagePath || '/images/backgrounds/logo-noletters.png',
+                    'og:url': `https://crafted-4-you.com/pages/product-detail.html?id=${product.id}`,
+                    'twitter:title': `${product.title} | Crafted 4 You`,
+                    'twitter:description': product.description || 'Handcrafted personalized product from Crafted 4 You.',
+                    'twitter:image': product.imagePath || '/images/backgrounds/logo-noletters.png'
+                };
+                
+                // Update meta tags
+                for (const [property, content] of Object.entries(metaTags)) {
+                    const metaTag = document.querySelector(`meta[property="${property}"]`) || 
+                                    document.querySelector(`meta[name="${property}"]`);
+                    if (metaTag) {
+                        metaTag.setAttribute('content', content);
+                    }
+                }
+                
+                // Update breadcrumb
+                document.getElementById('categoryBreadcrumb').textContent = 
+                    formatCategoryName(product.category);
+                document.getElementById('productBreadcrumb').textContent = product.title;
+                
+                // Update product details
+                document.getElementById('productTitle').textContent = product.title;
+                document.getElementById('productPrice').textContent = 
+                    `From $${parseFloat(product.price).toFixed(2)}`;
+                document.getElementById('productDescription').textContent = 
+                    product.description || 'No description available for this product.';
+                document.getElementById('productCategory').textContent = 
+                    formatCategoryName(product.category);
+                document.getElementById('productSubcategory').textContent = 
+                    formatCategoryName(product.subcategory);
+                
+                // Show collection if available
+                if (product.collection) {
+                    document.getElementById('productCollectionContainer').style.display = 'flex';
+                    document.getElementById('productCollection').textContent = product.collection;
+                }
+                
+                // Update image
+                if (product.imagePath) {
+                    document.getElementById('productImage').src = product.imagePath;
+                    document.getElementById('productImage').alt = product.title;
+                }
+                
+                // Show "New" badge if applicable
+                if (product.isNew === true || product.isNew === 'TRUE') {
+                    document.getElementById('newBadge').style.display = 'block';
+                }
+                
+                // Update tags
+                const tagsContainer = document.getElementById('productTags');
+                tagsContainer.innerHTML = '';
+                
+                if (product.tags && product.tags.length > 0) {
+                    const tags = Array.isArray(product.tags) ? 
+                        product.tags : product.tags.split('|');
+                    
+                    tags.forEach(tag => {
+                        if (tag && tag.trim()) {
+                            const tagElement = document.createElement('span');
+                            tagElement.className = 'product-tag';
+                            tagElement.textContent = tag.trim();
+                            tagsContainer.appendChild(tagElement);
+                        }
+                    });
+                }
+                
+                // Format inquiry link to include product info
+                const inquiryLink = document.querySelector('.product-actions .button');
+                inquiryLink.href = `inquire.html?product=${encodeURIComponent(product.title)}`;
+                
+                // Update product schema
+                const productSchema = {
+                    "@context": "https://schema.org/",
+                    "@type": "Product",
+                    "name": product.title,
+                    "image": product.imagePath || '/images/backgrounds/logo-noletters.png',
+                    "description": product.description || 'Handcrafted personalized product from Crafted 4 You.',
+                    "brand": {
+                        "@type": "Brand",
+                        "name": "Crafted 4 You"
+                    },
+                    "offers": {
+                        "@type": "Offer",
+                        "url": `https://crafted-4-you.com/pages/product-detail.html?id=${product.id}`,
+                        "priceCurrency": "USD",
+                        "price": product.price.toString(),
+                        "availability": "https://schema.org/InStock"
+                    }
+                };
+        
+                const schemaScript = document.getElementById('productSchema');
+                if (schemaScript) {
+                    schemaScript.textContent = JSON.stringify(productSchema);
+                }
+            }
+            
+            function loadRelatedProducts(product) {
+                try {
+                    // Get all products from localStorage
+                    const storedProducts = localStorage.getItem('allProducts');
+                    if (!storedProducts) {
+                        console.error('No products found in localStorage for related products');
+                        return;
+                    }
+                    
+                    const allProducts = JSON.parse(storedProducts);
+                    const relatedContainer = document.getElementById('relatedProducts');
+                    
+                    // Use text similarity to find similar products
+                    const similarProducts = findSimilarProducts(product, allProducts);
+                    
+                    // Update section title to reflect the recommendation approach
+                    const relatedTitle = document.querySelector('.related-products h2');
+                    if (relatedTitle) {
+                        relatedTitle.textContent = 'You Might Also Like';
+                    }
+                    
+                    // Display the products
+                    populateRelatedProducts(similarProducts);
+                    
+                    function populateRelatedProducts(products) {
+                        relatedContainer.innerHTML = '';
+                        
+                        if (products.length === 0) {
+                            relatedContainer.innerHTML = '<p>No related products found.</p>';
+                            return;
+                        }
+                        
+                        products.forEach(p => {
+                            const productCard = document.createElement('div');
+                            productCard.className = 'product-card';
+                            productCard.style.cursor = 'pointer';
+                            productCard.innerHTML = `
+                                <div class="product-image">
+                                    <img src="${p.imagePath || '/images/placeholder.jpg'}" alt="${p.title}">
+                                    ${p.isNew === true || p.isNew === 'TRUE' ? 
+                                    '<div class="product-badge new">New</div>' : ''}
+                                </div>
+                                <div class="product-info">
+                                    <h3>${p.title}</h3>
+                                    <p class="price">From $${parseFloat(p.price).toFixed(2)}</p>
+                                </div>
+                            `;
+                            
+                            // Add click event to navigate to the product
+                            productCard.addEventListener('click', function() {
+                                // Save that we're coming from a product detail page
+                                sessionStorage.setItem('comingFromProductDetail', 'true');
+                                window.location.href = `product-detail.html?id=${p.id}`;
+                            });
+                            
+                            relatedContainer.appendChild(productCard);
+                        });
+                    }
+                } catch (error) {
+                    console.error('Error loading related products:', error);
+                }
+            }
+            
+            // Helper function to format category names
+            function formatCategoryName(category) {
+                if (!category) return 'Uncategorized';
+                
+                return category
+                    .split('-')
+                    .map(word => word.charAt(0).toUpperCase() + word.slice(1))
+                    .join(' ');
+            }
+            
+            // Start the product loading process
+            loadProductData(productId)
+                .then(product => {
+                    if (!product) {
+                        showError();
+                        return;
+                    }
+                    
+                    // Update product details
+                    updateProductDetails(product);
+                    
+                    // Hide loading, show product details
+                    loadingState.style.display = 'none';
+                    productDetails.style.display = 'grid';
+                    
+                    // Set up the image lightbox
+                    setupLightbox();
+                    
+                    // Load related products
+                    loadRelatedProducts(product);
+                    
+                    // If there's a trackProductView function, call it here
+                    if (typeof trackProductView === 'function') {
+                        trackProductView(product);
+                    }
+                })
+
+            // Set up image lightbox functionality
+            function setupLightbox() {
+                const productImage = document.querySelector('.product-detail-image img');
+                const lightbox = document.getElementById('imageLightbox');
+                const lightboxImage = document.getElementById('lightboxImage');
+                const closeLightbox = document.querySelector('.close-lightbox');
+                
+                if (!productImage || !lightbox || !lightboxImage || !closeLightbox) {
+                    console.error('Lightbox elements not found');
+                    return;
+                }
+                
+                // Open lightbox when image is clicked
+                productImage.addEventListener('click', function() {
+                    lightboxImage.src = this.src;
+                    lightboxImage.alt = this.alt + ' (Large View)';
+                    lightbox.classList.add('active');
+                    document.body.style.overflow = 'hidden'; // Prevent scrolling when lightbox is open
+                });
+                
+                // Close lightbox when X is clicked
+                closeLightbox.addEventListener('click', function() {
+                    lightbox.classList.remove('active');
+                    document.body.style.overflow = ''; // Restore scrolling
+                    
+                    // Clear the image src after the fade-out transition
+                    setTimeout(() => {
+                        if (!lightbox.classList.contains('active')) {
+                            lightboxImage.src = '';
+                        }
+                    }, 300);
+                });
+                
+                // Close lightbox when clicking the dark background (outside the image)
+                lightbox.addEventListener('click', function(e) {
+                    if (e.target === lightbox) {
+                        closeLightbox.click();
+                    }
+                });
+                
+                // Close lightbox with ESC key
+                document.addEventListener('keydown', function(e) {
+                    if (e.key === 'Escape' && lightbox.classList.contains('active')) {
+                        closeLightbox.click();
+                    }
+                });
+            }
+        });
+
+        // Function to find similar products based on text similarity
+        function findSimilarProducts(product, allProducts, limit = 4) {
+            console.log('Finding similar products for:', product.title);
+            
+            // We need a description to compare
+            if (!product.description || product.description.trim() === '') {
+                console.log('No description available for similarity matching');
+                return findRelatedByCategory(product, allProducts, limit);
+            }
+            
+            try {
+                // Extract all unique words from all product descriptions
+                const allDescriptions = allProducts
+                    .filter(p => p.description && p.description.trim() !== '')
+                    .map(p => p.description);
+                
+                // Add the current product description if it exists
+                if (product.description) {
+                    allDescriptions.push(product.description);
+                }
+                
+                // Tokenize descriptions: convert to lowercase, remove punctuation, split into words
+                const tokenizedDescriptions = allDescriptions.map(desc => 
+                    desc.toLowerCase()
+                        .replace(/[^\w\s]/g, '')
+                        .split(/\s+/)
+                        .filter(word => word.length > 2) // Filter out short words
+                );
+                
+                // Get all unique words (vocabulary)
+                const vocabulary = new Set();
+                tokenizedDescriptions.forEach(tokens => {
+                    tokens.forEach(token => vocabulary.add(token));
+                });
+                
+                console.log('Vocabulary size:', vocabulary.size);
+                
+                // Calculate TF (Term Frequency) for each description
+                const tfVectors = tokenizedDescriptions.map(tokens => {
+                    const tfVector = {};
+                    const wordCounts = {};
+                    let totalWords = 0;
+                    
+                    // Count word frequencies
+                    tokens.forEach(token => {
+                        wordCounts[token] = (wordCounts[token] || 0) + 1;
+                        totalWords++;
+                    });
+                    
+                    // Calculate TF for each word
+                    vocabulary.forEach(term => {
+                        tfVector[term] = (wordCounts[term] || 0) / totalWords;
+                    });
+                    
+                    return tfVector;
+                });
+                
+                // Calculate IDF (Inverse Document Frequency)
+                const idfValues = {};
+                vocabulary.forEach(term => {
+                    // Count how many documents contain this term
+                    const docCount = tokenizedDescriptions.filter(tokens => 
+                        tokens.includes(term)
+                    ).length;
+                    
+                    // Calculate IDF
+                    idfValues[term] = Math.log(allDescriptions.length / (docCount || 1));
+                });
+                
+                // Calculate TF-IDF vectors
+                const tfidfVectors = tfVectors.map(tfVector => {
+                    const tfidfVector = {};
+                    vocabulary.forEach(term => {
+                        tfidfVector[term] = tfVector[term] * idfValues[term];
+                    });
+                    return tfidfVector;
+                });
+                
+                // The last vector corresponds to our target product
+                const targetVector = tfidfVectors[tfidfVectors.length - 1];
+                
+                // Calculate cosine similarity between target and all other products
+                const similarities = [];
+                
+                for (let i = 0; i < allDescriptions.length - 1; i++) {
+                    const otherProduct = allProducts.find(p => p.description === allDescriptions[i]);
+                    if (otherProduct && otherProduct.id !== product.id) {
+                        const similarity = calculateCosineSimilarity(targetVector, tfidfVectors[i]);
+                        similarities.push({
+                            product: otherProduct,
+                            similarity: similarity
+                        });
+                    }
+                }
+                
+                // Sort by similarity (highest first)
+                similarities.sort((a, b) => b.similarity - a.similarity);
+                
+                console.log('Found similar products:', similarities.slice(0, limit).map(s => 
+                    `${s.product.title} (${s.similarity.toFixed(3)})`
+                ));
+                
+                // Return the top N similar products
+                return similarities.slice(0, limit).map(s => s.product);
+                
+            } catch (error) {
+                console.error('Error finding similar products:', error);
+                return findRelatedByCategory(product, allProducts, limit);
+            }
+        }
+
+        // Function to calculate cosine similarity between two vectors
+        function calculateCosineSimilarity(vectorA, vectorB) {
+            // Calculate dot product
+            let dotProduct = 0;
+            let magnitudeA = 0;
+            let magnitudeB = 0;
+            
+            // For each term in the vocabulary
+            for (const term in vectorA) {
+                if (vectorB[term]) { // If the term exists in both vectors
+                    dotProduct += vectorA[term] * vectorB[term];
+                }
+                magnitudeA += vectorA[term] * vectorA[term];
+            }
+            
+            // Calculate magnitude of vector B
+            for (const term in vectorB) {
+                magnitudeB += vectorB[term] * vectorB[term];
+            }
+            
+            // Calculate magnitudes
+            magnitudeA = Math.sqrt(magnitudeA);
+            magnitudeB = Math.sqrt(magnitudeB);
+            
+            // Avoid division by zero
+            if (magnitudeA === 0 || magnitudeB === 0) {
+                return 0;
+            }
+            
+            // Return cosine similarity
+            return dotProduct / (magnitudeA * magnitudeB);
+        }
+
+        // Fallback function to find related products by category if text similarity fails
+        function findRelatedByCategory(product, allProducts, limit = 4) {
+            // First try same category
+            const sameCategory = allProducts.filter(p => 
+                p.category === product.category && p.id !== product.id
+            );
+            
+            if (sameCategory.length >= limit) {
+                return sameCategory.slice(0, limit);
+            }
+            
+            // If not enough, add products from any category
+            const otherProducts = allProducts.filter(p => 
+                p.id !== product.id && p.category !== product.category
+            );
+            
+            return [...sameCategory, ...otherProducts].slice(0, limit);
+        }
+    </script>
+</body>
+</html>
