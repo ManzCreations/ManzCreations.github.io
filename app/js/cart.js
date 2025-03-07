@@ -192,16 +192,112 @@ document.addEventListener('DOMContentLoaded', function() {
             notifications.success('Cart Updated', message);
             updateAddToCartButton(productId);
         } else {
-            // Get the product data
-            loadProductData(productId).then(product => {
+            // Get the product data - with improved fallback
+            loadProductData(productId)
+            .then(product => {
                 if (product) {
                     const message = cart.addItem(product);
                     notifications.success('Added to Cart', message);
                     updateAddToCartButton(productId);
                 } else {
-                    notifications.error('Error', 'Could not add product to cart');
+                    // Fallback: Try to get product details from the page itself
+                    const productFromPage = extractProductDetailsFromPage();
+                    if (productFromPage) {
+                        const message = cart.addItem(productFromPage);
+                        notifications.success('Added to Cart', message);
+                        updateAddToCartButton(productId);
+                    } else {
+                        notifications.error('Error', 'Could not add product to cart');
+                    }
                 }
+            })
+            .catch(error => {
+                console.error('Error loading product:', error);
+                notifications.error('Error', 'Could not add product to cart');
             });
         }
+    }
+
+    // Helper function to extract product details from the current page
+    function extractProductDetailsFromPage() {
+        const title = document.getElementById('productTitle')?.textContent;
+        const priceText = document.getElementById('productPrice')?.textContent;
+        const price = priceText ? parseFloat(priceText.replace('From $', '')) : 0;
+        const imagePath = document.getElementById('productImage')?.src;
+        
+        // Get product ID from URL
+        const urlParams = new URLSearchParams(window.location.search);
+        const id = urlParams.get('id');
+        
+        if (title && price && id) {
+            return {
+                id,
+                title,
+                price,
+                imagePath,
+                quantity: 1
+            };
+        }
+        
+        return null;
+    }
+});
+
+
+// Modal helper functions
+function showModal(message, confirmText, confirmCallback) {
+    const modal = document.getElementById('customModal');
+    const modalMessage = document.getElementById('modalMessage');
+    const confirmButton = document.getElementById('modalConfirm');
+    
+    // Update message and button text
+    modalMessage.textContent = message || 'Are you sure you want to proceed?';
+    confirmButton.textContent = confirmText || 'Confirm';
+    
+    // Set up confirm callback
+    confirmButton.onclick = () => {
+        hideModal();
+        if (typeof confirmCallback === 'function') {
+            confirmCallback();
+        }
+    };
+    
+    // Show the modal
+    modal.classList.add('active');
+    document.body.style.overflow = 'hidden'; // Prevent scrolling
+}
+
+function hideModal() {
+    const modal = document.getElementById('customModal');
+    if (modal) {
+        modal.classList.remove('active');
+        document.body.style.overflow = ''; // Restore scrolling
+    }
+}
+
+// Initialize modal when DOM is loaded
+document.addEventListener('DOMContentLoaded', function() {
+    // Set up event listeners for the modal
+    const modal = document.getElementById('customModal');
+    if (modal) {
+        const closeButton = modal.querySelector('.modal-close');
+        const cancelButton = document.getElementById('modalCancel');
+        
+        closeButton.addEventListener('click', () => hideModal());
+        cancelButton.addEventListener('click', () => hideModal());
+        
+        // Close modal when clicking outside the content
+        modal.addEventListener('click', (e) => {
+            if (e.target === modal) {
+                hideModal();
+            }
+        });
+        
+        // Close modal on Escape key
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape' && modal.classList.contains('active')) {
+                hideModal();
+            }
+        });
     }
 });

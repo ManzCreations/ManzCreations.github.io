@@ -249,13 +249,20 @@
                 <img src="/images/backgrounds/logo-noletters.png" alt="Crafted 4 You Logo" class="logo__image" />
                 <h1 class="gradient-text">Crafted 4 You</h1>
             </a>
-
-            <a id="btnHamburger" href="#" class="header__toggle hide-for-desktop">
-                <span></span>
-                <span></span>
-                <span></span>
-            </a>
-
+        
+            <!-- Mobile Actions (Add this new section) -->
+            <div class="header__mobile-actions hide-for-desktop">
+                <a href="cart.html" class="mobile-cart-icon">
+                    <i class="fas fa-shopping-cart"></i>
+                    <span class="cart-badge">0</span>
+                </a>
+                <a id="btnHamburger" href="#" class="header__toggle">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </a>
+            </div>
+        
             <!-- Desktop Navigation -->
             <div class="header__links hide-for-mobile">
                 <a href="products.html">Products</a>
@@ -274,15 +281,14 @@
                 </a>
                 <a href="inquire.html" class="button header__cta">Get in Touch</a>
             </div>
-
-            <!-- Mobile Menu -->
+        
+            <!-- Mobile Menu (Remove cart link) -->
             <div class="header__menu has-fade">
                 <a href="products.html">Products</a>
                 <a href="events.html">Upcoming Events</a>
                 <a href="about.html">About</a>
                 <a href="gallery.html">Gallery</a>
                 <a href="care.html">Care Guide</a>
-                <a href="cart.html">Cart <span class="cart-badge mobile-badge">0</span></a>
                 <a href="inquire.html">Get in Touch</a>
             </div>
         </nav>
@@ -376,6 +382,23 @@
           </div>
         </div>
     </footer>
+
+    <!-- Custom Modal for Cart Confirmation -->
+    <div id="customModal" class="custom-modal">
+        <div class="modal-content">
+        <div class="modal-header">
+            <h3>Confirm Action</h3>
+            <button class="modal-close">&times;</button>
+        </div>
+        <div class="modal-body">
+            <p id="modalMessage">Are you sure you want to clear your cart?</p>
+        </div>
+        <div class="modal-footer">
+            <button id="modalCancel" class="modal-btn btn-cancel">Cancel</button>
+            <button id="modalConfirm" class="modal-btn btn-confirm">Clear Cart</button>
+        </div>
+        </div>
+    </div>
     
     <!-- Scripts -->
     <script src="/app/js/script.js"></script>
@@ -510,12 +533,17 @@
                 // Handle clear cart button
                 const clearCartBtn = document.getElementById('clearCartBtn');
                 if (clearCartBtn) {
-                    clearCartBtn.addEventListener('click', function() {
-                        if (confirm('Are you sure you want to clear your cart?')) {
-                            const message = cart.clearCart();
-                            notifications.success('Cart Cleared', message);
-                            renderCart();
-                        }
+                    clearCartBtn.addEventListener('click', function(e) {
+                        e.preventDefault();
+                        showModal(
+                            'Are you sure you want to empty your cart? This will remove all the items you have added.',
+                            'Yes, Empty Cart',
+                            function() {
+                                const message = cart.clearCart();
+                                notifications.success('Cart Cleared', message);
+                                renderCart();
+                            }
+                        );
                     });
                 }
             }

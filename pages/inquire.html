@@ -63,13 +63,20 @@
                 <img src="/images/backgrounds/logo-noletters.png" alt="Crafted 4 You Logo" class="logo__image" />
                 <h1 class="gradient-text">Crafted 4 You</h1>
             </a>
-
-            <a id="btnHamburger" href="#" class="header__toggle hide-for-desktop">
-                <span></span>
-                <span></span>
-                <span></span>
-            </a>
-
+        
+            <!-- Mobile Actions (Add this new section) -->
+            <div class="header__mobile-actions hide-for-desktop">
+                <a href="cart.html" class="mobile-cart-icon">
+                    <i class="fas fa-shopping-cart"></i>
+                    <span class="cart-badge">0</span>
+                </a>
+                <a id="btnHamburger" href="#" class="header__toggle">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </a>
+            </div>
+        
             <!-- Desktop Navigation -->
             <div class="header__links hide-for-mobile">
                 <a href="products.html">Products</a>
@@ -88,15 +95,14 @@
                 </a>
                 <a href="inquire.html" class="button header__cta">Get in Touch</a>
             </div>
-
-            <!-- Mobile Menu -->
+        
+            <!-- Mobile Menu (Remove cart link) -->
             <div class="header__menu has-fade">
                 <a href="products.html">Products</a>
                 <a href="events.html">Upcoming Events</a>
                 <a href="about.html">About</a>
                 <a href="gallery.html">Gallery</a>
                 <a href="care.html">Care Guide</a>
-                <a href="cart.html">Cart <span class="cart-badge mobile-badge">0</span></a>
                 <a href="inquire.html">Get in Touch</a>
             </div>
         </nav>
@@ -164,11 +170,13 @@
                         </div>
                     
                         <div class="form__group">
-                            <label for="specificProducts">Specific Products</label>
-                            <select id="specificProducts" name="specificProducts" multiple>
+                            <label>Specific Products</label>
+                            <div id="productsCheckboxContainer" class="checkbox-list">
                                 <!-- Will be populated via JavaScript -->
-                            </select>
-                            <small>Hold Ctrl (Windows) or Cmd (Mac) to select multiple items</small>
+                            </div>
+                            <div id="noProductsMessage" class="text-muted" style="display: none; margin-top: 0.5rem; font-size: 0.9rem; color: var(--color-text-secondary);">
+                                Please select at least one product category above to see specific products.
+                            </div>
                         </div>
                     </div>
 

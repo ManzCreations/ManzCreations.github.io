@@ -1739,7 +1739,7 @@ a {
   box-shadow: 0 2px 8px rgba(84, 213, 118, 0.1);
   border-radius: var(--radius-lg);
   overflow: hidden;
-  transition: transform 0.3s ease;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
   width: 100%;
   margin: 0 auto;
   cursor: pointer; /* Add this line to change the cursor */
@@ -4653,4 +4653,182 @@ html {
 .home-page .header:not(.scrolled) .cart-badge {
   background-color: white;
   color: var(--color-primary);
+}
+
+
+/* Custom Modal Styles */
+.custom-modal {
+  display: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  backdrop-filter: blur(4px);
+  z-index: 1000;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.custom-modal.active {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  opacity: 1;
+}
+
+.modal-content {
+  background: white;
+  width: 90%;
+  max-width: 400px;
+  border-radius: var(--radius-lg);
+  box-shadow: 0 4px 12px rgba(84, 213, 118, 0.2);
+  overflow: hidden;
+  transform: translateY(20px);
+  transition: transform 0.3s ease;
+}
+
+.custom-modal.active .modal-content {
+  transform: translateY(0);
+}
+
+.modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1rem 1.5rem;
+  border-bottom: 1px solid rgba(84, 213, 118, 0.2);
+}
+
+.modal-header h3 {
+  margin: 0;
+  font-size: 1.25rem;
+  color: var(--color-text-primary);
+}
+
+.modal-close {
+  background: none;
+  border: none;
+  font-size: 1.5rem;
+  color: var(--color-text-secondary);
+  cursor: pointer;
+  padding: 0.25rem;
+  line-height: 1;
+}
+
+.modal-close:hover {
+  color: var(--color-primary);
+}
+
+.modal-body {
+  padding: 1.5rem;
+}
+
+.modal-body p {
+  margin: 0;
+  color: var(--color-text-secondary);
+  line-height: 1.5;
+}
+
+.modal-footer {
+  display: flex;
+  justify-content: flex-end;
+  gap: 1rem;
+  padding: 1rem 1.5rem;
+  border-top: 1px solid rgba(84, 213, 118, 0.1);
+  background: rgba(84, 213, 118, 0.05);
+}
+
+.modal-btn {
+  padding: 0.75rem 1.25rem;
+  border-radius: var(--radius-md);
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.btn-cancel {
+  background: var(--color-bg-light);
+  color: var(--color-text-primary);
+  border: 1px solid var(--color-bg-light);
+}
+
+.btn-cancel:hover {
+  background: white;
+  border-color: var(--color-primary);
+  box-shadow: 0 2px 4px rgba(84, 213, 118, 0.1);
+}
+
+.btn-confirm {
+  background: var(--color-primary);
+  color: white;
+  border: none;
+}
+
+.btn-confirm:hover {
+  background: var(--color-accent-2);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(84, 213, 118, 0.2);
+}
+
+
+/* Checkbox List for Products */
+.checkbox-list {
+  max-height: 250px;
+  overflow-y: auto;
+  border: 1px solid var(--color-bg-light);
+  border-radius: var(--radius-md);
+  padding: 0.5rem;
+  background: var(--color-bg-light);
+  margin-bottom: 0.5rem;
+}
+
+.checkbox-list:empty {
+  padding: 1rem;
+  text-align: center;
+  color: var(--color-text-secondary);
+  font-style: italic;
+}
+
+/* Scrollbar styling for checkbox list */
+.checkbox-list::-webkit-scrollbar {
+  width: 8px;
+}
+
+.checkbox-list::-webkit-scrollbar-track {
+  background: rgba(84, 213, 118, 0.05);
+  border-radius: var(--radius-md);
+}
+
+.checkbox-list::-webkit-scrollbar-thumb {
+  background: rgba(84, 213, 118, 0.3);
+  border-radius: var(--radius-md);
+}
+
+.checkbox-list::-webkit-scrollbar-thumb:hover {
+  background: rgba(84, 213, 118, 0.5);
+}
+
+/* Category headers in checkbox list */
+.checkbox-category {
+  font-weight: 600;
+  color: var(--color-text-primary);
+  margin: 0.75rem 0 0.5rem;
+  padding-bottom: 0.25rem;
+  border-bottom: 1px solid rgba(84, 213, 118, 0.2);
+}
+
+.checkbox-category:first-child {
+  margin-top: 0;
+}
+
+/* Make checkboxes more touch-friendly */
+.checkbox-list .checkbox-container {
+  padding: 0.5rem 0 0.5rem 2rem;
+  margin-bottom: 0;
+}
+
+.checkbox-list .checkbox-container .checkmark {
+  top: 0.5rem;
 }
