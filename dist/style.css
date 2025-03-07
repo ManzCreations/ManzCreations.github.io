@@ -4884,9 +4884,9 @@ html {
 }
 
 /* Adjusting hamburger button position */
-.header__toggle {
+/* .header__toggle {
   display: flex;
   align-items: center;
   justify-content: center;
   cursor: pointer;
-}
+} */
