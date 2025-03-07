@@ -49,6 +49,41 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.3.0/papaparse.min.js"></script>
     <script type="text/javascript" src="https://cdn.emailjs.com/sdk/latest/email.min.js"></script>
     <script src="/app/js/analytics.js"></script>
+
+    <style>
+        /* Scrollable filter pane styles */
+        .products-sidebar {
+            max-height: calc(100vh - 180px); /* Adjust height based on header size */
+            overflow-y: auto;
+            position: sticky;
+            top: 100px; /* Adjust based on your header height */
+            padding-right: 10px; /* Add some padding for the scrollbar */
+        }
+
+        /* Style the scrollbar for better aesthetics */
+        .products-sidebar::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        .products-sidebar::-webkit-scrollbar-track {
+            background: #f1f1f1;
+            border-radius: 10px;
+        }
+
+        .products-sidebar::-webkit-scrollbar-thumb {
+            background: #56c3d1; /* Uses your brand green color */
+            border-radius: 10px;
+        }
+
+        .products-sidebar::-webkit-scrollbar-thumb:hover {
+            background: #295f66;
+        }
+
+        /* Ensure the sidebar doesn't get cut off at the bottom */
+        .products-layout {
+            align-items: flex-start;
+        }
+    </style>
 </head>
 <body class="products-page">
     <div id="notification-container"></div>
@@ -117,7 +152,7 @@
 
     <div class="container appointment-section text-center">
         <h1 class="gradient-text">Our Products</h1>
-        <p class="subtitle">Browse our handcrafted collection of freshies, cups, and slates</p>
+        <p class="subtitle">Browse our handcrafted collection of car accessories, home decor, and custom cups</p>
         <a href="inquire.html" class="button button--lg">Book Shopping Appointment</a>
     </div>
 
@@ -168,13 +203,13 @@
                 <div class="filter-section">
                     <h3>Categories</h3>
                     <div class="filter-options">
-                        <!-- Main Categories -->
+                        <!-- Car Accessories -->
                         <div class="category-group">
                             <div class="category-main">
                                 <label class="checkbox-container">
-                                    <input type="checkbox" value="freshies-charms" data-category-type="main">
+                                    <input type="checkbox" value="car-accessories" data-category-type="main">
                                     <span class="checkmark"></span>
-                                    Freshies & Car Charms
+                                    Car Accessories
                                 </label>
                                 <button class="toggle-subcategories"></button>
                             </div>
@@ -185,93 +220,43 @@
                                     Freshies
                                 </label>
                                 <label class="checkbox-container">
-                                    <input type="checkbox" value="beaded-car-charms" data-category-type="sub">
+                                    <input type="checkbox" value="wooden-hangers" data-category-type="sub">
                                     <span class="checkmark"></span>
-                                    Beaded Car Charms
+                                    Wooden Hangers
+                                </label>
+                                <label class="checkbox-container">
+                                    <input type="checkbox" value="hangers" data-category-type="sub">
+                                    <span class="checkmark"></span>
+                                    Hangers
+                                </label>
+                                <label class="checkbox-container">
+                                    <input type="checkbox" value="license-plates" data-category-type="sub">
+                                    <span class="checkmark"></span>
+                                    License Plates
+                                </label>
+                                <label class="checkbox-container">
+                                    <input type="checkbox" value="car-coasters" data-category-type="sub">
+                                    <span class="checkmark"></span>
+                                    Car Coasters
                                 </label>
                             </div>
                         </div>
-                
+                        
+                        <!-- Home Accessories -->
                         <div class="category-group">
                             <div class="category-main">
                                 <label class="checkbox-container">
-                                    <input type="checkbox" value="cups" data-category-type="main">
+                                    <input type="checkbox" value="home-accessories" data-category-type="main">
                                     <span class="checkmark"></span>
-                                    Cups
+                                    Home Accessories
                                 </label>
                                 <button class="toggle-subcategories"></button>
                             </div>
                             <div class="subcategory-list hidden">
-                                <label class="checkbox-container">
-                                    <input type="checkbox" value="sublimation-tumblers" data-category-type="sub">
-                                    <span class="checkmark"></span>
-                                    Sublimation Tumblers
-                                </label>
-                                <label class="checkbox-container">
-                                    <input type="checkbox" value="water-bottles" data-category-type="sub">
-                                    <span class="checkmark"></span>
-                                    Water Bottles
-                                </label>
-                                <label class="checkbox-container">
-                                    <input type="checkbox" value="kids-cups" data-category-type="sub">
-                                    <span class="checkmark"></span>
-                                    Kids Cups
-                                </label>
-                            </div>
-                        </div>
-                
-                        <div class="category-group">
-                            <div class="category-main">
-                                <label class="checkbox-container">
-                                    <input type="checkbox" value="photo-slates" data-category-type="main">
-                                    <span class="checkmark"></span>
-                                    Photo Slates
-                                </label>
-                                <button class="toggle-subcategories"></button>
-                            </div>
-                            <div class="subcategory-list hidden">
-                                <label class="checkbox-container">
-                                    <input type="checkbox" value="photo-slates" data-category-type="sub">
-                                    <span class="checkmark"></span>
-                                    Photo Slates
-                                </label>
-                            </div>
-                        </div>
-                
-                        <div class="category-group">
-                            <div class="category-main">
-                                <label class="checkbox-container">
-                                    <input type="checkbox" value="accessories-home" data-category-type="main">
-                                    <span class="checkmark"></span>
-                                    Accessories & Home
-                                </label>
-                                <button class="toggle-subcategories"></button>
-                            </div>
-                            <div class="subcategory-list hidden">
-                                <label class="checkbox-container">
-                                    <input type="checkbox" value="keychains" data-category-type="sub">
-                                    <span class="checkmark"></span>
-                                    Keychains
-                                </label>
-                                <label class="checkbox-container">
-                                    <input type="checkbox" value="sanitizer-holders" data-category-type="sub">
-                                    <span class="checkmark"></span>
-                                    Sanitizer Holders
-                                </label>
-                                <label class="checkbox-container">
-                                    <input type="checkbox" value="lipstick-holders" data-category-type="sub">
-                                    <span class="checkmark"></span>
-                                    Lipstick/Chapstick Holders
-                                </label>
                                 <label class="checkbox-container">
                                     <input type="checkbox" value="wind-spinners" data-category-type="sub">
                                     <span class="checkmark"></span>
                                     Wind Spinners
-                                </label>
-                                <label class="checkbox-container">
-                                    <input type="checkbox" value="coasters" data-category-type="sub">
-                                    <span class="checkmark"></span>
-                                    Coasters
                                 </label>
                                 <label class="checkbox-container">
                                     <input type="checkbox" value="cutting-boards" data-category-type="sub">
@@ -279,9 +264,62 @@
                                     Cutting Boards
                                 </label>
                                 <label class="checkbox-container">
-                                    <input type="checkbox" value="license-plates" data-category-type="sub">
+                                    <input type="checkbox" value="photo-slates" data-category-type="sub">
                                     <span class="checkmark"></span>
-                                    License Plates
+                                    Photo Slates
+                                </label>
+                            </div>
+                        </div>
+                        
+                        <!-- Custom Cups -->
+                        <div class="category-group">
+                            <div class="category-main">
+                                <label class="checkbox-container">
+                                    <input type="checkbox" value="custom-cups" data-category-type="main">
+                                    <span class="checkmark"></span>
+                                    Custom Cups
+                                </label>
+                                <button class="toggle-subcategories"></button>
+                            </div>
+                            <div class="subcategory-list hidden">
+                                <label class="checkbox-container">
+                                    <input type="checkbox" value="kids-cups" data-category-type="sub">
+                                    <span class="checkmark"></span>
+                                    Kids Cups
+                                </label>
+                                <label class="checkbox-container">
+                                    <input type="checkbox" value="sublimation-tumblers" data-category-type="sub">
+                                    <span class="checkmark"></span>
+                                    Sublimation Tumblers
+                                </label>
+                            </div>
+                        </div>
+                        
+                        <!-- Other Accessories -->
+                        <div class="category-group">
+                            <div class="category-main">
+                                <label class="checkbox-container">
+                                    <input type="checkbox" value="other-accessories" data-category-type="main">
+                                    <span class="checkmark"></span>
+                                    Other Accessories
+                                </label>
+                                <button class="toggle-subcategories"></button>
+                            </div>
+                            <div class="subcategory-list hidden">
+                                <label class="checkbox-container">
+                                    <input type="checkbox" value="sanitizer-holders" data-category-type="sub">
+                                    <span class="checkmark"></span>
+                                    Hand Sanitizer Holders
+                                </label>
+                                <label class="checkbox-container">
+                                    <input type="checkbox" value="key-chains" data-category-type="sub">
+                                    <span class="checkmark"></span>
+                                    Key Chains
+                                </label>
+                                <label class="checkbox-container">
+                                    <input type="checkbox" value="pop-sockets" data-category-type="sub">
+                                    <span class="checkmark"></span>
+                                    Pop Sockets
                                 </label>
                             </div>
                         </div>
@@ -306,6 +344,37 @@
                           <input type="checkbox" value="cow" data-filter-type="collection">
                           <span class="checkmark"></span>
                           Cow Collection
+                      </label>
+                      <!-- New Collection Filters -->
+                      <label class="checkbox-container">
+                          <input type="checkbox" value="faith" data-filter-type="collection">
+                          <span class="checkmark"></span>
+                          Faith Collection
+                      </label>
+                      <label class="checkbox-container">
+                          <input type="checkbox" value="sports-teams" data-filter-type="collection">
+                          <span class="checkmark"></span>
+                          Sports Teams Collection
+                      </label>
+                      <label class="checkbox-container">
+                          <input type="checkbox" value="sports-outdoor" data-filter-type="collection">
+                          <span class="checkmark"></span>
+                          Sports/Outdoor Collection
+                      </label>
+                      <label class="checkbox-container">
+                          <input type="checkbox" value="christmas" data-filter-type="collection">
+                          <span class="checkmark"></span>
+                          Christmas Collection
+                      </label>
+                      <label class="checkbox-container">
+                          <input type="checkbox" value="kids" data-filter-type="collection">
+                          <span class="checkmark"></span>
+                          Kids Collection
+                      </label>
+                      <label class="checkbox-container">
+                          <input type="checkbox" value="beach" data-filter-type="collection">
+                          <span class="checkmark"></span>
+                          Beach Collection
                       </label>
                   </div>
                 </div>
@@ -347,12 +416,13 @@
               <div class="filter-section">
                   <h3>Categories</h3>
                   <div class="filter-options">
+                      <!-- Car Accessories -->
                       <div class="category-group">
                           <div class="category-main">
                               <label class="checkbox-container">
-                                  <input type="checkbox" value="freshies-charms" data-category-type="main">
+                                  <input type="checkbox" value="car-accessories" data-category-type="main">
                                   <span class="checkmark"></span>
-                                  Freshies & Car Charms
+                                  Car Accessories
                               </label>
                               <button class="toggle-subcategories" aria-label="Toggle subcategories"></button>
                           </div>
@@ -363,51 +433,49 @@
                                   Freshies
                               </label>
                               <label class="checkbox-container">
-                                  <input type="checkbox" value="beaded-car-charms" data-category-type="sub">
+                                  <input type="checkbox" value="wooden-hangers" data-category-type="sub">
                                   <span class="checkmark"></span>
-                                  Beaded Car Charms
+                                  Wooden Hangers
+                              </label>
+                              <label class="checkbox-container">
+                                  <input type="checkbox" value="hangers" data-category-type="sub">
+                                  <span class="checkmark"></span>
+                                  Hangers
+                              </label>
+                              <label class="checkbox-container">
+                                  <input type="checkbox" value="license-plates" data-category-type="sub">
+                                  <span class="checkmark"></span>
+                                  License Plates
+                              </label>
+                              <label class="checkbox-container">
+                                  <input type="checkbox" value="car-coasters" data-category-type="sub">
+                                  <span class="checkmark"></span>
+                                  Car Coasters
                               </label>
                           </div>
                       </div>
 
+                      <!-- Home Accessories -->
                       <div class="category-group">
                           <div class="category-main">
                               <label class="checkbox-container">
-                                  <input type="checkbox" value="cups" data-category-type="main">
+                                  <input type="checkbox" value="home-accessories" data-category-type="main">
                                   <span class="checkmark"></span>
-                                  Cups
+                                  Home Accessories
                               </label>
                               <button class="toggle-subcategories" aria-label="Toggle subcategories"></button>
                           </div>
                           <div class="subcategory-list hidden">
                               <label class="checkbox-container">
-                                  <input type="checkbox" value="sublimation-tumblers" data-category-type="sub">
+                                  <input type="checkbox" value="wind-spinners" data-category-type="sub">
                                   <span class="checkmark"></span>
-                                  Sublimation Tumblers
+                                  Wind Spinners
                               </label>
                               <label class="checkbox-container">
-                                  <input type="checkbox" value="water-bottles" data-category-type="sub">
+                                  <input type="checkbox" value="cutting-boards" data-category-type="sub">
                                   <span class="checkmark"></span>
-                                  Water Bottles
+                                  Cutting Boards
                               </label>
-                              <label class="checkbox-container">
-                                  <input type="checkbox" value="kids-cups" data-category-type="sub">
-                                  <span class="checkmark"></span>
-                                  Kids Cups
-                              </label>
-                          </div>
-                      </div>
-
-                      <div class="category-group">
-                          <div class="category-main">
-                              <label class="checkbox-container">
-                                  <input type="checkbox" value="photo-slates" data-category-type="main">
-                                  <span class="checkmark"></span>
-                                  Photo Slates
-                              </label>
-                              <button class="toggle-subcategories" aria-label="Toggle subcategories"></button>
-                          </div>
-                          <div class="subcategory-list hidden">
                               <label class="checkbox-container">
                                   <input type="checkbox" value="photo-slates" data-category-type="sub">
                                   <span class="checkmark"></span>
@@ -416,53 +484,111 @@
                           </div>
                       </div>
 
+                      <!-- Custom Cups -->
                       <div class="category-group">
                           <div class="category-main">
                               <label class="checkbox-container">
-                                  <input type="checkbox" value="accessories-home" data-category-type="main">
+                                  <input type="checkbox" value="custom-cups" data-category-type="main">
                                   <span class="checkmark"></span>
-                                  Accessories & Home
+                                  Custom Cups
                               </label>
                               <button class="toggle-subcategories" aria-label="Toggle subcategories"></button>
                           </div>
                           <div class="subcategory-list hidden">
                               <label class="checkbox-container">
-                                  <input type="checkbox" value="keychains" data-category-type="sub">
+                                  <input type="checkbox" value="kids-cups" data-category-type="sub">
                                   <span class="checkmark"></span>
-                                  Keychains
+                                  Kids Cups
                               </label>
                               <label class="checkbox-container">
-                                  <input type="checkbox" value="sanitizer-holders" data-category-type="sub">
+                                  <input type="checkbox" value="sublimation-tumblers" data-category-type="sub">
                                   <span class="checkmark"></span>
-                                  Sanitizer Holders
-                              </label>
-                              <label class="checkbox-container">
-                                  <input type="checkbox" value="lipstick-holders" data-category-type="sub">
-                                  <span class="checkmark"></span>
-                                  Lipstick/Chapstick Holders
-                              </label>
-                              <label class="checkbox-container">
-                                  <input type="checkbox" value="wind-spinners" data-category-type="sub">
-                                  <span class="checkmark"></span>
-                                  Wind Spinners
-                              </label>
-                              <label class="checkbox-container">
-                                <input type="checkbox" value="coasters" data-category-type="sub">
-                                <span class="checkmark"></span>
-                                Coasters
-                            </label>
-                              <label class="checkbox-container">
-                                  <input type="checkbox" value="cutting-boards" data-category-type="sub">
-                                  <span class="checkmark"></span>
-                                  Cutting Boards
-                              </label>
-                              <label class="checkbox-container">
-                                  <input type="checkbox" value="license-plates" data-category-type="sub">
-                                  <span class="checkmark"></span>
-                                  License Plates
+                                  Sublimation Tumblers
                               </label>
                           </div>
                       </div>
+
+                      <!-- Other Accessories -->
+                      <div class="category-group">
+                          <div class="category-main">
+                              <label class="checkbox-container">
+                                  <input type="checkbox" value="other-accessories" data-category-type="main">
+                                  <span class="checkmark"></span>
+                                  Other Accessories
+                              </label>
+                              <button class="toggle-subcategories" aria-label="Toggle subcategories"></button>
+                          </div>
+                          <div class="subcategory-list hidden">
+                              <label class="checkbox-container">
+                                  <input type="checkbox" value="sanitizer-holders" data-category-type="sub">
+                                  <span class="checkmark"></span>
+                                  Hand Sanitizer Holders
+                              </label>
+                              <label class="checkbox-container">
+                                  <input type="checkbox" value="key-chains" data-category-type="sub">
+                                  <span class="checkmark"></span>
+                                  Key Chains
+                              </label>
+                              <label class="checkbox-container">
+                                  <input type="checkbox" value="pop-sockets" data-category-type="sub">
+                                  <span class="checkmark"></span>
+                                  Pop Sockets
+                              </label>
+                          </div>
+                      </div>
+                  </div>
+              </div>
+              
+              <!-- Tags Filter Section -->
+              <div class="filter-section">
+                  <h3>Filter By</h3>
+                  <div class="filter-options tags">
+                      <label class="checkbox-container">
+                          <input type="checkbox" value="new" data-filter-type="tag">
+                          <span class="checkmark"></span>
+                          New Arrivals
+                      </label>
+                      <label class="checkbox-container">
+                          <input type="checkbox" value="grinch" data-filter-type="collection">
+                          <span class="checkmark"></span>
+                          Grinch Collection
+                      </label>
+                      <label class="checkbox-container">
+                          <input type="checkbox" value="cow" data-filter-type="collection">
+                          <span class="checkmark"></span>
+                          Cow Collection
+                      </label>
+                      <!-- New Collection Filters -->
+                      <label class="checkbox-container">
+                          <input type="checkbox" value="faith" data-filter-type="collection">
+                          <span class="checkmark"></span>
+                          Faith Collection
+                      </label>
+                      <label class="checkbox-container">
+                          <input type="checkbox" value="sports-teams" data-filter-type="collection">
+                          <span class="checkmark"></span>
+                          Sports Teams Collection
+                      </label>
+                      <label class="checkbox-container">
+                          <input type="checkbox" value="sports-outdoor" data-filter-type="collection">
+                          <span class="checkmark"></span>
+                          Sports/Outdoor Collection
+                      </label>
+                      <label class="checkbox-container">
+                          <input type="checkbox" value="christmas" data-filter-type="collection">
+                          <span class="checkmark"></span>
+                          Christmas Collection
+                      </label>
+                      <label class="checkbox-container">
+                          <input type="checkbox" value="kids" data-filter-type="collection">
+                          <span class="checkmark"></span>
+                          Kids Collection
+                      </label>
+                      <label class="checkbox-container">
+                          <input type="checkbox" value="beach" data-filter-type="collection">
+                          <span class="checkmark"></span>
+                          Beach Collection
+                      </label>
                   </div>
               </div>
           </div>

@@ -363,20 +363,20 @@ function populateFeaturedProducts() {
     
     const sections = [
         {
-            id: 'freshies-charms',
-            category: 'freshies-charms'
+            id: 'car-accessories',
+            category: 'car-accessories'
         },
         {
-            id: 'cups',
-            category: 'cups'
+            id: 'custom-cups',
+            category: 'custom-cups'
         },
         {
-            id: 'photo-slates',
-            category: 'photo-slates'
+            id: 'home-accessories',
+            category: 'home-accessories'
         },
         {
-            id: 'accessories-home',
-            category: 'accessories-home'
+            id: 'other-accessories',
+            category: 'other-accessories'
         }
     ];
 
@@ -549,10 +549,10 @@ function updateProductsList() {
     
     // Map category IDs to display names
     const categoryNames = {
-        'freshies-charms': 'Freshies & Car Charms',
-        'cups': 'Custom Cups',
-        'photo-slates': 'Photo Slates',
-        'accessories-home': 'Accessories & Home'
+        'car-accessories': 'Car Accessories',
+        'custom-cups': 'Custom Cups',
+        'home-accessories': 'Home Accessories',
+        'other-accessories': 'Other Accessories'
     };
     
     // Add products by category
@@ -600,10 +600,10 @@ function updateProductsList() {
 }
 
 const CATEGORY_MAPPING = {
-    'freshies-charms': ['freshies', 'beaded-car-charms'],
-    'cups': ['sublimation-tumblers', 'water-bottles', 'kids-cups'],
-    'photo-slates': ['photo-slates'],
-    'accessories-home': ['keychains', 'sanitizer-holders', 'lipstick-holders', 'wind-spinners', 'coasters', 'cutting-boards', 'license-plates']
+    'car-accessories': ['freshies', 'wooden-hangers', 'hangers', 'license-plates', 'car-coasters'],
+    'custom-cups': ['kids-cups', 'sublimation-tumblers'],
+    'home-accessories': ['wind-spinners', 'cutting-boards', 'photo-slates'],
+    'other-accessories': ['sanitizer-holders', 'key-chains', 'pop-sockets']
   };
 
 // Function to update products display
