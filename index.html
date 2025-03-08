@@ -69,17 +69,27 @@
             <h1 class="gradient-text">Crafted 4 You</h1>
         </a>
 
-        <a id="btnHamburger" href="#" class="header__toggle hide-for-desktop">
-          <span></span>
-          <span></span>
-          <span></span>
-        </a>
+        <div class="header__mobile-actions hide-for-desktop">
+          <a href="pages/cart.html" class="mobile-cart-icon">
+            <i class="fas fa-shopping-cart"></i>
+            <span class="cart-badge">0</span>
+          </a>
+          <a id="btnHamburger" href="#" class="header__toggle">
+            <span></span>
+            <span></span>
+            <span></span>
+          </a>
+        </div>
 
         <!-- Desktop Navigation -->
         <div class="header__links hide-for-mobile">
           <a href="pages/products.html">Products</a>
           <a href="pages/events.html">Upcoming Events</a>
           <a href="pages/about.html">About</a>
+          <a href="pages/cart.html" class="cart-icon">
+            <i class="fas fa-shopping-cart"></i>
+            <span class="cart-badge">0</span>
+          </a>
           <div class="dropdown">
             <a href="#" class="dropdown__toggle">More</a>
             <div class="dropdown__menu">
@@ -101,14 +111,14 @@
       </div>
     </header>
 
-    <!-- Promotions Section -->
-    <section class="promotions">
-      <div class="promotions__bg-container">
+    <!-- Title Section -->
+    <section class="title-banner">
+      <div class="title-banner__bg-container">
           <div class="container container--pall">
-              <div class="promotions__content">
-                  <div class="promotions__main">
+              <div class="title-banner__content">
+                  <div class="title-banner__main">
                       <h2>Personalized Products</h2>
-                      <div class="promotions__categories">
+                      <div class="title-banner__categories">
                           <div class="category-row">
                               <span>Freshies</span>
                               <span class="dot">•</span>
@@ -126,10 +136,103 @@
                               <span>Wind Spinners</span>
                           </div>
                       </div>
-                      <a href="pages/products.html" class="button promotions__cta">Browse All Products</a>
+                      <a href="pages/products.html" class="button title-banner__cta">Browse All Products</a>
                   </div>
               </div>
           </div>
+      </div>
+    </section>
+
+    <!-- Promotions Banner Section - Full Width -->
+    <section class="promo-slider-fullwidth">
+      <!-- Note: No container div to allow full width -->
+      <div class="slider-container">
+        <!-- The image slider -->
+        <div class="slider">
+          <!-- Slide 1: Dogwood Festival -->
+          <div class="slide">
+            <a href="pages/events.html">
+              <img src="/images/backgrounds/dogwood-festival.png" alt="Farmville Dogwood Festival">
+              <div class="slide-caption">
+                <h3>Farmville Dogwood Festival</h3>
+                <p>Join us April 25-27th for this cherished eastern NC tradition</p>
+              </div>
+            </a>
+          </div>
+          
+          <!-- Slide 2: College Rivalry Collection -->
+          <div class="slide">
+            <a href="pages/products.html?collection=sports-outdoor">
+              <img src="/images/backgrounds/college-clash.png" alt="College Team Mascot Freshies">
+              <div class="slide-caption">
+                <h3>Triangle Rivalry Collection</h3>
+                <p>Show your team spirit with our NC State, UNC, and Duke freshies</p>
+              </div>
+            </a>
+          </div>
+          
+          <!-- Slide 3: Easter Kids Cups -->
+          <div class="slide">
+            <a href="pages/products.html?subcategory=kids-cups">
+              <img src="/images/backgrounds/easter.png" alt="Custom Kids Themed Cups">
+              <div class="slide-caption">
+                <h3>Easter Basket Ready</h3>
+                <p>Custom kids themed cups - the perfect non-candy Easter gift</p>
+              </div>
+            </a>
+          </div>
+
+          <!-- Slide 4: Baseball Collection -->
+          <div class="slide">
+            <a href="pages/products.html?collection=sports-outdoor">
+              <img src="/images/backgrounds/baseball.png" alt="Baseball Car Freshies and Accessories">
+              <div class="slide-caption">
+                <h3>Baseball Season Essentials</h3>
+                <p>Custom freshies, coasters, tumblers & car hangers for the baseball fan</p>
+              </div>
+            </a>
+          </div>
+
+          <!-- Slide 5: Ham & Yam Festival -->
+          <div class="slide">
+            <a href="pages/events.html">
+              <img src="/images/backgrounds/ham-yam.png" alt="Ham & Yam Festival">
+              <div class="slide-caption">
+                <h3>Ham & Yam Festival</h3>
+                <p>Visit our booth in Smithfield on May 3rd</p>
+              </div>
+            </a>
+          </div>
+
+          <!-- Slide 6: Photo Slates -->
+          <div class="slide">
+            <a href="pages/products.html?subcategory=photo-slates">
+              <img src="/images/backgrounds/photo-slates.png" alt="Custom Photo Slates">
+              <div class="slide-caption">
+                <h3>Custom Photo Slates</h3>
+                <p>Beautiful personalized displays in multiple sizes</p>
+              </div>
+            </a>
+          </div>
+        </div>
+        
+        <!-- Navigation arrows -->
+        <button class="slider-nav prev" aria-label="Previous slide">
+          <i class="fas fa-chevron-left"></i>
+        </button>
+        <button class="slider-nav next" aria-label="Next slide">
+          <i class="fas fa-chevron-right"></i>
+        </button>
+        
+        <!-- Slide indicators (dots) -->
+        <div class="slider-indicators">
+          <button class="indicator active" data-slide="0" aria-label="Go to slide 1"></button>
+          <button class="indicator" data-slide="1" aria-label="Go to slide 2"></button>
+          <button class="indicator" data-slide="2" aria-label="Go to slide 3"></button>
+          <button class="indicator" data-slide="3" aria-label="Go to slide 4"></button>
+          <button class="indicator" data-slide="4" aria-label="Go to slide 5"></button>
+          <button class="indicator" data-slide="5" aria-label="Go to slide 6"></button>
+        </div>
       </div>
     </section>
 
@@ -209,22 +312,21 @@
         </div>
         <div class="collections__grid">
           <div class="collection-card">
-              <img src="/images/backgrounds/grinch-collection.png" alt="Grinch Collection" />
+              <img src="/images/backgrounds/mothers-day-collection.png" alt="Mother's Day Collection" />
               <div class="collection-overlay">
-                  <h3>Who-ville's Most Wanted</h3>
-                  <p>Make your heart grow three sizes with our Grinch-tastic designs!</p>
+                  <h3>For Super Moms</h3>
+                  <p>Celebrate the special women in your life with our thoughtful Mother's Day designs!</p>
               </div>
-              <a href="pages/products.html?collection=grinch" class="collection-link"></a>
+              <a href="pages/products.html?collection=mothers-day" class="collection-link"></a>
           </div>
           <div class="collection-card">
-              <img src="/images/backgrounds/cow-collection.png" alt="Cow Collection" />
+              <img src="/images/backgrounds/sports-outdoor-collection.png" alt="Sports & Outdoor Collection" />
               <div class="collection-overlay">
-                  <h3>Holy Cow!</h3>
-                  <p>Utterly amazing designs that will make you flip!</p>
+                  <h3>For the Sports Enthusiast</h3>
+                  <p>Perfect gifts for those who love sports and the great outdoors!</p>
               </div>
-              <a href="pages/products.html?collection=cow" class="collection-link"></a>
+              <a href="pages/products.html?collection=sports-outdoor" class="collection-link"></a>
           </div>
-        </div>
         </div>
       </div>
     </section>
@@ -613,5 +715,6 @@
     </footer>
     
     <script src="/app/js/script.js"></script>
+    <script src="/app/js/cart.js"></script>
   </body>
 </html>

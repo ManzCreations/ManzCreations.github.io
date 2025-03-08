@@ -47,17 +47,18 @@ class ShoppingCart {
         const existingItem = this.items.find(item => item.id === product.id);
         
         if (existingItem) {
-            // Update quantity if already in cart
-            existingItem.quantity += quantity;
-            console.log('Updated quantity for', product.title, 'to', existingItem.quantity);
+            // If item already exists, don't update quantity - just maintain the existing entry
+            // This prevents multiple entries of the same item
+            console.log('Item already in cart:', product.title);
+            return `${product.title} is already in your cart`;
         } else {
-            // Add new item to cart
+            // Add new item to cart with quantity = 1
             this.items.push({
                 id: product.id,
                 title: product.title,
                 price: product.price,
                 imagePath: product.imagePath,
-                quantity: quantity
+                quantity: 1  // Always set quantity to 1
             });
             console.log('Added to cart:', product.title);
         }
@@ -102,8 +103,9 @@ class ShoppingCart {
             return this.removeItem(productId);
         }
         
-        item.quantity = quantity;
-        console.log('Updated quantity for', item.title, 'to', quantity);
+        // Always set quantity to 1 to maintain single-entry policy
+        item.quantity = 1;
+        console.log('Item quantity maintained at 1 for', item.title);
         
         this.saveCart();
         this.updateCartBadge();
@@ -165,11 +167,25 @@ document.addEventListener('DOMContentLoaded', function() {
     function updateAddToCartButton(productId) {
         if (!addToCartBtn || !productId) return;
         
+        // Check for different button structures (with or without span element)
+        const textElement = addToCartBtn.querySelector('#cartBtnText') || addToCartBtn;
+        const iconElement = addToCartBtn.querySelector('i');
+        
         if (cart.isInCart(productId)) {
-            addToCartBtn.textContent = 'Remove from Cart';
+            if (textElement) {
+                textElement.textContent = 'Remove from Cart';
+            }
+            if (iconElement) {
+                iconElement.className = 'fas fa-trash-alt';
+            }
             addToCartBtn.classList.add('in-cart');
         } else {
-            addToCartBtn.textContent = 'Add to Cart';
+            if (textElement) {
+                textElement.textContent = 'Add to Cart';
+            }
+            if (iconElement) {
+                iconElement.className = 'fas fa-cart-plus';
+            }
             addToCartBtn.classList.remove('in-cart');
         }
     }

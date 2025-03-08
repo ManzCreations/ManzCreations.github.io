@@ -446,7 +446,6 @@
                                         <p class="cart-item-price">$${(item.price * item.quantity).toFixed(2)}</p>
                                     </div>
                                     <div class="cart-item-actions">
-                                        <input type="number" class="quantity-input" value="${item.quantity}" min="1" max="99">
                                         <button class="remove-item" aria-label="Remove item"><i class="fas fa-trash-alt"></i></button>
                                     </div>
                                 </div>
@@ -455,8 +454,8 @@
                         <div class="cart-summary">
                             <h3>Selected Items</h3>
                             <div class="summary-row">
-                                <span>Items</span>
-                                <span>${cartItems.length}</span>
+                                <span></span>
+                                <span></span>
                             </div>
                             <div class="summary-row">
                                 <span>Total Items</span>

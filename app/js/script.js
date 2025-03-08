@@ -8,6 +8,51 @@ const EMAIL_CONFIG = {
     }
 };
 
+// Collections mapping - key is the value in Google Sheet, value is display name
+const COLLECTIONS = {
+    'christmas': 'Christmas Collection',
+    'cow': 'Cow Collection',
+    'faith': 'Faith Collection',
+    'beach': 'Beach Collection',
+    'sports-outdoor': 'Sports/Outdoor Collection',
+    'mothers-day': "Mother's Day Collection",
+    'kids': 'Kids Collection'
+};
+
+// Categories mapping - key is the category ID, value is display name
+const CATEGORIES = {
+    'car-accessories': 'Car Accessories',
+    'home-accessories': 'Home Accessories',
+    'custom-cups': 'Custom Cups',
+    'other-accessories': 'Other Accessories'
+};
+
+// Subcategories mapping - organized by parent category
+// First level key is the parent category ID, second level maps subcategory ID to display name
+const SUBCATEGORIES = {
+    'car-accessories': {
+        'freshies': 'Freshies',
+        'wooden-hangers': 'Wooden Hangers',
+        'hangers': 'Hangers',
+        'license-plates': 'License Plates',
+        'car-coasters': 'Car Coasters'
+    },
+    'home-accessories': {
+        'wind-spinners': 'Wind Spinners',
+        'cutting-boards': 'Cutting Boards',
+        'photo-slates': 'Photo Slates'
+    },
+    'custom-cups': {
+        'kids-cups': 'Kids Cups',
+        'sublimation-tumblers': 'Sublimation Tumblers'
+    },
+    'other-accessories': {
+        'sanitizer-holders': 'Hand Sanitizer Holders',
+        'key-chains': 'Key Chains',
+        'pop-sockets': 'Pop Sockets'
+    }
+};
+
 // Google Sheets Configuration
 const SHEET_ID = '13W8dMCMOwq5jhl2SnEwwb4rJNfD77UrdDWlAVyji6Ik';
 const API_KEY = 'AIzaSyDy6KZcSASsTBMNd_PLc_bOW7WJNWZYtp8';
@@ -301,16 +346,44 @@ function populateNewReleases() {
         return;
     }
 
-    // Get new products
-    const newProducts = allProducts
-        .filter(product => product.isNew === 'TRUE' || product.isNew === true)
-        .reduce((acc, product) => {
-            // Only take first product from each category if we don't have it yet
-            if (!acc.some(p => p.category === product.category) && acc.length < 3) {
-                acc.push(product);
+    // Get all new products
+    const allNewProducts = allProducts
+        .filter(product => product.isNew === 'TRUE' || product.isNew === true);
+    
+    // Sort by featured status first, then by category
+    allNewProducts.sort((a, b) => {
+        // First sort by featured status (featured products first)
+        const aFeatured = a.isFeatured === 'TRUE' || a.isFeatured === true;
+        const bFeatured = b.isFeatured === 'TRUE' || b.isFeatured === true;
+        
+        if (aFeatured && !bFeatured) return -1;
+        if (!aFeatured && bFeatured) return 1;
+        
+        // If both have the same featured status, sort by category
+        return a.category.localeCompare(b.category);
+    });
+    
+    // Select the first 3 products (or fewer if there aren't enough)
+    // Try to get unique categories but prioritize featured status
+    const newProducts = [];
+    const categories = new Set();
+    
+    for (const product of allNewProducts) {
+        // If we already have this category, only add it if it's featured and we have fewer than 3 products
+        if (categories.has(product.category)) {
+            const isFeatured = product.isFeatured === 'TRUE' || product.isFeatured === true;
+            if (isFeatured && newProducts.length < 3) {
+                newProducts.push(product);
             }
-            return acc;
-        }, []);
+        } else {
+            // If we don't have this category yet, add it
+            categories.add(product.category);
+            newProducts.push(product);
+        }
+        
+        // Stop once we have 3 products
+        if (newProducts.length >= 3) break;
+    }
 
     if (debugProductLoading) {
         console.log('Found new products:', newProducts);
@@ -1111,13 +1184,23 @@ function sortProducts(method) {
         const titleB = b.querySelector('h3')?.textContent || '';
         const priceA = parseFloat(a.querySelector('.price')?.textContent.replace('From $', '') || '0');
         const priceB = parseFloat(b.querySelector('.price')?.textContent.replace('From $', '') || '0');
+        
+        // Get featured status from data attributes (we'll add these later)
+        const featuredA = a.getAttribute('data-featured') === 'true';
+        const featuredB = b.getAttribute('data-featured') === 'true';
 
         switch(method) {
+            case 'featured': 
+                // If one is featured and the other isn't, the featured one comes first
+                if (featuredA && !featuredB) return -1;
+                if (!featuredA && featuredB) return 1;
+                // If both are featured or both are not featured, sort alphabetically
+                return titleA.localeCompare(titleB);
             case 'name-asc': return titleA.localeCompare(titleB);
             case 'name-desc': return titleB.localeCompare(titleA);
             case 'price-asc': return priceA - priceB;
             case 'price-desc': return priceB - priceA;
-            default: return 0;
+            default: return 0; // Default to 'featured' sort
         }
     });
 
@@ -1445,6 +1528,117 @@ function initializeHeader() {
     }
 }
 
+// Function to dynamically generate category filters
+function generateCategoryFilters() {
+    const filterContainer = document.querySelector('.filter-section .filter-options');
+    if (!filterContainer) return;
+    
+    // Clear existing content
+    filterContainer.innerHTML = '';
+    
+    // Loop through each category
+    for (const categoryId in CATEGORIES) {
+        const categoryName = CATEGORIES[categoryId];
+        const subcategories = SUBCATEGORIES[categoryId] || {};
+        
+        // Create category group
+        const categoryGroup = document.createElement('div');
+        categoryGroup.className = 'category-group';
+        
+        // Create category main section
+        const categoryMain = document.createElement('div');
+        categoryMain.className = 'category-main';
+        categoryMain.innerHTML = `
+            <label class="checkbox-container">
+                <input type="checkbox" value="${categoryId}" data-category-type="main">
+                <span class="checkmark"></span>
+                ${categoryName}
+            </label>
+            <button class="toggle-subcategories"></button>
+        `;
+        
+        // Create subcategory list
+        const subcategoryList = document.createElement('div');
+        subcategoryList.className = 'subcategory-list hidden';
+        
+        // Add subcategories
+        for (const subcategoryId in subcategories) {
+            const subcategoryName = subcategories[subcategoryId];
+            
+            const subcategoryLabel = document.createElement('label');
+            subcategoryLabel.className = 'checkbox-container';
+            subcategoryLabel.innerHTML = `
+                <input type="checkbox" value="${subcategoryId}" data-category-type="sub">
+                <span class="checkmark"></span>
+                ${subcategoryName}
+            `;
+            
+            subcategoryList.appendChild(subcategoryLabel);
+        }
+        
+        // Assemble the category group
+        categoryGroup.appendChild(categoryMain);
+        categoryGroup.appendChild(subcategoryList);
+        
+        // Add to container
+        filterContainer.appendChild(categoryGroup);
+    }
+    
+    // Setup toggle functionality for the generated elements
+    setupCategoryToggles();
+}
+
+// Function to dynamically generate collection filters
+function generateCollectionFilters() {
+    const filterContainer = document.querySelector('.filter-section .filter-options.tags');
+    if (!filterContainer) return;
+    
+    // Clear existing content but keep the "New Arrivals" checkbox if it exists
+    const newArrivalHTML = `
+        <label class="checkbox-container">
+            <input type="checkbox" value="new" data-filter-type="tag">
+            <span class="checkmark"></span>
+            New Arrivals
+        </label>
+    `;
+    
+    filterContainer.innerHTML = newArrivalHTML;
+    
+    // Add collection filters
+    for (const collectionId in COLLECTIONS) {
+        const collectionName = COLLECTIONS[collectionId];
+        
+        const collectionLabel = document.createElement('label');
+        collectionLabel.className = 'checkbox-container';
+        collectionLabel.innerHTML = `
+            <input type="checkbox" value="${collectionId}" data-filter-type="collection">
+            <span class="checkmark"></span>
+            ${collectionName}
+        `;
+        
+        filterContainer.appendChild(collectionLabel);
+    }
+}
+
+// Function to setup toggle functionality for category filters
+function setupCategoryToggles() {
+    const toggleButtons = document.querySelectorAll('.toggle-subcategories');
+    
+    toggleButtons.forEach(button => {
+        button.addEventListener('click', function(e) {
+            e.preventDefault();
+            const categoryGroup = this.closest('.category-group');
+            const subcategoryList = categoryGroup.querySelector('.subcategory-list');
+            
+            // Toggle expanded state
+            categoryGroup.classList.toggle('expanded');
+            
+            // Toggle visibility
+            subcategoryList.classList.toggle('hidden');
+        });
+    });
+}
+
 // Listen for storage events to sync product data
 window.addEventListener('storage', function(e) {
     if (e.key === 'allProducts') {
@@ -1459,12 +1653,106 @@ window.addEventListener('storage', function(e) {
     }
 });
 
+// Promotions Slider Functionality
+function initPromotionsSlider() {
+    const slider = document.querySelector('.promo-slider-fullwidth .slider');
+    const slides = document.querySelectorAll('.promo-slider-fullwidth .slide');
+    const prevBtn = document.querySelector('.promo-slider-fullwidth .slider-nav.prev');
+    const nextBtn = document.querySelector('.promo-slider-fullwidth .slider-nav.next');
+    const indicators = document.querySelectorAll('.promo-slider-fullwidth .indicator');
+    
+    if (!slider || slides.length === 0) return;
+    
+    let currentSlide = 0;
+    const slideCount = slides.length;
+    
+    // Set up automatic sliding with a longer duration for reading
+    let slideInterval = setInterval(nextSlide, 6000);
+    
+    // Initialize the slider
+    updateSlider();
+    
+    // Event listeners
+    if (prevBtn) prevBtn.addEventListener('click', function(e) {
+      e.preventDefault();
+      prevSlide();
+    });
+    
+    if (nextBtn) nextBtn.addEventListener('click', function(e) {
+      e.preventDefault();
+      nextSlide();
+    });
+    
+    // Add click events to indicators
+    indicators.forEach((indicator, index) => {
+      indicator.addEventListener('click', () => goToSlide(index));
+    });
+    
+    // Pause autoplay on hover
+    slider.addEventListener('mouseenter', () => {
+      clearInterval(slideInterval);
+    });
+    
+    // Resume autoplay on mouse leave
+    slider.addEventListener('mouseleave', () => {
+      clearInterval(slideInterval);
+      slideInterval = setInterval(nextSlide, 6000);
+    });
+    
+    // Function to go to previous slide
+    function prevSlide() {
+      currentSlide = (currentSlide - 1 + slideCount) % slideCount;
+      updateSlider();
+      resetInterval();
+    }
+    
+    // Function to go to next slide
+    function nextSlide() {
+      currentSlide = (currentSlide + 1) % slideCount;
+      updateSlider();
+      resetInterval();
+    }
+    
+    // Function to go to a specific slide
+    function goToSlide(index) {
+      currentSlide = index;
+      updateSlider();
+      resetInterval();
+    }
+    
+    // Update the slider position and indicators
+    function updateSlider() {
+      // Update slider transform
+      slider.style.transform = `translateX(-${currentSlide * 100}%)`;
+      
+      // Update indicators
+      indicators.forEach((indicator, index) => {
+        indicator.classList.toggle('active', index === currentSlide);
+      });
+    }
+    
+    // Reset the interval when manually changing slides
+    function resetInterval() {
+      clearInterval(slideInterval);
+      slideInterval = setInterval(nextSlide, 6000);
+    }
+}
+
 // DOM Content Loaded Event Handler
 document.addEventListener('DOMContentLoaded', function() {
     if (debugProductLoading) {
         console.log('DOM Content Loaded');
         console.log('Current URL:', window.location.href);
     }
+    
+    // Initialize cart and update cart badges
+    if (window.cart) {
+        window.cart.loadCart();
+        window.cart.updateCartBadge();
+    }
+
+    // Initialize the promotions slider if it exists
+    initPromotionsSlider();
 
     // Add this line to initialize analytics
     trackPageView().catch(error => console.error('Analytics error:', error));
@@ -1485,6 +1773,27 @@ document.addEventListener('DOMContentLoaded', function() {
     // Initialize products page if applicable
     if (document.getElementById('productsContainer')) {
         if (debugProductLoading) console.log('Initializing products page');
+
+        // Generate filters dynamically
+        generateCategoryFilters();
+        generateCollectionFilters();
+
+        // Apply the same dynamic filter generation to mobile filters
+        const mobileFilterContainer = document.querySelector('#filterPanel .panel-body');
+        if (mobileFilterContainer) {
+            const desktopFilterContainer = document.querySelector('.products-sidebar');
+            if (desktopFilterContainer) {
+                // Clone the desktop filters to the mobile panel
+                mobileFilterContainer.innerHTML = '';
+                const filterSections = desktopFilterContainer.querySelectorAll('.filter-section');
+                filterSections.forEach(section => {
+                    mobileFilterContainer.appendChild(section.cloneNode(true));
+                });
+                
+                // Setup event handlers for the cloned elements
+                setupCategoryToggles();
+            }
+        }
         
         // Try to restore filter state from sessionStorage
         try {
@@ -1563,6 +1872,9 @@ document.addEventListener('DOMContentLoaded', function() {
             if (debugProductLoading) console.log('Products loaded callback executed');
             handleUrlFilters(); // Add this line
             filterProducts();
+    
+            // Apply featured sorting by default
+            sortProducts('featured');
         }).catch(error => {
             console.error('Error loading products:', error);
         });
@@ -1649,9 +1961,15 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // Helper function for product detail error
     function showProductDetailError() {
+        // Initialize elements
         const loadingState = document.getElementById('loadingState');
         const productDetails = document.getElementById('productDetails');
         const errorState = document.getElementById('errorState');
+        
+        // Initialize cart if available
+        if (window.cart && window.cart.loadCart) {
+            window.cart.loadCart();  // Ensure cart is loaded
+        }
         
         if (loadingState) loadingState.style.display = 'none';
         if (productDetails) productDetails.style.display = 'none';
@@ -1718,6 +2036,9 @@ document.addEventListener('DOMContentLoaded', function() {
         // Load products and initialize page
         loadProducts(() => {
             filterProducts();
+    
+            // Apply featured sorting by default
+            sortProducts('featured');
         });
 
         // View toggle functionality
