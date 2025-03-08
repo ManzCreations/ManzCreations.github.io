@@ -1738,6 +1738,45 @@ function initPromotionsSlider() {
     }
 }
 
+// Video Banner Functionality
+function initVideoBanner() {
+    const video = document.getElementById('promotionVideo');
+    
+    if (!video) return;
+    
+    // Make sure video plays even if autoplay fails
+    video.addEventListener('canplay', function() {
+      // Try to play
+      const playPromise = video.play();
+      
+      if (playPromise !== undefined) {
+        playPromise.catch(error => {
+          console.log('Auto-play was prevented. Adding click to play fallback.');
+          
+          // Add play button if autoplay is blocked
+          const playButton = document.createElement('button');
+          playButton.className = 'video-play-button';
+          playButton.innerHTML = '<i class="fas fa-play"></i>';
+          playButton.setAttribute('aria-label', 'Play video');
+          
+          video.parentNode.appendChild(playButton);
+          
+          playButton.addEventListener('click', () => {
+            video.play();
+            playButton.style.display = 'none';
+          });
+        });
+      }
+    });
+    
+    // Fix for iOS where videos can sometimes stall
+    video.addEventListener('pause', function() {
+      if (!video.ended) {
+        video.play();
+      }
+    });
+}
+
 // DOM Content Loaded Event Handler
 document.addEventListener('DOMContentLoaded', function() {
     if (debugProductLoading) {
@@ -1751,8 +1790,8 @@ document.addEventListener('DOMContentLoaded', function() {
         window.cart.updateCartBadge();
     }
 
-    // Initialize the promotions slider if it exists
-    initPromotionsSlider();
+    // Initialize the video banner
+    initVideoBanner();
 
     // Add this line to initialize analytics
     trackPageView().catch(error => console.error('Analytics error:', error));

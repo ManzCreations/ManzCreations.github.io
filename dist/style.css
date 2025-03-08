@@ -5329,3 +5329,174 @@ html {
     font-size: 1.5rem;
   }
 }
+
+
+
+/* -------------------------------- */
+/* Full-Width Video Banner          */
+/* -------------------------------- */
+.video-banner-fullwidth {
+  position: relative;
+  width: 100%;
+  margin: 30px 0; /* Add vertical margin for spacing from other sections */
+  padding: 0;
+  overflow: hidden;
+  z-index: 1;
+  background-color: var(--color-bg-light);
+}
+
+/* Smooth transition gradients at top and bottom */
+.video-banner-fullwidth::before,
+.video-banner-fullwidth::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  right: 0;
+  height: 40px;
+  z-index: 2;
+  pointer-events: none;
+}
+
+.video-banner-fullwidth::before {
+  top: 0;
+  background: linear-gradient(to bottom, var(--color-bg-light), transparent);
+}
+
+.video-banner-fullwidth::after {
+  bottom: 0;
+  background: linear-gradient(to top, var(--color-bg-light), transparent);
+}
+
+/* Video container */
+.video-banner-fullwidth .video-container {
+  position: relative;
+  width: 100%;
+  max-width: 1920px; /* Match your video width */
+  margin: 0 auto;
+  overflow: hidden;
+}
+
+/* Video element */
+.video-banner-fullwidth video {
+  width: 100%;
+  height: auto;
+  display: block;
+}
+
+/* Optional caption overlay */
+.video-banner-fullwidth .video-caption {
+  position: absolute;
+  bottom: 60px; /* Position above the gradient */
+  left: 60px;
+  max-width: 450px;
+  padding: 1.5rem;
+  background: rgba(0,0,0,0.5);
+  color: white;
+  text-shadow: 0 1px 2px rgba(0,0,0,0.8);
+  border-radius: var(--radius-md);
+  z-index: 2;
+}
+
+.video-banner-fullwidth .video-caption h3 {
+  font-size: 1.75rem;
+  margin-bottom: 0.5rem;
+  font-weight: 600;
+}
+
+.video-banner-fullwidth .video-caption p {
+  font-size: 1.1rem;
+  opacity: 0.9;
+  margin-bottom: 1rem;
+}
+
+.video-banner-fullwidth .video-cta {
+  display: inline-block;
+  padding: 0.75rem 1.5rem;
+  background: var(--color-primary);
+  color: white;
+  border-radius: var(--radius-full);
+  font-weight: 500;
+  transition: all 0.3s ease;
+}
+
+.video-banner-fullwidth .video-cta:hover {
+  background: var(--color-accent-1);
+  transform: translateY(-2px);
+}
+
+/* Responsive Adjustments */
+@media (max-width: 960px) {
+  .video-banner-fullwidth .video-caption {
+    bottom: 40px;
+    left: 40px;
+  }
+}
+
+@media (max-width: 768px) {
+  .video-banner-fullwidth .video-caption {
+    bottom: 30px;
+    left: 30px;
+    padding: 1rem;
+    max-width: 70%;
+  }
+  
+  .video-banner-fullwidth .video-caption h3 {
+    font-size: 1.3rem;
+  }
+  
+  .video-banner-fullwidth .video-caption p {
+    font-size: 0.9rem;
+    margin-bottom: 0.75rem;
+  }
+  
+  .video-banner-fullwidth .video-cta {
+    padding: 0.5rem 1rem;
+    font-size: 0.9rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .video-banner-fullwidth .video-caption {
+    bottom: 20px;
+    left: 20px;
+    padding: 0.75rem;
+    max-width: 80%;
+  }
+  
+  .video-banner-fullwidth .video-caption h3 {
+    font-size: 1.1rem;
+    margin-bottom: 0.25rem;
+  }
+  
+  .video-banner-fullwidth .video-caption p {
+    font-size: 0.8rem;
+    margin-bottom: 0.5rem;
+  }
+}
+
+
+/* Play button for browsers that block autoplay */
+.video-play-button {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 80px;
+  height: 80px;
+  background: rgba(224, 63, 133, 0.8);
+  border: none;
+  border-radius: 50%;
+  color: white;
+  font-size: 2rem;
+  cursor: pointer;
+  z-index: 3;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.3s ease;
+}
+
+.video-play-button:hover {
+  background: var(--color-primary);
+  transform: translate(-50%, -50%) scale(1.1);
+}
