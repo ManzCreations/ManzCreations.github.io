@@ -1740,13 +1740,70 @@ function initPromotionsSlider() {
 
 // Video Banner Functionality
 function initVideoBanner() {
-    const video = document.getElementById('promotionVideo');
+    const video = document.getElementById('bannerVideo');
+    const playPauseBtn = document.querySelector('.video-control.play-pause');
+    const muteUnmuteBtn = document.querySelector('.video-control.mute-unmute');
     
     if (!video) return;
     
+    // Function to handle responsive video behavior
+    function handleVideoResize() {
+      // Get the current dimensions of the video container
+      const wrapper = video.closest('.video-wrapper');
+      const wrapperWidth = wrapper.offsetWidth;
+      const wrapperHeight = wrapper.offsetHeight;
+      
+      // Calculate video dimensions while maintaining aspect ratio
+      const videoRatio = 1920 / 560; // Your video's aspect ratio
+      const wrapperRatio = wrapperWidth / wrapperHeight;
+      
+      if (wrapperRatio < videoRatio) {
+        // If container is narrower than video
+        video.style.width = 'auto';
+        video.style.height = '100%';
+      } else {
+        // If container is wider than video
+        video.style.width = '100%';
+        video.style.height = 'auto';
+      }
+    }
+    
+    // Initial sizing
+    handleVideoResize();
+    
+    // Resize on window change
+    window.addEventListener('resize', handleVideoResize);
+    
+    // Video controls functionality
+    if (playPauseBtn) {
+      playPauseBtn.addEventListener('click', function() {
+        if (video.paused) {
+          video.play();
+          this.innerHTML = '<i class="fas fa-pause"></i>';
+          this.setAttribute('aria-label', 'Pause video');
+        } else {
+          video.pause();
+          this.innerHTML = '<i class="fas fa-play"></i>';
+          this.setAttribute('aria-label', 'Play video');
+        }
+      });
+    }
+    
+    if (muteUnmuteBtn) {
+      muteUnmuteBtn.addEventListener('click', function() {
+        video.muted = !video.muted;
+        if (video.muted) {
+          this.innerHTML = '<i class="fas fa-volume-mute"></i>';
+          this.setAttribute('aria-label', 'Unmute video');
+        } else {
+          this.innerHTML = '<i class="fas fa-volume-up"></i>';
+          this.setAttribute('aria-label', 'Mute video');
+        }
+      });
+    }
+    
     // Make sure video plays even if autoplay fails
     video.addEventListener('canplay', function() {
-      // Try to play
       const playPromise = video.play();
       
       if (playPromise !== undefined) {
@@ -1775,6 +1832,19 @@ function initVideoBanner() {
         video.play();
       }
     });
+    
+    // Optional: Pause video when not in viewport to save resources
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          video.play();
+        } else {
+          video.pause();
+        }
+      });
+    }, { threshold: 0.2 });
+    
+    observer.observe(video);
 }
 
 // DOM Content Loaded Event Handler

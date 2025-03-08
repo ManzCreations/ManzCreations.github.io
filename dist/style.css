@@ -5333,170 +5333,173 @@ html {
 
 
 /* -------------------------------- */
-/* Full-Width Video Banner          */
+/* Video Banner                     */
 /* -------------------------------- */
-.video-banner-fullwidth {
+.video-banner {
   position: relative;
   width: 100%;
-  margin: 30px 0; /* Add vertical margin for spacing from other sections */
-  padding: 0;
   overflow: hidden;
-  z-index: 1;
-  background-color: var(--color-bg-light);
-}
-
-/* Smooth transition gradients at top and bottom */
-.video-banner-fullwidth::before,
-.video-banner-fullwidth::after {
-  content: '';
-  position: absolute;
-  left: 0;
-  right: 0;
-  height: 40px;
-  z-index: 2;
-  pointer-events: none;
-}
-
-.video-banner-fullwidth::before {
-  top: 0;
-  background: linear-gradient(to bottom, var(--color-bg-light), transparent);
-}
-
-.video-banner-fullwidth::after {
-  bottom: 0;
-  background: linear-gradient(to top, var(--color-bg-light), transparent);
-}
-
-/* Video container */
-.video-banner-fullwidth .video-container {
-  position: relative;
-  width: 100%;
-  max-width: 1920px; /* Match your video width */
   margin: 0 auto;
-  overflow: hidden;
+  padding: 0;
+  background-color: rgba(255, 255, 255, 0.1); /* White background instead of black */
+  /* Add bottom margin to create space between video banner and the next section */
+  margin-bottom: 0.5rem;
+  /* Additional margin at the top to increase space after title section */
+  margin-top: 5.5rem;
 }
 
-/* Video element */
-.video-banner-fullwidth video {
+/* Container to constrain the video to the same width as other sections */
+.video-wrapper {
+  position: relative;
+  width: 100%;
+  max-width: 71.25rem; /* Match the container max-width from your CSS */
+  margin: 0 auto;
+  padding: 0 1rem; /* Match the container padding */
+  overflow: hidden;
+  line-height: 0; /* Remove extra space below inline element */
+}
+
+/* Maintain aspect ratio while limiting width */
+.video-banner video {
   width: 100%;
   height: auto;
-  display: block;
+  border-radius: var(--radius-lg); /* Add rounded corners to match other containers */
+  box-shadow: 0 4px 12px rgba(224, 63, 133, 0.1); /* Add subtle shadow to match other sections */
 }
 
-/* Optional caption overlay */
-.video-banner-fullwidth .video-caption {
+/* Button style matching the "Browse All Products" button ratio and styling */
+.video-cta {
   position: absolute;
-  bottom: 60px; /* Position above the gradient */
-  left: 60px;
-  max-width: 450px;
-  padding: 1.5rem;
-  background: rgba(0,0,0,0.5);
-  color: white;
-  text-shadow: 0 1px 2px rgba(0,0,0,0.8);
-  border-radius: var(--radius-md);
-  z-index: 2;
-}
-
-.video-banner-fullwidth .video-caption h3 {
-  font-size: 1.75rem;
-  margin-bottom: 0.5rem;
-  font-weight: 600;
-}
-
-.video-banner-fullwidth .video-caption p {
-  font-size: 1.1rem;
-  opacity: 0.9;
-  margin-bottom: 1rem;
-}
-
-.video-banner-fullwidth .video-cta {
-  display: inline-block;
-  padding: 0.75rem 1.5rem;
-  background: var(--color-primary);
-  color: white;
-  border-radius: var(--radius-full);
-  font-weight: 500;
-  transition: all 0.3s ease;
-}
-
-.video-banner-fullwidth .video-cta:hover {
-  background: var(--color-accent-1);
-  transform: translateY(-2px);
-}
-
-/* Responsive Adjustments */
-@media (max-width: 960px) {
-  .video-banner-fullwidth .video-caption {
-    bottom: 40px;
-    left: 40px;
-  }
-}
-
-@media (max-width: 768px) {
-  .video-banner-fullwidth .video-caption {
-    bottom: 30px;
-    left: 30px;
-    padding: 1rem;
-    max-width: 70%;
-  }
-  
-  .video-banner-fullwidth .video-caption h3 {
-    font-size: 1.3rem;
-  }
-  
-  .video-banner-fullwidth .video-caption p {
-    font-size: 0.9rem;
-    margin-bottom: 0.75rem;
-  }
-  
-  .video-banner-fullwidth .video-cta {
-    padding: 0.5rem 1rem;
-    font-size: 0.9rem;
-  }
-}
-
-@media (max-width: 480px) {
-  .video-banner-fullwidth .video-caption {
-    bottom: 20px;
-    left: 20px;
-    padding: 0.75rem;
-    max-width: 80%;
-  }
-  
-  .video-banner-fullwidth .video-caption h3 {
-    font-size: 1.1rem;
-    margin-bottom: 0.25rem;
-  }
-  
-  .video-banner-fullwidth .video-caption p {
-    font-size: 0.8rem;
-    margin-bottom: 0.5rem;
-  }
-}
-
-
-/* Play button for browsers that block autoplay */
-.video-play-button {
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  width: 80px;
-  height: 80px;
-  background: rgba(224, 63, 133, 0.8);
+  bottom: 20px;
+  right: 20px;
+  /* Match padding from the button class used for "Browse All Products" */
+  padding: var(--spacing-3) var(--spacing-8); /* 0.75rem 2rem - matching the title banner CTA */
+  background: linear-gradient(45deg, var(--color-primary), var(--color-accent-1));
+  color: var(--color-bg-white);
   border: none;
-  border-radius: 50%;
-  color: white;
-  font-size: 2rem;
+  border-radius: var(--radius-full);
+  font-size: 1.1rem; /* Match title banner CTA size */
+  font-weight: 600;
   cursor: pointer;
-  z-index: 3;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  transition: all 0.3s ease;
+  text-decoration: none;
+  display: inline-block;
+  transition: all var(--transition-base);
+  box-shadow: 0 2px 4px rgba(224, 63, 133, 0.2);
+  z-index: 5;
 }
 
-.video-play-button:hover {
-  background: var(--color-primary);
-  transform: translate(-50%, -50%) scale(1.1);
+.video-cta:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(224, 63, 133, 0.3);
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .video-wrapper {
+    padding: 0 0.5rem;
+  }
+  
+  .video-cta {
+    bottom: 15px;
+    right: 15px;
+    padding: 8px 16px;
+    font-size: 0.8rem;
+  }
+}
+
+
+/* Section Spacing Improvements */
+
+/* General section spacing */
+section {
+  margin-bottom: 3rem; /* Default bottom margin for all sections */
+}
+
+/* Title section spacing */
+.title-banner {
+  margin-bottom: 2.5rem;
+}
+
+/* New releases section spacing */
+#new-releases {
+  margin-top: 2.5rem;
+  margin-bottom: 3rem;
+}
+
+/* Collections section spacing */
+#collections {
+  margin-top: 1rem;
+  margin-bottom: 3rem;
+}
+
+/* Category section spacing */
+.category-section {
+  margin-top: 1.5rem;
+  margin-bottom: 3rem;
+}
+
+/* Last category section needs less bottom margin before the FAQ */
+#other-accessories {
+  margin-bottom: 2rem;
+}
+
+/* Section headers get top margin */
+.section-header {
+  margin-top: 1.5rem;
+  margin-bottom: 2rem;
+}
+
+/* Ensure proper spacing between mobile sections */
+@media (max-width: 768px) {
+  section {
+    margin-bottom: 2rem; /* Slightly reduced spacing on mobile */
+  }
+  
+  .title-banner {
+    margin-bottom: 2rem;
+  }
+  
+  #new-releases {
+    margin-top: 2rem;
+    margin-bottom: 2.5rem;
+  }
+  
+  .section-header {
+    margin-top: 1rem;
+    margin-bottom: 1.5rem;
+  }
+  
+  /* Add divider lines between mobile sections for visual separation */
+  .category-section:not(:last-child)::after {
+    content: '';
+    display: block;
+    height: 1px;
+    background: rgba(224, 63, 133, 0.1); /* Light divider using your accent color */
+    margin: 2rem auto;
+    width: 80%;
+  }
+}
+
+/* Adding subtle dividers between desktop sections for visual hierarchy */
+@media (min-width: 769px) {
+  /* Subtle section dividers */
+  .bg-white + .bg-light::before,
+  .bg-light + .bg-white::before {
+    content: '';
+    display: block;
+    height: 1px;
+    background: linear-gradient(to right, 
+      transparent 0%, 
+      rgba(224, 63, 133, 0.1) 20%, 
+      rgba(224, 63, 133, 0.1) 80%, 
+      transparent 100%);
+    margin: 0 auto 3rem;
+    width: 70%;
+  }
+  
+  /* Create visual breaks between color-matched sections */
+  section.bg-white + section.bg-white,
+  section.bg-light + section.bg-light {
+    padding-top: 1rem;
+  }
 }
