@@ -3,7 +3,7 @@ console.log('Config file loaded');
 const config = {
     // Google Sheets API Key
     API_KEY: 'AIzaSyDy6KZcSASsTBMNd_PLc_bOW7WJNWZYtp8',
-    SHEET_ID: '13W8dMCMOwq5jhl2SnEwwb4rJNfD77UrdDWlAVyji6Ik',
+    SHEET_ID: '1sr6xkVCcAJeWXNIIyDTWx2sJI2H3wdb-8VN9z7NgQh4',
 
     // EmailJS Configuration
     EMAIL: {
