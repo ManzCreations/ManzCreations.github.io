@@ -3688,10 +3688,6 @@ body.noscroll {
   .featured-event .event-card {
       grid-template-columns: 1fr;
   }
-  
-  .featured-event .event-image {
-      height: 300px;
-  }
 }
 
 @media (max-width: 768px) {
