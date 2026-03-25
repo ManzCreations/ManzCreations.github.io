@@ -9,22 +9,22 @@
   --color-secondary: #56c3d1;  
   
   /* Background Colors */
-  --color-bg-light: #f3f4f6;   
+  --color-bg-light: #fafafa;   
   --color-bg-white: #ffffff;   
   --color-bg-dark: #1f2937;
   
   /* New background colors */
-  --color-bg-primary: #f8faf8;  /* Very light green tint */
+  --color-bg-primary: #fef9f6;  /* Very light green tint */
   --color-bg-secondary: #fff9f9; /* Very light pink tint */
   --color-bg-accent: rgba(224, 63, 133, 0.08); /* Subtle green */
   
   /* Card and border colors */
   --card-border: rgba(224, 63, 133, 0.2);
-  --card-shadow: 0 2px 8px rgba(224, 63, 133, 0.1);
+  --card-shadow: 0 2px 12px rgba(131, 39, 126, 0.08);
   
   /* Text Colors */
-  --color-text-primary: #1f2937;   
-  --color-text-secondary: #6b7280; 
+  --color-text-primary: #2d2d2d;   
+  --color-text-secondary: #666666; 
   --color-text-light: #f3f4f6;     
   
   /* Accent Colors */
@@ -42,15 +42,15 @@
   --spacing-16: 4rem;     /* 64px */
 
   /* Border Radius */
-  --radius-sm: 0.25rem;
-  --radius-md: 0.5rem;
-  --radius-lg: 1rem;
+  --radius-sm: 0.375rem;
+  --radius-md: 0.625rem;
+  --radius-lg: 0.875rem;
   --radius-full: 9999px;
 
   /* Shadows */
-  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.05);
-  --shadow-md: 0 4px 6px rgba(0, 0, 0, 0.1);
-  --shadow-lg: 0 10px 15px rgba(0, 0, 0, 0.1);
+  --shadow-sm: 0 1px 3px rgba(131, 39, 126, 0.08);
+  --shadow-md: 0 4px 8px rgba(131, 39, 126, 0.1);
+  --shadow-lg: 0 12px 24px rgba(131, 39, 126, 0.12);
 
   /* Transitions */
   --transition-base: 300ms ease-in-out;
@@ -5503,3 +5503,131 @@ section {
     padding-top: 1rem;
   }
 }
+
+/* Alternating section backgrounds for visual warmth */
+section:nth-child(even):not(.hero):not(.header):not(.footer) {
+  background-color: #fef9f6;
+}
+
+section:nth-child(odd):not(.hero):not(.header):not(.footer) {
+  background-color: #ffffff;
+}
+
+/* ============================================ */
+/* ADDITIONAL PROFESSIONAL IMPROVEMENTS        */
+/* ============================================ */
+
+/* Better typography hierarchy */
+h1, h2, h3, h4, h5, h6 {
+  letter-spacing: -0.02em;
+}
+
+/* Smoother transitions throughout */
+* {
+  transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Professional product grid on home page */
+.category-section .products-grid {
+  gap: 2rem;
+}
+
+/* Better spacing for section headers */
+.section-header {
+  margin-bottom: 2.5rem;
+}
+
+/* Improved collection overlay */
+.collection-overlay {
+  background: linear-gradient(to top, rgba(0,0,0,0.75), transparent);
+  padding: 2rem;
+}
+
+/* Better focus states for accessibility */
+.product-card:focus,
+.button:focus {
+  outline: 3px solid var(--color-secondary);
+  outline-offset: 2px;
+}
+
+/* Smooth image loading */
+.product-image img {
+  image-rendering: -webkit-optimize-contrast;
+  image-rendering: crisp-edges;
+}
+
+/* Professional badge variants */
+.product-badge.featured {
+  background: linear-gradient(135deg, var(--color-secondary) 0%, #4ab3c1 100%);
+  color: white;
+}
+
+/* Better mobile product cards */
+@media (max-width: 768px) {
+  .product-card {
+    border-radius: 0.75rem;
+  }
+  
+  .product-info {
+    padding: 1rem;
+  }
+  
+  .products-grid {
+    gap: 1.25rem;
+  }
+}
+
+/* Extra small mobile optimization */
+@media (max-width: 480px) {
+  .products-grid {
+    gap: 1rem;
+  }
+  
+  .product-info {
+    padding: 0.875rem;
+  }
+  
+  .product-info h3 {
+    font-size: 0.9375rem;
+  }
+}
+
+/* Professional hover state for entire card */
+.product-card {
+  position: relative;
+}
+
+.product-card::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(135deg, rgba(131, 39, 126, 0.02), rgba(86, 195, 209, 0.02));
+  opacity: 0;
+  transition: opacity 300ms ease-in-out;
+  pointer-events: none;
+  border-radius: inherit;
+}
+
+.product-card:hover::after {
+  opacity: 1;
+}
+
+/* Professional price display */
+.price {
+  display: flex;
+  align-items: baseline;
+  gap: 0.25rem;
+  margin-top: auto;
+}
+
+/* Better product description if present */
+.product-description {
+  font-size: 0.875rem;
+  color: #999999;
+  line-height: 1.5;
+  margin-top: 0.5rem;
+}
+
