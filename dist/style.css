@@ -3500,15 +3500,10 @@ body.noscroll {
   box-shadow: 0 2px 8px rgba(224, 63, 133, 0.1);
 }
 
-.featured-event .event-image {
-  position: relative;
-  height: 100%;
-}
-
 .featured-event .event-image img {
   width: 100%;
-  height: 100%;
-  object-fit: cover;
+  height: auto;
+  display: block;
 }
 
 .featured-event .event-content {
@@ -3541,7 +3536,6 @@ body.noscroll {
 .event-image {
   position: relative;
   width: 100%;
-  padding-top: 66.67%; /* 3:2 aspect ratio */
 }
 
 /* Create a clickable overlay that covers the entire card */
@@ -3587,12 +3581,9 @@ body.noscroll {
 }
 
 .event-image img {
-  position: absolute;
-  top: 0;
-  left: 0;
   width: 100%;
-  height: 100%;
-  object-fit: cover;
+  height: auto;
+  display: block;
 }
 
 .event-badge {
@@ -4581,7 +4572,7 @@ html {
 }
 
 .event-image {
-  overflow: hidden !important;
+  overflow: visible;
   position: relative;
 }
 

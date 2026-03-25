@@ -1050,6 +1050,29 @@ function filterProducts() {
             });
         }
 
+        // Sort new items to the top before display, within the current sort method
+        const currentSort = document.getElementById('sortProducts')?.value || 'featured';
+        const newItems = filteredProducts.filter(p => p.isNew === true);
+        const regularItems = filteredProducts.filter(p => p.isNew !== true);
+
+        const sortFn = (a, b) => {
+            switch (currentSort) {
+                case 'name-asc':  return a.title.localeCompare(b.title);
+                case 'name-desc': return b.title.localeCompare(a.title);
+                case 'price-asc': return a.price - b.price;
+                case 'price-desc': return b.price - a.price;
+                default:
+                    const aFeat = a.isFeatured === true;
+                    const bFeat = b.isFeatured === true;
+                    if (aFeat && !bFeat) return -1;
+                    if (!aFeat && bFeat) return 1;
+                    return a.title.localeCompare(b.title);
+            }
+        };
+        newItems.sort(sortFn);
+        regularItems.sort(sortFn);
+        filteredProducts = [...newItems, ...regularItems];
+
         // Update the products display
         updateProductsDisplay(filteredProducts);
         
@@ -1178,33 +1201,35 @@ function sortProducts(method) {
     if (!productsContainer) return;
 
     const products = Array.from(productsContainer.children);
-    
+
     products.sort((a, b) => {
         const titleA = a.querySelector('h3')?.textContent || '';
         const titleB = b.querySelector('h3')?.textContent || '';
         const priceA = parseFloat(a.querySelector('.price')?.textContent.replace('From $', '') || '0');
         const priceB = parseFloat(b.querySelector('.price')?.textContent.replace('From $', '') || '0');
-        
-        // Get featured status from data attributes (we'll add these later)
         const featuredA = a.getAttribute('data-featured') === 'true';
         const featuredB = b.getAttribute('data-featured') === 'true';
 
-        switch(method) {
-            case 'featured': 
-                // If one is featured and the other isn't, the featured one comes first
+        // NEW: Always float "New" items to the top regardless of sort method
+        const isNewA = a.querySelector('.product-badge.new') !== null;
+        const isNewB = b.querySelector('.product-badge.new') !== null;
+        if (isNewA && !isNewB) return -1;
+        if (!isNewA && isNewB) return 1;
+
+        // Within the same new/non-new group, apply the chosen sort
+        switch (method) {
+            case 'featured':
                 if (featuredA && !featuredB) return -1;
                 if (!featuredA && featuredB) return 1;
-                // If both are featured or both are not featured, sort alphabetically
                 return titleA.localeCompare(titleB);
-            case 'name-asc': return titleA.localeCompare(titleB);
+            case 'name-asc':  return titleA.localeCompare(titleB);
             case 'name-desc': return titleB.localeCompare(titleA);
             case 'price-asc': return priceA - priceB;
             case 'price-desc': return priceB - priceA;
-            default: return 0; // Default to 'featured' sort
+            default: return 0;
         }
     });
 
-    // Clear and repopulate container
     while (productsContainer.firstChild) {
         productsContainer.removeChild(productsContainer.firstChild);
     }
