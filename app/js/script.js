@@ -1050,28 +1050,20 @@ function filterProducts() {
             });
         }
 
-        // Sort new items to the top before display, within the current sort method
+        // Only float new items to the top when sort is "featured"
         const currentSort = document.getElementById('sortProducts')?.value || 'featured';
-        const newItems = filteredProducts.filter(p => p.isNew === true);
-        const regularItems = filteredProducts.filter(p => p.isNew !== true);
-
-        const sortFn = (a, b) => {
-            switch (currentSort) {
-                case 'name-asc':  return a.title.localeCompare(b.title);
-                case 'name-desc': return b.title.localeCompare(a.title);
-                case 'price-asc': return a.price - b.price;
-                case 'price-desc': return b.price - a.price;
-                default:
-                    const aFeat = a.isFeatured === true;
-                    const bFeat = b.isFeatured === true;
-                    if (aFeat && !bFeat) return -1;
-                    if (!aFeat && bFeat) return 1;
-                    return a.title.localeCompare(b.title);
-            }
-        };
-        newItems.sort(sortFn);
-        regularItems.sort(sortFn);
-        filteredProducts = [...newItems, ...regularItems];
+        if (currentSort === 'featured') {
+            const newItems = filteredProducts.filter(p => p.isNew === true);
+            const regularItems = filteredProducts.filter(p => p.isNew !== true);
+            const featuredSort = (a, b) => {
+                if (a.isFeatured && !b.isFeatured) return -1;
+                if (!a.isFeatured && b.isFeatured) return 1;
+                return a.title.localeCompare(b.title);
+            };
+            newItems.sort(featuredSort);
+            regularItems.sort(featuredSort);
+            filteredProducts = [...newItems, ...regularItems];
+        }
 
         // Update the products display
         updateProductsDisplay(filteredProducts);
@@ -1210,11 +1202,13 @@ function sortProducts(method) {
         const featuredA = a.getAttribute('data-featured') === 'true';
         const featuredB = b.getAttribute('data-featured') === 'true';
 
-        // NEW: Always float "New" items to the top regardless of sort method
-        const isNewA = a.querySelector('.product-badge.new') !== null;
-        const isNewB = b.querySelector('.product-badge.new') !== null;
-        if (isNewA && !isNewB) return -1;
-        if (!isNewA && isNewB) return 1;
+        // Only float new items to the top when sort is "featured"
+        if (method === 'featured') {
+            const isNewA = a.querySelector('.product-badge.new') !== null;
+            const isNewB = b.querySelector('.product-badge.new') !== null;
+            if (isNewA && !isNewB) return -1;
+            if (!isNewA && isNewB) return 1;
+        }
 
         // Within the same new/non-new group, apply the chosen sort
         switch (method) {
@@ -1646,19 +1640,20 @@ function generateCollectionFilters() {
 }
 
 // Function to setup toggle functionality for category filters
-function setupCategoryToggles() {
-    const toggleButtons = document.querySelectorAll('.toggle-subcategories');
+function setupCategoryToggles(container) {
+    const scope = container || document;
+    const toggleButtons = scope.querySelectorAll('.toggle-subcategories');
     
     toggleButtons.forEach(button => {
+        // Prevent double-attaching on re-calls
+        if (button._toggleAttached) return;
+        button._toggleAttached = true;
+
         button.addEventListener('click', function(e) {
             e.preventDefault();
             const categoryGroup = this.closest('.category-group');
             const subcategoryList = categoryGroup.querySelector('.subcategory-list');
-            
-            // Toggle expanded state
             categoryGroup.classList.toggle('expanded');
-            
-            // Toggle visibility
             subcategoryList.classList.toggle('hidden');
         });
     });
@@ -1925,7 +1920,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 });
                 
                 // Setup event handlers for the cloned elements
-                setupCategoryToggles();
+                setupCategoryToggles(mobileFilterContainer);
             }
         }
         
@@ -2240,21 +2235,21 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     // Initialize category toggles
-    const toggleButtons = document.querySelectorAll('.toggle-subcategories');
-    toggleButtons.forEach(button => {
-        button.addEventListener('click', (e) => {
-        e.preventDefault();
-        const categoryGroup = button.closest('.category-group');
-        const subcategoryList = categoryGroup.querySelector('.subcategory-list');
-        const isHidden = subcategoryList.classList.contains('hidden');
+    // const toggleButtons = document.querySelectorAll('.toggle-subcategories');
+    // toggleButtons.forEach(button => {
+    //     button.addEventListener('click', (e) => {
+    //     e.preventDefault();
+    //     const categoryGroup = button.closest('.category-group');
+    //     const subcategoryList = categoryGroup.querySelector('.subcategory-list');
+    //     const isHidden = subcategoryList.classList.contains('hidden');
         
-        // Toggle expanded state
-        categoryGroup.classList.toggle('expanded');
+    //     // Toggle expanded state
+    //     categoryGroup.classList.toggle('expanded');
         
-        // Toggle visibility
-        subcategoryList.classList.toggle('hidden');
-        });
-    });
+    //     // Toggle visibility
+    //     subcategoryList.classList.toggle('hidden');
+    //     });
+    // });
 
     // Setup search functionality for both desktop and mobile search inputs
     const searchInputs = [
